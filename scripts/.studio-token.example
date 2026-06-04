@@ -1,0 +1,4 @@
+# Crafter Studio Bearer token for local install scripts. Copy to .studio-token (gitignored).
+# Usage: install-plugin.sh sources this if CRAFTER_STUDIO_TOKEN is not set.
+# Refresh after Studio restart or when you see 401 (tokens are short-lived).
+export CRAFTER_STUDIO_TOKEN='paste-your-bearer-token-here'

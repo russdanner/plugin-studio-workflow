@@ -1,0 +1,11 @@
+package plugins.org.rd.plugin.crafterwf.model
+
+class AuditOperation {
+
+    static final String TASK_CREATED = 'task_created'
+    static final String TASK_MODIFIED = 'task_modified'
+    static final String PACKAGE_CREATED = 'package_created'
+    static final String PACKAGE_STEP_CHANGED = 'package_step_changed'
+    static final String PACKAGE_STEP_ACTION = 'package_step_action'
+    static final String PACKAGE_MODIFIED = 'package_modified'
+}

@@ -1,0 +1,46 @@
+{
+  "id": "editorial",
+  "name": "Editorial Workflow",
+  "description": "Default editorial kanban workflow",
+  "backgroundUrl": "blue",
+  "position": 0,
+  "isDefault": true,
+  "steps": [
+    {
+      "id": "backlog",
+      "name": "Backlog",
+      "position": 1000,
+      "color": "blue",
+      "isTerminal": false,
+      "allowAddPackage": true,
+      "actionType": "none",
+      "actionSuccessStepId": null,
+      "roleRule": { "mode": "all", "roles": [] },
+      "contentRule": { "mode": "all", "pathPatterns": [], "contentTypes": [] }
+    },
+    {
+      "id": "in-progress",
+      "name": "In Progress",
+      "position": 2000,
+      "color": "orange",
+      "isTerminal": false,
+      "allowAddPackage": false,
+      "actionType": "none",
+      "actionSuccessStepId": null,
+      "roleRule": { "mode": "all", "roles": [] },
+      "contentRule": { "mode": "all", "pathPatterns": [], "contentTypes": [] }
+    },
+    {
+      "id": "done",
+      "name": "Done",
+      "position": 3000,
+      "color": "green",
+      "isTerminal": true,
+      "allowAddPackage": false,
+      "actionType": "none",
+      "actionSuccessStepId": null,
+      "roleRule": { "mode": "all", "roles": [] },
+      "contentRule": { "mode": "all", "pathPatterns": [], "contentTypes": [] }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "authoring-crafterwf-plugin",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "",
+  "author": "craftercms",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@3.2.2",
+  "workspaces": [
+    "packages/crafterwf-board-components",
+    "packages/crafterwf-app",
+    "packages/cra"
+  ],
+  "scripts": {
+    "w:prettier": "yarn prettier --write './packages/**/*.{ts,tsx}'",
+    "dist": "yarn workspace crafterwf-board-components dist && yarn workspace crafterwf-app dist",
+    "dist:deploy": "PLUGIN_DEPLOY_PATH=../../../authoring/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf yarn dist"
+  },
+  "resolutions": {
+    "webpack-dev-server": "^5.2.1"
+  },
+  "dependencies": {
+    "prettier": "^2.5.1"
+  }
+}

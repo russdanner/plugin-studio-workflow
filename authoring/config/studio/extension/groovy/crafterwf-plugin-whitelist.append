@@ -1,0 +1,75 @@
+# Crafter Workflow plugin (org.rd.plugin.crafterwf) — append to site whitelist when
+# studio.scripting.sandbox.whitelist.enable is true.
+# See docs/GROOVY_SANDBOX.md
+
+# JDBC pool (javax.sql.DataSource)
+method javax.sql.DataSource getConnection
+
+# groovy.sql.Sql
+new groovy.sql.Sql javax.sql.DataSource
+new groovy.sql.Sql java.sql.Connection
+method groovy.sql.Sql close
+method groovy.sql.Sql execute java.lang.String
+method groovy.sql.Sql execute java.lang.String java.lang.Object[]
+method groovy.sql.Sql firstRow java.lang.String
+method groovy.sql.Sql firstRow java.lang.String java.lang.Object[]
+method groovy.sql.Sql rows java.lang.String
+method groovy.sql.Sql rows java.lang.String java.lang.Object[]
+method groovy.sql.Sql executeInsert java.lang.String
+method groovy.sql.Sql executeInsert java.lang.String java.lang.Object[]
+method groovy.sql.Sql executeUpdate java.lang.String
+method groovy.sql.Sql executeUpdate java.lang.String java.lang.Object[]
+
+# java.sql.Connection (transactions)
+method java.sql.Connection close
+method java.sql.Connection setAutoCommit boolean
+method java.sql.Connection commit
+method java.sql.Connection rollback
+
+# Groovy row results (column access from sql.firstRow / sql.rows)
+method groovy.sql.GroovyRowResult getProperty java.lang.String
+method groovy.sql.GroovyRowResult get java.lang.String
+
+# Current user (optional; audit fields fall back to 0 if unavailable)
+method org.craftercms.studio.api.v1.service.security.SecurityService getCurrentUser
+method org.craftercms.studio.api.v2.service.security.SecurityService getCurrentUser
+method org.craftercms.studio.api.v1.service.security.SecurityService getAuthentication
+method org.craftercms.studio.api.v1.service.security.SecurityService getUserProfile java.lang.String
+
+# User lookup for @mentions and notification recipients (getUserProfile has no numeric id)
+method org.craftercms.studio.api.v2.service.security.UserService getUserByIdOrUsername long java.lang.String
+method org.craftercms.studio.api.v2.service.security.UserService getUserGroups long java.lang.String
+method org.craftercms.studio.api.v2.dal.Group getName
+method org.craftercms.studio.api.v2.dal.User getId
+method javax.servlet.http.HttpServletRequest getRemoteUser
+
+# Publishing / workflow step actions (bean: studio.workflowService)
+method org.craftercms.studio.api.v2.service.workflow.WorkflowService requestPublish java.lang.String java.util.List java.util.List java.lang.String java.time.ZonedDateTime java.lang.String boolean
+method org.craftercms.studio.api.v2.service.workflow.WorkflowService publish java.lang.String java.util.List java.util.List java.lang.String java.time.ZonedDateTime java.lang.String
+
+# Publishing targets (bean: publishService)
+method org.craftercms.studio.api.v2.service.publish.PublishService getAvailablePublishingTargets java.lang.String
+method org.craftercms.studio.model.publish.PublishingTarget getName
+method org.craftercms.studio.model.publish.PublishingTarget getEnvironment
+
+# Site publishing config fallback (bean: cstudioServicesConfig)
+method org.craftercms.studio.api.v1.service.configuration.ServicesConfig getLiveEnvironment java.lang.String
+method org.craftercms.studio.api.v1.service.configuration.ServicesConfig isStagingEnvironmentEnabled java.lang.String
+method org.craftercms.studio.api.v1.service.configuration.ServicesConfig getStagingEnvironment java.lang.String
+
+# Workflow definitions in site repo (v2 contentService + v1 cstudioContentService)
+method org.craftercms.studio.api.v2.service.content.ContentService contentExists java.lang.String java.lang.String
+method org.craftercms.studio.api.v2.service.content.ContentService getContentAsResource java.lang.String java.lang.String
+method org.craftercms.studio.api.v2.service.content.ContentService getChildItems java.lang.String java.util.List
+method org.craftercms.studio.api.v2.service.content.ContentService deleteContent java.lang.String java.lang.String java.lang.String
+method org.springframework.core.io.Resource getInputStream
+method org.craftercms.studio.api.v1.service.content.ContentService getContentAsString java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.content.ContentService writeContent java.lang.String java.lang.String java.io.InputStream
+method org.craftercms.studio.api.v1.service.content.ContentService createFolder java.lang.String java.lang.String java.lang.String
+method java.util.Optional isPresent
+method java.util.Optional get
+method org.craftercms.core.util.Resource getInputStream
+method java.io.InputStream getText java.lang.String
+method java.io.InputStream close
+new java.io.ByteArrayInputStream byte[]
+method java.lang.String getBytes java.lang.String

@@ -16,15 +16,15 @@ plugin:
     minor: 0
     patch: 11
   description: A plugin to provide a kanban workflow board backed by MariaDB
-  documentation: "https://raw.githubusercontent.com/russdanner/plugin-studio-trellowf/master/README.md"
+  documentation: "https://raw.githubusercontent.com/russdanner/plugin-studio-workflow/master/README.md"
   website:
     name: Crafter Workflow Plugin
-    url: https://github.com/russdanner/plugin-studio-trellowf
+    url: https://github.com/russdanner/plugin-studio-workflow
   media:
     screenshots:
       - title: CrafterCMS
         description: CrafterCMS Workflow Board Plugin
-        url: "https://raw.githubusercontent.com/russdanner/plugin-studio-trellowf/master/.crafter/logo.png"
+        url: "https://raw.githubusercontent.com/russdanner/plugin-studio-workflow/master/.crafter/logo.png"
   developer:
     company:
       name: Russ Danner
