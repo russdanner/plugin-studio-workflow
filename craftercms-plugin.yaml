@@ -1,0 +1,346 @@
+# This file describes a plugin for use in CrafterCMS
+
+# The version of the format for this file
+descriptorVersion: 2
+
+# Describe the plugin
+plugin:
+  type: site
+  id: org.rd.plugin.crafterwf
+  name: Crafter Workflow Board
+  tags:
+    - workflow
+    - kanban
+  version:
+    major: 1
+    minor: 0
+    patch: 11
+  description: A plugin to provide a kanban workflow board backed by MariaDB
+  documentation: "https://raw.githubusercontent.com/russdanner/plugin-studio-trellowf/master/README.md"
+  website:
+    name: Crafter Workflow Plugin
+    url: https://github.com/russdanner/plugin-studio-trellowf
+  media:
+    screenshots:
+      - title: CrafterCMS
+        description: CrafterCMS Workflow Board Plugin
+        url: "https://raw.githubusercontent.com/russdanner/plugin-studio-trellowf/master/.crafter/logo.png"
+  developer:
+    company:
+      name: Russ Danner
+      email: russdanner@craftercms.com
+      url: https://github.com/russdanner
+  build:
+    id: cafebabe313b24b5e0481d6ba87901d0b02716c9
+    date: 2022-01-07T00:00:00Z
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  crafterCmsVersions:
+    - major: 4
+      minor: 0
+    - major: 4
+      minor: 1
+    - major: 4
+      minor: 2
+    - major: 4
+      minor: 3
+    - major: 4
+      minor: 4
+  crafterCmsEditions:
+    - community
+    - enterprise
+  installation:
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.openBoardButton']
+      parentXpath: //widget[@id='craftercms.components.ToolsPanel']/configuration/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.openBoardButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Workflow
+              - name: icon
+                attributes:
+                  - name: id
+                    value: "@mui/icons-material/AccountTreeOutlined"
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.activeWorkflowsToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.activeWorkflowsToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Active workflows
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.contentCommentsToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.contentCommentsToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Comments
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.notificationsToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.notificationsToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Notifications
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.tasksToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.tasksToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Tasks
+    - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.calendarToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.calendarToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Calendar
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.tasksPanel']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.tasksPanel
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.notificationsPanel']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.notificationsPanel
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.contentCommentsPanel']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.contentCommentsPanel
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.board']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.board
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.calendarDialog']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.calendarDialog
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: //reference[@id='craftercms.siteTools']
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.ProjectToolsConfiguration']
+      element:
+        name: tools
+        children:
+          - name: tool
+            children:
+              # Plain string title — Studio formatjs requires `id` on message descriptors
+              - name: title
+                value: Crafter Workflow
+              - name: icon
+                attributes:
+                  - name: id
+                    value: "@mui/icons-material/AccountTreeOutlined"
+              - name: url
+                value: crafter-workflow-config
+              - name: widget
+                attributes:
+                  - name: id
+                    value: org.rd.plugin.crafterwf.ProjectToolsConfiguration
+                children:
+                  - name: plugin
+                    attributes:
+                      - name: id
+                        value: org.rd.plugin.crafterwf
+                      - name: site
+                        value: "{site}"
+                      - name: type
+                        value: apps
+                      - name: name
+                        value: crafterwf
+                      - name: file
+                        value: index.js
