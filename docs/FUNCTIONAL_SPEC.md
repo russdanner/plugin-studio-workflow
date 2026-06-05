@@ -208,7 +208,7 @@ Separate Tools panel widget for commenting on the currently selected content ite
 - Groovy hooks invocation, per-workflow WorkflowRole DB tables
 - Terminal step runtime behavior (`is_terminal` is metadata only)
 
-See [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) for stakeholder PDF gap analysis.
+See [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md#plugin-remediation-analysis) for stakeholder PDF gap analysis and remediation backlog.
 
 ## Related documents
 

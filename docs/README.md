@@ -20,7 +20,7 @@ These documents describe **what** the system does and **how** it is structured. 
 | [AUDIT_LOG.md](./AUDIT_LOG.md) | Append-only audit trail |
 | [EXTENSIONS.md](./EXTENSIONS.md) | Cross-cutting features index |
 | [GROOVY_SANDBOX.md](./GROOVY_SANDBOX.md) | Studio Groovy sandbox rules and whitelist |
-| [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) | Stakeholder requirements inventory (PDF) |
+| [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) | Stakeholder requirements + **plugin remediation analysis** |
 | [../scripts/tests/README.md](../scripts/tests/README.md) | curl API test suite (all REST endpoints) |
 
 ## Design principles
