@@ -1,6 +1,8 @@
 # Tasks
 
-User-assigned work items with optional links to workflow packages, content paths, or other targets.
+User-assigned work items in **`wf_task`**. Tasks are **independent** of workflow: `target_type` and `target_id` are optional. A task with no target is valid.
+
+See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md#independent-collaboration-entities) and [COMMENTS.md](./COMMENTS.md) for the shared loose-coupling model.
 
 ## Model: `wf_task`
 
@@ -28,6 +30,12 @@ User-assigned work items with optional links to workflow packages, content paths
 |----------------|-------------|-------------|
 | `workflow_package` | Package UUID | Shows package title; click opens board with package expanded |
 | `content` | Content path | Content comments context |
+
+Tasks may be created with **no target** (standalone in the Tasks panel).
+
+### Validation asymmetry
+
+`CommentService` verifies the package exists when `target_type=workflow_package`. `TaskService` does **not** validate targets on create — a task may reference a non-existent package ID until enriched DTO fields are read. See [CANONICAL_MODEL.md — coupling notes](./CANONICAL_MODEL.md#coupling-notes-known-gaps).
 
 ## API
 
@@ -66,5 +74,6 @@ Tasks can also be created from a **WorkflowPackage** card detail dialog.
 ## Related documents
 
 - [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)
+- [COMMENTS.md](./COMMENTS.md)
 - [NOTIFICATIONS.md](./NOTIFICATIONS.md)
 - [AUDIT_LOG.md](./AUDIT_LOG.md)

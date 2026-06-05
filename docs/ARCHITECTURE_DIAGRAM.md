@@ -95,6 +95,8 @@ flowchart LR
 
 ## Domain model (canonical entities)
 
+Workflow-owned data (solid) vs independent collaboration entities (dashed optional links):
+
 ```mermaid
 flowchart TB
     W[Workflow]
@@ -102,13 +104,20 @@ flowchart TB
     WS --> WP[WorkflowPackage]
     WP --> CR[ContentRef]
     WP --> LK[Link]
-    WP --> CM[Comment]
-    CONTENT[Content path] --> CM
-    WP --> TK[Task]
-    USER[Studio user] --> N[Notification]
+
+    CM[Comment]
+    TK[Task]
+    N[Notification]
+    AL[AuditLogEntry]
+    CONTENT[Content path]
+
+    WP -.->|optional target| CM
+    WP -.->|optional target| TK
+    CONTENT -.->|optional target| CM
+    CONTENT -.->|optional target| TK
     TK --> N
     CM --> N
-    WP --> AL[AuditLogEntry]
+    WP --> AL
     TK --> AL
 ```
 

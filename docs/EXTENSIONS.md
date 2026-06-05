@@ -6,8 +6,9 @@ Cross-cutting features beyond the core workflow aggregate.
 
 | Feature | Document | Status |
 |---------|----------|--------|
+| **Comments** | [COMMENTS.md](./COMMENTS.md) | ✅ Package + content targets; independent of workflow |
 | **Notifications (in-app)** | [NOTIFICATIONS.md](./NOTIFICATIONS.md) | ✅ Bell widget, panel, task/comment/@mention triggers |
-| **Tasks** | [TASKS.md](./TASKS.md) | ✅ Tasks panel, package tasks, assignee notifications |
+| **Tasks** | [TASKS.md](./TASKS.md) | ✅ Tasks panel; optional targets; no workflow required |
 | **Audit log** | [AUDIT_LOG.md](./AUDIT_LOG.md) | ✅ Task + package events; Project Tools tab |
 | **Step rules** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ JSON `roleRule` / `contentRule`; enforced on move |
 | **Step publish actions** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ `actionType` on steps; runs on package move |
@@ -15,6 +16,7 @@ Cross-cutting features beyond the core workflow aggregate.
 ```mermaid
 flowchart TB
     subgraph Implemented["Implemented"]
+        CM[Comments]
         N[Notifications in-app]
         T[Tasks]
         A[Audit log]
@@ -28,7 +30,8 @@ flowchart TB
         WR[WorkflowRole DB]
     end
 
-    CORE[Core workflow model] --> N
+    CORE[Core workflow model] --> CM
+    CORE --> N
     CORE --> T
     CORE --> A
     N -.-> E
@@ -48,7 +51,9 @@ flowchart TB
 
 ## Related documents
 
-- [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)
-- [NOTIFICATIONS.md](./NOTIFICATIONS.md)
+- [CANONICAL_MODEL.md](./CANONICAL_MODEL.md)
+- [COMMENTS.md](./COMMENTS.md)
 - [TASKS.md](./TASKS.md)
+- [NOTIFICATIONS.md](./NOTIFICATIONS.md)
 - [AUDIT_LOG.md](./AUDIT_LOG.md)
+- [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md)

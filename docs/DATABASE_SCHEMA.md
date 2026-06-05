@@ -181,13 +181,17 @@ erDiagram
     wf_workflow_step ||--o{ wf_workflow_package : holds
     wf_workflow_package ||--o{ wf_workflow_package_content_ref : content
     wf_workflow_package ||--o{ wf_workflow_package_link : links
-    wf_workflow_package ||--o{ wf_comment : "target workflow_package"
+    wf_workflow_package ||--o{ wf_comment : "logical target only"
     wf_task }o--o| wf_workflow_package : "optional target"
     wf_notification }o--o| wf_workflow_package : "optional target"
     wf_notification }o--o| wf_task : "optional target"
 ```
 
+> **Note:** `wf_comment` and `wf_task` associate with packages through `target_type` + `target_id` only — **no foreign key**. Content-path comments (`target_type=content`) have no workflow relationship.
+
 ## Logical grouping
+
+Collaboration tables are **peers** of the workflow core — not child tables of `wf_workflow_package`.
 
 ```mermaid
 flowchart TB
@@ -198,33 +202,34 @@ flowchart TB
         W --> S --> P
     end
 
-    subgraph PackageContents["Package contents"]
+    subgraph PackageContents["Package-owned"]
         CR[wf_workflow_package_content_ref]
         LK[wf_workflow_package_link]
         P --> CR
         P --> LK
     end
 
-    subgraph Collaboration["Collaboration"]
+    subgraph Collaboration["Collaboration — independent"]
         CM[wf_comment]
         TK[wf_task]
         N[wf_notification]
         NP[wf_user_notification_preference]
-        P --> CM
-        P --> TK
-        TK --> N
-        CM --> N
     end
 
     subgraph Compliance["Compliance"]
         AL[wf_audit_log]
-        P --> AL
-        TK --> AL
     end
 
     subgraph Migrations["Migrations"]
         V[wf_schema_version]
     end
+
+    P -.->|optional target| CM
+    P -.->|optional target| TK
+    TK --> N
+    CM --> N
+    P --> AL
+    TK --> AL
 ```
 
 ## Table reference

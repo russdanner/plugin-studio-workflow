@@ -31,19 +31,24 @@ The plugin is **Studio-only**. It does not render boards on the delivery site or
 
 ## Domain model
 
+Workflow packages **do not own** comments or tasks. Those are independent entities linked optionally via `target_type` / `target_id`. See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md#independent-collaboration-entities).
+
 ```mermaid
 classDiagram
     class Workflow {
-        +id, site_id, name
-        +description, background_url
+        +id, name
+        +steps in JSON
     }
     class WorkflowStep {
         +id, name, position
-        +color, is_terminal
+        +roleRule, contentRule, actionType
     }
     class WorkflowPackage {
         +id, title, description
         +position, status, due_on
+    }
+    class WorkflowPackageContentRef {
+        +contentPath, displayName
     }
     class Comment {
         +target_type, target_id
@@ -53,7 +58,7 @@ classDiagram
     class Task {
         +title, priority, assignee
         +due_on, complete, archived
-        +target_type, target_id
+        +target_type, target_id optional
     }
     class Notification {
         +user_id, title, message
@@ -65,12 +70,17 @@ classDiagram
     }
     Workflow "1" --> "*" WorkflowStep
     WorkflowStep "1" --> "*" WorkflowPackage
-    WorkflowPackage "1" --> "*" Comment
-    WorkflowPackage "1" --> "*" Task
+    WorkflowPackage "1" --> "*" WorkflowPackageContentRef
+    Comment ..> WorkflowPackage : optional target
+    Comment ..> ContentPath : optional target
+    Task ..> WorkflowPackage : optional target
+    Task ..> ContentPath : optional target
     Task --> Notification
     Comment --> Notification
     Task --> AuditLogEntry
     WorkflowPackage --> AuditLogEntry
+    note for Comment "Independent table wf_comment"
+    note for Task "Independent table wf_task; target nullable"
 ```
 
 Crafter workflow state (`availableActionsMap`) is read at action time from linked content — **not** mirrored in the plugin database.
@@ -83,6 +93,8 @@ Crafter workflow state (`availableActionsMap`) is read at action time from linke
 - Multiple workflows per site via widget `workflowId` or default workflow
 - Drag-and-drop **WorkflowPackages** between **WorkflowSteps**
 - Package detail: description, attachments, comments, tasks
+
+Comments and tasks shown in package detail are loaded via `CommentService` / `TaskService` by target — not stored on the package row. The same comment and task rows are available from standalone widgets without opening the board.
 
 ### C2 — WorkflowPackage lifecycle
 

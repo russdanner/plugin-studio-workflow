@@ -16,7 +16,8 @@ These documents describe **what** the system does and **how** it is structured. 
 | [API_CONTRACT.md](./API_CONTRACT.md) | Plugin REST API — endpoints and payloads |
 | [AUTHORIZATION.md](./AUTHORIZATION.md) | Studio site roles (no plugin permission tables in current phase) |
 | [NOTIFICATIONS.md](./NOTIFICATIONS.md) | In-app notifications (email delivery deferred) |
-| [TASKS.md](./TASKS.md) | User tasks, assignees, package linking |
+| [COMMENTS.md](./COMMENTS.md) | Comment threads — polymorphic targets, independent of workflow |
+| [TASKS.md](./TASKS.md) | User tasks — optional links, independent of workflow |
 | [AUDIT_LOG.md](./AUDIT_LOG.md) | Append-only audit trail |
 | [EXTENSIONS.md](./EXTENSIONS.md) | Cross-cutting features index |
 | [GROOVY_SANDBOX.md](./GROOVY_SANDBOX.md) | Studio Groovy sandbox rules and whitelist |
@@ -32,6 +33,7 @@ flowchart TB
     P3[Studio roles for access control]
     P4[Workflow defined by ordered WorkflowSteps]
     P5[Greenfield — canonical names only]
+    P6[Comments and tasks independent — optional targets]
 ```
 
 1. **Do not modify Crafter Studio schema** — all plugin data lives in schema `` `crafter-workflow` ``.
@@ -39,32 +41,41 @@ flowchart TB
 3. **Studio roles for access control** — no plugin permission tables in the current phase.
 4. **Workflow defined by steps** — **WorkflowSteps** are ordered columns on a **Workflow**.
 5. **Greenfield rewrite** — canonical MariaDB-backed API only; legacy Trello/card/board REST shims have been removed.
+6. **Loose coupling** — **Comments** and **tasks** are separate entities with optional `target_type` / `target_id` links; they are not owned by **WorkflowPackage**. See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md#independent-collaboration-entities).
 
 ## Current domain model
+
+Workflow **packages** own content refs and links only. Comments, tasks, notifications, and audit entries are **separate** collaboration entities that may optionally reference a package or content path.
 
 ```mermaid
 flowchart TB
     W[Workflow] --> WS[WorkflowStep]
     WS --> WP[WorkflowPackage]
     WP --> CR[Content refs / links]
-    WP --> CM[Comment]
-    CONTENT[Content path] --> CM
-    WP --> T[Task]
-    WP --> AL[AuditLogEntry]
-    T --> AL
-    T --> N[Notification]
+
+    CM[Comment]
+    TK[Task]
+    N[Notification]
+    AL[AuditLogEntry]
+    CONTENT[Content path]
+
+    WP -.->|optional target| CM
+    WP -.->|optional target| TK
+    CONTENT -.->|optional target| CM
+    CONTENT -.->|optional target| TK
+    TK --> N
     CM --> N
-    USER[Studio user] --> N
-    USER --> T
+    WP --> AL
+    TK --> AL
 ```
 
 | Entity | Meaning |
 |--------|---------|
 | **Workflow** | Named editorial process; definition in `/config/studio/workflow/definitions/*.workflow.json` |
 | **WorkflowStep** | Ordered kanban column (in definition JSON); packages sit in one step at a time |
-| **WorkflowPackage** | Unit of work: content refs, links, comments, tasks |
-| **Comment** | Thread on a package or content path; step snapshot for package comments |
-| **Task** | Assignable to-do with optional target link |
+| **WorkflowPackage** | Unit of work in one step; owns content refs and external links |
+| **Comment** | Independent thread on `workflow_package` or `content` target — [COMMENTS.md](./COMMENTS.md) |
+| **Task** | Independent assignable item; optional target link — [TASKS.md](./TASKS.md) |
 | **Notification** | In-app alert to a Studio user |
 | **AuditLogEntry** | Append-only record of task/package actions |
 
