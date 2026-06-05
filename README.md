@@ -61,4 +61,15 @@ Optional widget configuration — pin a specific workflow by id (legacy config k
 </widget>
 ```
 
-See [docs/DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) and [docs/WORKFLOW_DEFINITIONS.md](./docs/WORKFLOW_DEFINITIONS.md) for database and workflow setup.
+See [docs/DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) and [docs/WORKFLOW_DEFINITIONS.md](./docs/WORKFLOW_DEFINITIONS.md) for database (schema **V012**) and workflow setup.
+
+## API testing
+
+curl-based integration tests for all plugin REST services:
+
+```bash
+./scripts/run-api-tests.sh --smoke   # read-only GET smoke
+./scripts/run-api-tests.sh           # full suite
+```
+
+Requires a valid `CRAFTER_STUDIO_TOKEN` (or `scripts/.studio-token`). See [scripts/tests/README.md](./scripts/tests/README.md).

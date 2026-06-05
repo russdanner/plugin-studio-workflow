@@ -34,6 +34,8 @@ flowchart TB
         TS[TaskService]
         ALS[AuditLogService]
         ADM[WorkflowAdminService]
+        SRS[StepRuleService]
+        SAS[WorkflowStepActionService]
     end
 
     subgraph Repo["Site sandbox"]
@@ -56,6 +58,7 @@ flowchart TB
     StudioUI --> PluginREST
     PluginREST --> CTX
     CTX --> BS & PS & CS & NS & TS & ALS & ADM & WDS
+    PS --> SRS & SAS
     WDS --> DEF
     BS --> WDS & PD
     PS --> PD & AD & CS & ALS & WDS
@@ -161,9 +164,15 @@ flowchart LR
     V3 --> V4[V004 Notifications]
     V4 --> V5[V005 Tasks]
     V5 --> V6[V006 Audit log]
+    V6 --> V7[V007 Step actions]
+    V7 --> V8[V008 Action type]
+    V8 --> V9[V009 allowAddPackage]
+    V9 --> V10[V010 Package due_on]
+    V10 --> V11[V011 Task start_on]
+    V11 --> V12[V012 Content type + legacy step rules]
 ```
 
-Current target: **V6**.
+Current target: **V12**. See [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md).
 
 ## Implementation phases
 
@@ -174,7 +183,8 @@ flowchart LR
     P3 --> P4[Phase 4 Notifications]
     P4 --> P5[Phase 5 Tasks]
     P5 --> P6[Phase 6 Audit log]
-    P6 --> P7[Phase 7 Email / RBAC / rules]
+    P6 --> P7[Phase 7 Step rules and actions]
+    P7 --> P8[Phase 8 Email / RBAC DB / hooks]
 ```
 
 | Phase | Status |
@@ -185,7 +195,8 @@ flowchart LR
 | 4 — Notifications (in-app) | ✅ |
 | 5 — Tasks | ✅ |
 | 6 — Audit log | ✅ |
-| 7 — Email, hooks, step rules, WorkflowRole | ❌ deferred |
+| 7 — Step rules, publish actions, calendar | ✅ |
+| 8 — Email, hooks, WorkflowRole (DB) | ❌ deferred |
 
 ## Deferred (future)
 
@@ -200,9 +211,8 @@ flowchart TB
 
     subgraph Deferred["Deferred"]
         E[Email delivery]
-        WR[WorkflowRole]
+        WR[WorkflowRole DB tables]
         WH[WorkflowHook]
-        SR[WorkflowStepRule]
     end
 ```
 

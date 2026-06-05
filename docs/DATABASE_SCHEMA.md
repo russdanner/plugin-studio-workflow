@@ -11,7 +11,7 @@ Canonical entity names: [CANONICAL_MODEL.md](./CANONICAL_MODEL.md).
 | Schema name | `` `crafter-workflow` `` (hardcoded in `WorkflowDb`) |
 | DB user | Same as Studio (`crafter` or equivalent) |
 | Table references | Fully qualified: `` `crafter-workflow`.wf_workflow `` |
-| Latest version | **6** (`SchemaMigrator.LATEST_SCHEMA_VERSION`) |
+| Latest version | **12** (`SchemaMigrator.LATEST_SCHEMA_VERSION`) |
 
 ### Database privileges
 
@@ -74,6 +74,7 @@ erDiagram
         text description
         decimal position
         varchar cover_color
+        datetime due_on
         varchar status
         bigint created_by
         datetime created_on
@@ -88,6 +89,7 @@ erDiagram
         varchar site_id
         varchar content_path
         varchar display_name
+        varchar content_type
         int sort_order
         bigint created_by
         datetime created_on
@@ -151,6 +153,7 @@ erDiagram
         varchar priority
         bigint assignee_id
         varchar assignee_username
+        datetime start_on
         datetime due_on
         boolean complete_b
         boolean archived_b
@@ -232,12 +235,15 @@ A **Workflow** (kanban board definition).
 
 ### `wf_workflow_step`
 
-An ordered **WorkflowStep**.
+**Legacy table** — step definitions live in site JSON ([WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md)). Columns from V007–V012 remain for upgraded databases but are not written by current definition CRUD.
 
 | Column | Notes |
 |--------|-------|
 | `position` | `DECIMAL(20,10)` for insert-between ordering |
-| `is_terminal` | “Done” step flag; stored only — no runtime behavior yet |
+| `is_terminal` | “Done” step flag; stored in JSON; no auto-archive behavior yet |
+| V007–V008 | Legacy publish-action booleans / `step_action_type`, `step_action_success_step_id` |
+| V009 | `allow_add_package` (superseded by JSON `allowAddPackage`) |
+| V012 | `role_rule_*`, `content_rule_*` (superseded by JSON `roleRule` / `contentRule`) |
 
 ### `wf_workflow_package`
 
@@ -245,12 +251,17 @@ A **WorkflowPackage** in one step at a time.
 
 | Column | Notes |
 |--------|-------|
-| `workflow_step_id` | Current step |
+| `workflow_step_id` | Current step (definition slug) |
+| `due_on` | Optional due date (V010); used by calendar |
 | `status` | `active` \| `archived` |
 
 ### `wf_workflow_package_content_ref` / `wf_workflow_package_link`
 
 Crafter content paths and external URLs linked to a package.
+
+| Column | Notes |
+|--------|-------|
+| `content_type` | Resolved Crafter content type path (V012); used by step content rules |
 
 ### `wf_comment`
 
@@ -282,30 +293,37 @@ Plugin migration version tracking.
 
 ## Schema evolution
 
-| Version | File | Description |
-|---------|------|-------------|
-| 1 | `V001__initial_schema.sql` | Core workflow, package, comment, notification tables |
-| 2 | `V002__comment_targets.sql` | Generic `wf_comment`; migrate from package-only comments |
-| 3 | `V003__comment_archive.sql` | `archived_on`, `archived_by` on comments |
-| 4 | `V004__notifications.sql` | Replace notification table with target-based model |
-| 5 | `V005__tasks.sql` | `wf_task` |
-| 6 | `V006__audit_log.sql` | `wf_audit_log` |
+| Version | Migration | Description |
+|---------|-----------|-------------|
+| 1 | V001 | Core workflow, package, comment, notification tables |
+| 2 | V002 | Generic `wf_comment`; migrate from package-only comments |
+| 3 | V003 | `archived_on`, `archived_by` on comments |
+| 4 | V004 | Replace notification table with target-based model |
+| 5 | V005 | `wf_task` |
+| 6 | V006 | `wf_audit_log` |
+| 7 | V007 | Legacy step publish-action flags on `wf_workflow_step` |
+| 8 | V008 | `step_action_type`, `step_action_success_step_id` on `wf_workflow_step` |
+| 9 | V009 | `allow_add_package` on `wf_workflow_step` |
+| 10 | V010 | `due_on` on `wf_workflow_package` + calendar index |
+| 11 | V011 | `start_on` on `wf_task` |
+| 12 | V012 | `content_type` on content refs; legacy step rule columns on `wf_workflow_step` |
+
+Migrations are applied in `SchemaMigrator.groovy` (embedded SQL, not separate `.sql` files).
 
 ```mermaid
 flowchart TB
     API[Plugin REST call] --> LOCK[GET_LOCK crafter_workflow_schema_migrate]
     LOCK --> MIG[SchemaMigrator.migrateIfNeeded]
-    MIG --> V1[V001 … V006]
+    MIG --> V1[V001 … V012]
     V1 --> RUN[Continue request]
 ```
 
-Lazy migrate on first API call. Install explicitly via **Project Tools → General** or `admin/schema/install.json`.
+Lazy migrate on first API call. Install explicitly via **Project Tools → General** or `admin/schema/install.json` (HTTP GET).
 
 ## Deferred tables (future)
 
-- `wf_workflow_role`, `wf_site_role_template` — per-workflow capabilities
+- `wf_workflow_role`, `wf_site_role_template` — per-workflow capabilities beyond JSON step `roleRule`
 - `wf_workflow_hook` — Groovy hook registry
-- `wf_workflow_step_rule` — pre-move constraints
 
 ## Prior design draft names (do not use)
 

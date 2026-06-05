@@ -22,6 +22,7 @@ import ListItemText from '@mui/material/ListItemText';
 import CardRecord from '../types/CardRecord';
 import CardDetailsRecord, { AttachedSandboxItem } from '../types/CardDetailsRecord';
 import AttachedSandboxItemDisplay from './AttachedSandboxItemDisplay';
+import AttachedContentItemRow from './AttachedContentItemRow';
 import CommentsSection from './comments/CommentsSection';
 import PackageTasksSection from './tasks/PackageTasksSection';
 import PackageAuditTrailSection from './PackageAuditTrailSection';
@@ -77,18 +78,6 @@ function formatContentTypeLabel(contentTypeId: string): string {
   return label;
 }
 
-function resolveSandboxItemLabel(item: AttachedSandboxItem): string {
-  const label = item.label?.trim();
-  if (label) {
-    return label;
-  }
-  if (item.path) {
-    const segments = item.path.split('/').filter(Boolean);
-    return segments[segments.length - 1] || item.path;
-  }
-  return 'Untitled';
-}
-
 function groupContentByType(items: AttachedSandboxItem[]): Array<[string, AttachedSandboxItem[]]> {
   const groups = new Map<string, AttachedSandboxItem[]>();
   items.forEach((item) => {
@@ -125,7 +114,7 @@ const CardDetails = ({
   savingDueOn = false,
   auditRefreshKey = 0
 }: CardDetailsProps) => {
-  const { previewItem, previewPath } = useStudioItemPreview();
+  const { previewPath } = useStudioItemPreview();
   const [editingDescription, setEditingDescription] = useState(false);
   const [descriptionDraft, setDescriptionDraft] = useState(description);
   const [editingDueOn, setEditingDueOn] = useState(false);
@@ -328,38 +317,14 @@ const CardDetails = ({
                 >
                   {items.map((contentItem, contentIndex) => {
                     const path = contentItem.path || '';
-                    const label = resolveSandboxItemLabel(contentItem);
                     return (
                       <ListItem
                         key={path || `${contentTypeId}-${contentIndex}`}
-                        secondaryAction={
-                          path ? (
-                            <IconButton
-                              edge="end"
-                              aria-label="remove attachment"
-                              size="small"
-                              onClick={() => handleRemoveContentItem(path)}
-                            >
-                              <ClearRoundedIcon fontSize="small" />
-                            </IconButton>
-                          ) : undefined
-                        }
-                        sx={listItemRowSx}
+                        sx={{ ...listItemRowSx, display: 'block', px: 0.5 }}
                       >
-                        <ListItemText
-                          sx={listItemTextSx}
-                          primary={
-                            <Tooltip title={path || label} placement="top-start" enterDelay={400}>
-                              <span>
-                                <AttachedSandboxItemDisplay
-                                  item={contentItem}
-                                  label={label}
-                                  onClick={() => previewItem(contentItem)}
-                                />
-                              </span>
-                            </Tooltip>
-                          }
-                          primaryTypographyProps={{ variant: 'body2', component: 'div' }}
+                        <AttachedContentItemRow
+                          item={contentItem}
+                          onRemove={path ? () => handleRemoveContentItem(path) : undefined}
                         />
                       </ListItem>
                     );

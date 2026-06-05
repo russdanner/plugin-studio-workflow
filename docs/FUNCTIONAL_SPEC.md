@@ -43,7 +43,7 @@ classDiagram
     }
     class WorkflowPackage {
         +id, title, description
-        +position, status
+        +position, status, due_on
     }
     class Comment {
         +target_type, target_id
@@ -178,7 +178,8 @@ Separate Tools panel widget for commenting on the currently selected content ite
 ### Move package between WorkflowSteps
 
 1. Drag-and-drop or API move
-2. If step changes, audit entry and DB update (no step rules yet)
+2. **Step rules** validated (`roleRule`, `contentRule` from definition JSON); blocked moves return user-visible message
+3. On step change: optional **publish action** runs; audit entry and DB update
 
 ## Configuration
 
@@ -204,7 +205,7 @@ Separate Tools panel widget for commenting on the currently selected content ite
 - Content-item status machine (Draft / In Review / Approved on every page)
 - Four-Eyes Principle enforcement
 - Email notification delivery (designed, not shipped)
-- Groovy hooks invocation, WorkflowStep rules, per-workflow WorkflowRole
+- Groovy hooks invocation, per-workflow WorkflowRole DB tables
 - Terminal step runtime behavior (`is_terminal` is metadata only)
 
 See [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) for stakeholder PDF gap analysis.

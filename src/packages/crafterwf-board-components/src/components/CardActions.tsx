@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useDispatch } from 'react-redux';
 
-import { Typography, Button, Dialog, DialogContent } from '@mui/material';
+import { Typography, Button } from '@mui/material';
 
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -22,7 +22,6 @@ import {
   showRejectDialog,
   closeRejectDialog
 } from '@craftercms/studio-ui/state/actions/dialogs';
-import Search from '@craftercms/studio-ui/components/Search';
 import { fetchSandboxItem } from '@craftercms/studio-ui/services/content';
 import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 import { dispatchDOMEvent, batchActions } from '@craftercms/studio-ui/state/actions/misc';
@@ -33,6 +32,7 @@ import CardDetailsRecord from '../types/CardDetailsRecord';
 import { attachContent, archivePackage } from '../api/workflowApi';
 import { resolveAttachmentLabel } from '../utils/attachmentUtils';
 import { notifyWorkflowsUpdated } from '../utils/activeWorkflows';
+import ContentSearchAttachDialog from './ContentSearchAttachDialog';
 
 export interface CardActionsProps {
   card: CardRecord;
@@ -46,31 +46,6 @@ export interface CardActionsProps {
   onNestedDialogChange?: (open: boolean) => void;
   /** icon = card header menu; button = dialog toolbar */
   variant?: 'icon' | 'button';
-}
-
-function normalizeSelectedPaths(selection: unknown): string[] {
-  if (Array.isArray(selection)) {
-    return selection
-      .map((item) => {
-        if (typeof item === 'string') {
-          return item.trim();
-        }
-        if (item && typeof item === 'object') {
-          const path = (item as Record<string, unknown>).path ?? (item as Record<string, unknown>).uri;
-          return typeof path === 'string' ? path.trim() : '';
-        }
-        return '';
-      })
-      .filter(Boolean);
-  }
-
-  if (selection && typeof selection === 'object') {
-    return Object.values(selection as Record<string, unknown>)
-      .flatMap((item) => normalizeSelectedPaths([item]))
-      .filter(Boolean);
-  }
-
-  return [];
 }
 
 const CardActions = ({
@@ -196,8 +171,8 @@ const CardActions = ({
     handleCardActionsClose();
   };
 
-  const handleContentSearchAccept = (selection: string[]) => {
-    normalizeSelectedPaths(selection).forEach((path) => {
+  const handleContentSearchAccept = (paths: string[]) => {
+    paths.forEach((path) => {
       attachContentToPackage(resolveAttachmentLabel(path), path);
     });
     closeContentSearch();
@@ -373,25 +348,11 @@ const CardActions = ({
           <Typography>Archive Package</Typography>
         </MenuItem>
       </Menu>
-      <Dialog
+      <ContentSearchAttachDialog
         open={contentSearchOpen}
         onClose={closeContentSearch}
-        fullWidth
-        maxWidth="lg"
-        scroll="paper"
-        disableRestoreFocus
-        aria-labelledby="crafterwf-content-search-title"
-        PaperProps={{ sx: { height: 'min(85vh, 720px)', maxHeight: '85vh' } }}
-      >
-        <DialogContent sx={{ p: 0, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' }}>
-          <Search
-            embedded
-            mode="select"
-            onClose={closeContentSearch}
-            onAcceptSelection={handleContentSearchAccept}
-          />
-        </DialogContent>
-      </Dialog>
+        onAttach={handleContentSearchAccept}
+      />
     </>
   );
 };

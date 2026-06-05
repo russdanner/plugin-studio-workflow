@@ -12,6 +12,7 @@ User-assigned work items with optional links to workflow packages, content paths
 | `priority` | VARCHAR(16) | `high`, `medium`, or `low` (default `medium`) |
 | `assignee_id` | BIGINT | Assigned Studio user |
 | `assignee_username` | VARCHAR(255) | Username snapshot |
+| `start_on` | DATETIME | Optional start date (V011) |
 | `due_on` | DATETIME | Optional due date |
 | `complete_b` | TINYINT(1) | Completion flag |
 | `archived_b` | TINYINT(1) | Archive flag |

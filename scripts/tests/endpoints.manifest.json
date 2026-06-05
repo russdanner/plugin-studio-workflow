@@ -1,0 +1,394 @@
+{
+  "apiBase": "/studio/api/2/plugin/script/plugins/org/rd/plugin/crafterwf/crafterwf",
+  "auth": "Authorization: Bearer <CRAFTER_STUDIO_TOKEN>",
+  "requiredQueryParam": "siteId",
+  "implemented": [
+    {
+      "path": "admin/schema/status",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "description": "Schema install status"
+    },
+    {
+      "path": "admin/schema/install",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "optional": true,
+      "env": "RUN_SCHEMA_INSTALL=1",
+      "description": "Run schema migration",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "admin/workflow/list",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "description": "List workflows for site"
+    },
+    {
+      "path": "admin/workflow/get",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "params": [
+        "workflowId"
+      ],
+      "description": "Get workflow definition and steps"
+    },
+    {
+      "path": "admin/workflow/create",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "params": [
+        "name",
+        "description",
+        "withDefaultSteps"
+      ],
+      "description": "Create workflow definition",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "admin/workflow/save",
+      "method": "POST",
+      "suite": "24-mutations-admin",
+      "body": "json",
+      "description": "Save workflow definition and steps"
+    },
+    {
+      "path": "admin/workflow/delete",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "params": [
+        "workflowId"
+      ],
+      "description": "Delete workflow definition",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "admin/publishing/targets",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "description": "Publishing environment targets"
+    },
+    {
+      "path": "workflow/board",
+      "method": "GET",
+      "suite": "11-read-workflow",
+      "params": [
+        "workflowId"
+      ],
+      "description": "Kanban board payload"
+    },
+    {
+      "path": "workflow-package/calendar-list",
+      "method": "GET",
+      "suite": "11-read-workflow",
+      "description": "Packages for calendar view"
+    },
+    {
+      "path": "workflow-package/packages-by-content",
+      "method": "GET",
+      "suite": "11-read-workflow",
+      "params": [
+        "contentPath"
+      ],
+      "description": "Packages referencing content path"
+    },
+    {
+      "path": "workflow-package/get",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId"
+      ],
+      "description": "Package summary with refs"
+    },
+    {
+      "path": "workflow-package/details",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId"
+      ],
+      "description": "Package details for card drawer"
+    },
+    {
+      "path": "workflow-package/create",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowStepId",
+        "title",
+        "description"
+      ],
+      "description": "Create workflow package",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/update-title",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId",
+        "title"
+      ],
+      "description": "Update package title",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/update-description",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId",
+        "description"
+      ],
+      "description": "Update package description",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/update-due-on",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId",
+        "dueOn"
+      ],
+      "description": "Update package due date",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/move",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowId",
+        "workflowStepId",
+        "workflowPackageId",
+        "index"
+      ],
+      "description": "Move package between steps",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/archive",
+      "method": "GET",
+      "suite": "30-cleanup",
+      "params": [
+        "workflowPackageId"
+      ],
+      "description": "Archive package",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/attach-content",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId",
+        "contentPath",
+        "displayName"
+      ],
+      "description": "Attach content item to package",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "workflow-package/remove-attachment",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "workflowPackageId",
+        "attachmentId",
+        "attachmentType"
+      ],
+      "description": "Remove content or link attachment",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "comment/list",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "params": [
+        "targetType",
+        "targetId"
+      ],
+      "description": "List comments for target"
+    },
+    {
+      "path": "comment/create",
+      "method": "GET",
+      "suite": "21-mutations-comments",
+      "params": [
+        "targetType",
+        "targetId",
+        "body"
+      ],
+      "description": "Create comment",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "comment/resolve",
+      "method": "GET",
+      "suite": "21-mutations-comments",
+      "params": [
+        "commentId",
+        "resolved"
+      ],
+      "description": "Resolve or reopen comment",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "comment/archive",
+      "method": "GET",
+      "suite": "21-mutations-comments",
+      "params": [
+        "commentId",
+        "archived"
+      ],
+      "description": "Archive or restore comment",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "task/list",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "description": "List tasks for current user"
+    },
+    {
+      "path": "task/get",
+      "method": "GET",
+      "suite": "22-mutations-tasks",
+      "params": [
+        "taskId"
+      ],
+      "description": "Get single task"
+    },
+    {
+      "path": "task/open-count",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "description": "Open task badge counts"
+    },
+    {
+      "path": "task/create",
+      "method": "GET",
+      "suite": "22-mutations-tasks",
+      "params": [
+        "title",
+        "priority",
+        "targetType",
+        "targetId"
+      ],
+      "description": "Create task",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "task/update",
+      "method": "GET",
+      "suite": "22-mutations-tasks",
+      "params": [
+        "taskId",
+        "title",
+        "priority"
+      ],
+      "description": "Update task fields",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "task/complete",
+      "method": "GET",
+      "suite": "22-mutations-tasks",
+      "params": [
+        "taskId",
+        "complete"
+      ],
+      "description": "Mark task complete or reopen",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "task/archive",
+      "method": "GET",
+      "suite": "22-mutations-tasks",
+      "params": [
+        "taskId",
+        "archived"
+      ],
+      "description": "Archive task",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "notification/list",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "description": "List notifications for current user"
+    },
+    {
+      "path": "notification/unread-count",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "description": "Unread notification count"
+    },
+    {
+      "path": "notification/create",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "params": [
+        "title",
+        "message"
+      ],
+      "description": "Create notification",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "notification/mark-read",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "params": [
+        "notificationId",
+        "markAll",
+        "read"
+      ],
+      "description": "Mark notifications read",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "notification/resolve",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "params": [
+        "notificationId",
+        "resolved"
+      ],
+      "description": "Resolve notification",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "notification/archive",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "params": [
+        "notificationId",
+        "archived"
+      ],
+      "description": "Archive notification",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "audit/list",
+      "method": "GET",
+      "suite": "12-read-comments-tasks-notifications",
+      "params": [
+        "page",
+        "pageSize"
+      ],
+      "description": "Paginated audit log"
+    }
+  ],
+  "documentedNotImplemented": [
+    "workflow-step/create",
+    "workflow-step/update",
+    "workflow-step/delete",
+    "workflow-step/reorder",
+    "workflow-package/attach-link",
+    "notification/preferences/get",
+    "notification/preferences/save"
+  ]
+}

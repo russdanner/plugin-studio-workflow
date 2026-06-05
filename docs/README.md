@@ -21,6 +21,7 @@ These documents describe **what** the system does and **how** it is structured. 
 | [EXTENSIONS.md](./EXTENSIONS.md) | Cross-cutting features index |
 | [GROOVY_SANDBOX.md](./GROOVY_SANDBOX.md) | Studio Groovy sandbox rules and whitelist |
 | [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) | Stakeholder requirements inventory (PDF) |
+| [../scripts/tests/README.md](../scripts/tests/README.md) | curl API test suite (all REST endpoints) |
 
 ## Design principles
 
@@ -67,7 +68,7 @@ flowchart TB
 | **Notification** | In-app alert to a Studio user |
 | **AuditLogEntry** | Append-only record of task/package actions |
 
-**Deferred:** WorkflowRole, WorkflowHook, WorkflowStepRule, email notification delivery.
+**Deferred:** WorkflowRole (DB tables), WorkflowHook, email notification delivery. Step **roleRule** / **contentRule** live in definition JSON — see [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md).
 
 See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) and [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md).
 
@@ -82,9 +83,12 @@ See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) and [ARCHITECTURE_DIAGRAM.md](./A
 | Tasks panel + package tasks | ✅ |
 | Audit log + Project Tools tab | ✅ |
 | Project Tools workflow admin | ✅ |
+| Step role/content rules (JSON) | ✅ |
+| Step publish actions on package move | ✅ |
+| Package due dates / site calendar | ✅ |
 | Email notifications / preferences UI | ❌ deferred |
-| Per-workflow RBAC, step rules, Groovy hooks | ❌ deferred |
+| Per-workflow RBAC tables, Groovy hooks | ❌ deferred |
 
 ## Schema version
 
-Current migration target: **V006** (`wf_audit_log`). Check status via **Project Tools → General → Schema status**, or `admin/schema/status.json`.
+Current migration target: **V012**. Check status via **Project Tools → General → Schema status**, or `admin/schema/status.json` (returns `{ installed, schemaName, version }`).

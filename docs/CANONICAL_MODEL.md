@@ -105,10 +105,11 @@ See [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md).
 
 | Deferred | Description |
 |----------|-------------|
-| Per-workflow role capabilities | `WorkflowRole`, `SiteRoleTemplate` |
+| Per-workflow role capabilities | `WorkflowRole`, `SiteRoleTemplate` (DB tables) |
 | Groovy hooks | Post-commit `package.moved` / `package.modified` scripts |
-| Pre-move step constraints (DB-only model) | Superseded by `roleRule` / `contentRule` on steps in JSON |
 | Email notification delivery | Preference table exists; send logic not implemented |
+
+**Implemented (not deferred):** Step **roleRule** / **contentRule** and publish **actionType** on definition JSON — enforced by `StepRuleService` and `WorkflowStepActionService`. See [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md).
 
 May be added without renaming core entities.
 

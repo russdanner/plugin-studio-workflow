@@ -8,7 +8,11 @@ Plugin REST scripts under:
 
 All endpoints use **canonical names** only. See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md).
 
-Convention: **GET** (`.json` suffix), required `siteId` on every call. Authorization: [AUTHORIZATION.md](./AUTHORIZATION.md).
+Convention: required `siteId` on every call. Authorization: [AUTHORIZATION.md](./AUTHORIZATION.md).
+
+**HTTP methods:** Crafter Studio plugin REST runs query-parameter mutations via **`*.get.groovy`** (call with HTTP GET). Only `admin/workflow/save` uses **`save.post.groovy`** with a JSON POST body. The UI (`pluginPost` / `pluginDelete`) and curl test harness use GET for all other state-changing endpoints.
+
+**Script layout:** Each endpoint is a Groovy file under `authoring/scripts/rest/plugins/org/rd/plugin/crafterwf/crafterwf/` named `{endpoint}.get.groovy` (reads and most writes) or `{endpoint}.post.groovy` (JSON body save only).
 
 Workflow and step **definitions** are stored in the site repo as JSON ([WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md)). Admin and board APIs read/write definitions via `WorkflowDefinitionService`; `workflowId` and step `id` values are stable string slugs (for example `editorial`, `backlog`), not DB UUIDs.
 

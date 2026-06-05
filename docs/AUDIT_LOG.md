@@ -28,6 +28,8 @@ Record **who** did **what**, to **which target**, **when**, with an optional hum
 | `task_modified` | `task` | Task updated, completed/reopened, or archived/restored |
 | `package_created` | `package` | WorkflowPackage created |
 | `package_step_changed` | `package` | Package moved to a **different** WorkflowStep (reorder within same step is not logged) |
+| `package_modified` | `package` | Title, description, due date, or attachment changes |
+| `package_step_action` | `package` | Automated publish/review step action ran (success or failure) |
 
 ### Target types
 
@@ -85,7 +87,7 @@ Paginated, filterable search for site administrators and Project Tools.
 
 **Project Tools → Crafter Workflow → Audit Log** tab provides a filterable table with pagination.
 
-Requires schema version **6** (install/upgrade on the General tab).
+Requires schema version **12** (install/upgrade on the General tab).
 
 ## Service layer
 
@@ -97,11 +99,10 @@ Requires schema version **6** (install/upgrade on the General tab).
 
 Future candidates:
 
-- Package title/description/attachment changes
-- WorkflowStep create/rename/delete/reorder
-- Workflow admin changes
+- WorkflowStep create/rename/delete/reorder (definition JSON changes)
+- Workflow admin create/delete
 - Comment create/resolve
-- Crafter publish/review/reject actions on linked content
+- Crafter publish/review/reject actions on linked content (separate from `package_step_action` summary)
 
 ## Related documents
 
