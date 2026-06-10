@@ -84,6 +84,20 @@ Example (abbreviated):
 }
 ```
 
+## Step publish actions
+
+Steps may set `actionType` and optional `actionSuccessStepId`. When a package is **moved into** that step, `WorkflowStepActionService` runs the action against all **content attachments** on the package.
+
+**Important:** Actions delegate to Crafter Studio’s `workflowService` and run **as the user who moved the package**. They are not a custom publish path — permissions, validation, environment targets, and notifications behave **exactly as in stock Studio** (request-publish vs direct publish, staging vs live, etc.). See [FUNCTIONAL_SPEC.md § Publishing](./FUNCTIONAL_SPEC.md#publishing-and-crafter-studio-workflow).
+
+| `actionType` | When it runs | On success |
+|--------------|--------------|------------|
+| `none` | — | Package stays in entered step |
+| `request_publish_staging` / `request_publish_live` | After move into step | Optional move to `actionSuccessStepId` |
+| `publish_staging` / `publish_live` | After move into step | Optional move to `actionSuccessStepId` |
+
+On failure (no attachments, staging disabled, publish error), the package may revert to the previous step and the user sees the Studio error message. An audit entry records `package_step_action`.
+
 ## Service behavior
 
 - **`WorkflowDefinitionService`** — Reads/writes definitions via Studio `contentService` (`write`, `getContentByCommitId`, `getChildItems`, `createFolder`, `deleteContent`).

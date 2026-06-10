@@ -5,7 +5,7 @@ import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 import { useEnv } from '@craftercms/studio-ui/hooks/useEnv';
 import { fetchSandboxItem } from '@craftercms/studio-ui/services/content';
 
-import { previewStudioItem, StudioPreviewItem } from '../utils/studioItemPreview';
+import { openContentInInspectMode, previewStudioItem, StudioPreviewItem } from '../utils/studioItemPreview';
 
 export function useStudioItemPreview() {
   const dispatch = useDispatch();
@@ -39,7 +39,34 @@ export function useStudioItemPreview() {
     [authoringBase, dispatch, guestBase, site]
   );
 
-  return { previewItem, previewPath };
+  const inspectPath = useCallback(
+    (path: string, label?: string) => {
+      if (!path || !site) {
+        return;
+      }
+      fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({
+        next(sandboxItem) {
+          openContentInInspectMode(sandboxItem as StudioPreviewItem, { dispatch, site, authoringBase, guestBase });
+        },
+        error() {
+          openContentInInspectMode({ path, label: label || path }, { dispatch, site, authoringBase, guestBase });
+        }
+      });
+    },
+    [authoringBase, dispatch, guestBase, site]
+  );
+
+  const inspectItem = useCallback(
+    (item: StudioPreviewItem) => {
+      if (!item?.path || !site) {
+        return;
+      }
+      openContentInInspectMode(item, { dispatch, site, authoringBase, guestBase });
+    },
+    [authoringBase, dispatch, guestBase, site]
+  );
+
+  return { previewItem, previewPath, inspectPath, inspectItem };
 }
 
 export default useStudioItemPreview;

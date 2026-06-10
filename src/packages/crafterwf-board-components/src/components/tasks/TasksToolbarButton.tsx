@@ -1,14 +1,15 @@
 import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded';
-import { Badge, IconButton, Tooltip } from '@mui/material';
+import InventoryRoundedIcon from '@mui/icons-material/InventoryRounded';
+import { IconButton, Tooltip } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 
 import { getOpenTaskCount, TASKS_UPDATED_EVENT } from '../../api/taskApi';
 import { buildOpenIcePanelAction } from '../../utils/studioPreview';
+import { ToolbarIconBadge } from '../../utils/toolbarBadge';
 
 const TASKS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.tasksPanel';
 
@@ -56,13 +57,9 @@ export function TasksToolbarButton(props: Record<string, unknown>) {
     <Tooltip title={title}>
       <span>
         <IconButton aria-label={title} size="large" {...props} onClick={openTasksPanel}>
-          <Badge
-            badgeContent={openCount > 0 ? openCount : undefined}
-            color={overdueCount > 0 ? 'error' : 'primary'}
-            max={99}
-          >
-            <ContentPasteRoundedIcon />
-          </Badge>
+          <ToolbarIconBadge count={openCount} color={overdueCount > 0 ? 'error' : 'primary'}>
+            <InventoryRoundedIcon />
+          </ToolbarIconBadge>
         </IconButton>
       </span>
     </Tooltip>

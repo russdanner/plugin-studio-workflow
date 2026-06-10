@@ -9,5 +9,8 @@ src/packages/*/node_modules/
 scripts/.studio-token
 .env.local
 
+# Personal feedback notes (never commit)
+feedback.md
+
 # Build output (optional local artifacts)
 src/packages/*/build/

@@ -16,10 +16,15 @@ source "${SCRIPT_DIR}/lib/studio-auth.sh"
 
 if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
   echo "Usage: $0 [siteId=workflow] [studioUrl=http://localhost:8080]" >&2
-  echo "  Builds src/ UI bundles, then installs plugin via marketplace/copy." >&2
+  echo "  Builds src/ UI bundles into authoring/static-assets, then marketplace/copy." >&2
   echo "  Token: CRAFTER_STUDIO_TOKEN env or scripts/.studio-token (gitignored)." >&2
+  echo "" >&2
+  echo "  SKIP_YARN_DIST=1     Skip UI build (use when bundles are already fresh)." >&2
+  echo "  SKIP_YARN_INSTALL=1  Skip 'yarn install' before dist (faster rebuild)." >&2
   exit 0
 fi
+
+PLUGIN_UI_DEPLOY="${PLUGIN_PATH}/authoring/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf"
 
 if ! studio_require_token; then
   exit 2
@@ -31,13 +36,27 @@ fi
 build_ui() {
   if [[ "${SKIP_YARN_DIST:-}" == "1" ]]; then
     echo "Skipping UI build (SKIP_YARN_DIST=1)."
+    if [[ ! -f "${PLUGIN_UI_DEPLOY}/index.js" ]]; then
+      echo "Error: ${PLUGIN_UI_DEPLOY}/index.js missing — run without SKIP_YARN_DIST first." >&2
+      exit 1
+    fi
     return 0
   fi
   local major=0
   major="$(node -p "parseInt(process.versions.node,10)||0" 2>/dev/null || echo 0)"
+  local install_cmd="true"
+  if [[ "${SKIP_YARN_INSTALL:-}" != "1" ]]; then
+    install_cmd="yarn install"
+  else
+    echo "Skipping yarn install (SKIP_YARN_INSTALL=1)."
+  fi
   if [[ "${major}" -ge 18 ]]; then
-    echo "Building UI bundles (local Node ${major})..."
-    (cd "${PLUGIN_PATH}/src" && yarn install && yarn dist)
+    echo "Building UI bundles (local Node ${major}) — board-components ~5min, app ~1min..."
+    (
+      cd "${PLUGIN_PATH}/src"
+      eval "${install_cmd}"
+      PLUGIN_DEPLOY_PATH="${PLUGIN_UI_DEPLOY}" yarn dist
+    )
     return 0
   fi
   if command -v docker >/dev/null 2>&1; then
@@ -46,8 +65,9 @@ build_ui() {
     docker run --rm \
       -v "${PLUGIN_PATH}:/work" \
       -w /work/src \
+      -e "PLUGIN_DEPLOY_PATH=/work/authoring/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf" \
       "${img}" \
-      bash -lc 'corepack enable && yarn install && yarn dist'
+      bash -lc "corepack enable && ${install_cmd} && yarn dist"
     return 0
   fi
   echo "Error: Need Node 18+ to run 'yarn dist', or install Docker. Host Node major=${major}." >&2
@@ -56,9 +76,14 @@ build_ui() {
 
 build_ui
 
-echo "Installing plugin into site '${SITE_ID}' via marketplace/copy..."
-curl --fail-with-body --silent --show-error \
+if [[ -f "${PLUGIN_UI_DEPLOY}/index.js" ]]; then
+  echo "UI bundle: $(stat -c '%y (%s bytes)' "${PLUGIN_UI_DEPLOY}/index.js" 2>/dev/null || echo 'present')"
+fi
+
+echo "Installing plugin into site '${SITE_ID}' via marketplace/copy (may take 1–3 min)..."
+curl --fail-with-body --show-error \
   --location \
+  --max-time "${INSTALL_COPY_TIMEOUT_SEC:-600}" \
   --request POST "${STUDIO_URL}/studio/api/2/marketplace/copy" \
   --header "Authorization: Bearer ${CRAFTER_STUDIO_TOKEN}" \
   --header "Content-Type: application/json" \
@@ -70,6 +95,8 @@ curl --fail-with-body --silent --show-error \
 }
 EOF
 )"
+echo ""
+echo "marketplace/copy finished."
 
 SITE_REPO="${CRAFTER_DATA}/repos/sites/${SITE_ID}/sandbox"
 
@@ -144,5 +171,12 @@ if [[ -f "${WHITELIST_APPEND}" && -f "${WHITELIST}" ]]; then
   fi
 fi
 
+SITE_PLUGIN="${CRAFTER_DATA}/repos/sites/${SITE_ID}/sandbox/config/studio/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf/index.js"
+if [[ -f "${SITE_PLUGIN}" ]]; then
+  echo "Site UI bundle: $(stat -c '%y (%s bytes)' "${SITE_PLUGIN}")"
+else
+  echo "Note: site plugin bundle not found at expected path — hard-refresh Studio (Ctrl+Shift+R)."
+fi
+
 echo
-echo "Done. Open Studio → site '${SITE_ID}' → Project Tools → Crafter Workflow."
+echo "Done. Open Studio → site '${SITE_ID}' → hard-refresh preview (Ctrl+Shift+R) to load new JS."

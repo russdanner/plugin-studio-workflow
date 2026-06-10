@@ -51,7 +51,8 @@ export function openNotificationTarget(
   dispatch: Dispatch,
   siteId: string,
   notification: NotificationTargetRef,
-  previewPath: (path: string, label?: string) => void
+  previewPath: (path: string, label?: string) => void,
+  inspectPath?: (path: string, label?: string) => void
 ) {
   const { targetType, targetId, targetWorkflowId, targetPackageId } = notification;
   if (!targetType || !targetId || !siteId) {
@@ -60,7 +61,11 @@ export function openNotificationTarget(
 
   switch (targetType) {
     case NOTIFICATION_TARGET.CONTENT:
-      previewPath(targetId, notification.targetTitle || targetId);
+      if (inspectPath) {
+        inspectPath(targetId, notification.targetTitle || targetId);
+      } else {
+        previewPath(targetId, notification.targetTitle || targetId);
+      }
       break;
 
     case NOTIFICATION_TARGET.WORKFLOW_PACKAGE:

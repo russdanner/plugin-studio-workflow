@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
-import { Badge, IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
@@ -13,6 +13,7 @@ import { CALENDAR_UPDATED_EVENT } from '../types/calendarEvent';
 import { countEventsOnDay } from '../utils/calendarEventUtils';
 import { openCalendarDialog } from '../utils/openCalendarDialog';
 import { startOfDay } from '../utils/taskCalendarUtils';
+import { ToolbarIconBadge } from '../utils/toolbarBadge';
 
 export function CalendarToolbarButton(props: Record<string, unknown>) {
   const dispatch = useDispatch();
@@ -57,9 +58,9 @@ export function CalendarToolbarButton(props: Record<string, unknown>) {
     <Tooltip title={title}>
       <span>
         <IconButton aria-label={title} size="large" {...props} onClick={openCalendar}>
-          <Badge badgeContent={todayCount > 0 ? todayCount : undefined} color="primary" max={99}>
+          <ToolbarIconBadge count={todayCount} color="primary">
             <CalendarMonthRoundedIcon />
-          </Badge>
+          </ToolbarIconBadge>
         </IconButton>
       </span>
     </Tooltip>

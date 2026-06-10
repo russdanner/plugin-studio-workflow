@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import {
-  Badge,
   Button,
   CircularProgress,
   Dialog,
@@ -34,20 +33,14 @@ import {
 } from '../../utils/activeWorkflows';
 import { usePreviewContentPath } from '../../utils/studioPreview';
 import { showStudioErrorSnack } from '../../utils/showStudioErrorSnack';
-
-const PURPLE_BADGE_SX = {
-  '& .MuiBadge-badge': {
-    backgroundColor: '#9c27b0',
-    color: '#fff'
-  }
-};
+import { TOOLBAR_BADGE_SX, ToolbarIconBadge } from '../../utils/toolbarBadge';
 
 export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
   const dispatch = useDispatch();
   const siteId = useActiveSiteId();
   const contentPath = usePreviewContentPath();
   const title =
-    typeof props.title === 'string' && props.title.trim() ? props.title : 'Active workflows';
+    typeof props.title === 'string' && props.title.trim() ? props.title : 'Page packages';
 
   const [packages, setPackages] = useState<ContentPackageWithComments[]>([]);
   const [loading, setLoading] = useState(false);
@@ -185,9 +178,20 @@ export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
             disabled={!contentPath || loading || starting}
             {...props}
           >
-            <Badge badgeContent={packageCount > 0 ? packageCount : undefined} max={99} sx={PURPLE_BADGE_SX}>
+            <ToolbarIconBadge
+              count={packageCount}
+              color="secondary"
+              sx={{
+                ...TOOLBAR_BADGE_SX,
+                '& .MuiBadge-badge': {
+                  ...TOOLBAR_BADGE_SX['& .MuiBadge-badge'],
+                  backgroundColor: '#9c27b0',
+                  color: '#fff'
+                }
+              }}
+            >
               {starting ? <CircularProgress size={22} color="inherit" /> : <AccountTreeOutlinedIcon />}
-            </Badge>
+            </ToolbarIconBadge>
           </IconButton>
         </span>
       </Tooltip>

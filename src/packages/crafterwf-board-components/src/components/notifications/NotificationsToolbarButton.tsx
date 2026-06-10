@@ -2,13 +2,14 @@ import * as React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
-import { Badge, IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { useDispatch } from 'react-redux';
 
 import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 
 import { getUnreadNotificationCount, NOTIFICATIONS_UPDATED_EVENT } from '../../api/notificationApi';
 import { buildOpenIcePanelAction } from '../../utils/studioPreview';
+import { ToolbarIconBadge } from '../../utils/toolbarBadge';
 
 const NOTIFICATIONS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.notificationsPanel';
 
@@ -53,9 +54,9 @@ export function NotificationsToolbarButton(props: Record<string, unknown>) {
     <Tooltip title={title}>
       <span>
         <IconButton aria-label={title} size="large" {...props} onClick={openNotificationsPanel}>
-          <Badge badgeContent={unreadCount > 0 ? unreadCount : undefined} color="error" max={99}>
+          <ToolbarIconBadge count={unreadCount} color="error">
             <NotificationsNoneRoundedIcon />
-          </Badge>
+          </ToolbarIconBadge>
         </IconButton>
       </span>
     </Tooltip>

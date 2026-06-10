@@ -1,6 +1,7 @@
 import type { Dispatch } from 'redux';
 
 import { showEditDialog, showPreviewDialog, updatePreviewDialog } from '@craftercms/studio-ui/state/actions/dialogs';
+import { fetchGuestModel, setPreviewEditMode } from '@craftercms/studio-ui/state/actions/preview';
 import { fetchContentXML } from '@craftercms/studio-ui/services/content';
 import { getPreviewURLFromPath } from '@craftercms/studio-ui/utils/path';
 
@@ -74,6 +75,20 @@ function resolveEditorMode(item: StudioPreviewItem): string {
     default:
       return 'txt';
   }
+}
+
+/**
+ * Opens content in Studio preview with edit mode off (inspect / browse).
+ */
+export function openContentInInspectMode(item: StudioPreviewItem, context: StudioPreviewContext): void {
+  const { dispatch } = context;
+  const path = item.path;
+  if (!path) {
+    return;
+  }
+
+  dispatch(setPreviewEditMode({ editMode: false }));
+  dispatch(fetchGuestModel({ path }));
 }
 
 /**

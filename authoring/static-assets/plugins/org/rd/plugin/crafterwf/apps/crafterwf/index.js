@@ -1,9 +1,9 @@
 const React = craftercms.libs.React;
-const { useState, useRef, useEffect, useContext, useLayoutEffect, useMemo: useMemo$1, useCallback: useCallback$1, createContext } = craftercms.libs.React;
+const { useState, useRef, useEffect, useContext, useLayoutEffect, useCallback: useCallback$1, useMemo: useMemo$1, createContext } = craftercms.libs.React;
 const React__default = craftercms.libs.React && Object.prototype.hasOwnProperty.call(craftercms.libs.React, 'default') ? craftercms.libs.React['default'] : craftercms.libs.React;
 const RefreshRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded');
 const SettingsRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded');
-const { Box, Typography, Stack, MenuItem, Avatar, Chip, Button, TextField, Popper, Paper, List, ListItemButton, IconButton, CircularProgress, Checkbox, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Tooltip, Divider, Dialog, DialogContent, Card, CardHeader, CardActions: CardActions$1, Badge, DialogTitle, DialogActions, cardClasses, Fab, ToggleButtonGroup, ToggleButton, Menu: Menu$1, ListItemText: ListItemText$1, Popover, RadioGroup, FormControlLabel, Radio, Autocomplete, FormLabel, Tabs, Tab } = craftercms.libs.MaterialUI;
+const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, Chip, Button, TextField, Popper, Paper, List, ListItemButton, CircularProgress, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogContent, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, DialogTitle, cardClasses, Fab, ToggleButtonGroup, ToggleButton, Menu: Menu$1, ListItemText: ListItemText$1, Popover, RadioGroup, FormControlLabel, Radio, Autocomplete, Alert, FormLabel, Tabs, Tab } = craftercms.libs.MaterialUI;
 const { connect, Provider, useSelector, useDispatch } = craftercms.libs.ReactRedux;
 const ReactDOM = craftercms.libs.ReactDOM && Object.prototype.hasOwnProperty.call(craftercms.libs.ReactDOM, 'default') ? craftercms.libs.ReactDOM['default'] : craftercms.libs.ReactDOM;
 const { ApiResponseErrorState } = craftercms.components;
@@ -19,36 +19,38 @@ const ListItemText = craftercms.libs.MaterialUI.ListItemText && Object.prototype
 const ItemTypeIcon = craftercms.components.ItemTypeIcon && Object.prototype.hasOwnProperty.call(craftercms.components.ItemTypeIcon, 'default') ? craftercms.components.ItemTypeIcon['default'] : craftercms.components.ItemTypeIcon;
 const ItemStateIcon = craftercms.components.ItemStateIcon && Object.prototype.hasOwnProperty.call(craftercms.components.ItemStateIcon, 'default') ? craftercms.components.ItemStateIcon['default'] : craftercms.components.ItemStateIcon;
 const ItemPublishingTargetIcon = craftercms.components.ItemPublishingTargetIcon && Object.prototype.hasOwnProperty.call(craftercms.components.ItemPublishingTargetIcon, 'default') ? craftercms.components.ItemPublishingTargetIcon['default'] : craftercms.components.ItemPublishingTargetIcon;
+const AccountTreeOutlinedIcon = craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined');
+const DeleteOutlineRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded');
+const HistoryRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/HistoryRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/HistoryRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/HistoryRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/HistoryRounded');
+const VisibilityRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded');
+const { createAction } = craftercms.libs.ReduxToolkit;
+const { getPreviewURLFromPath, getRootPath } = craftercms.utils.path;
 const SendRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SendRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SendRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SendRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SendRounded');
 const { fetchAll, me } = craftercms.services.users;
-const { get, post, del } = craftercms.utils.ajax;
+const { get, post } = craftercms.utils.ajax;
 const ExpandMoreRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded');
-const { createAction } = craftercms.libs.ReduxToolkit;
-const { getPreviewURLFromPath } = craftercms.utils.path;
 const Menu = craftercms.libs.MaterialUI.Menu && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Menu, 'default') ? craftercms.libs.MaterialUI.Menu['default'] : craftercms.libs.MaterialUI.Menu;
 const MenuItem$1 = craftercms.libs.MaterialUI.MenuItem && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.MenuItem, 'default') ? craftercms.libs.MaterialUI.MenuItem['default'] : craftercms.libs.MaterialUI.MenuItem;
 const Divider$1 = craftercms.libs.MaterialUI.Divider && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Divider, 'default') ? craftercms.libs.MaterialUI.Divider['default'] : craftercms.libs.MaterialUI.Divider;
 const MoreVertRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/MoreVertRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/MoreVertRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/MoreVertRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/MoreVertRounded');
 const IconButton$1 = craftercms.libs.MaterialUI.IconButton && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.IconButton, 'default') ? craftercms.libs.MaterialUI.IconButton['default'] : craftercms.libs.MaterialUI.IconButton;
-const Search = craftercms.components.Search && Object.prototype.hasOwnProperty.call(craftercms.components.Search, 'default') ? craftercms.components.Search['default'] : craftercms.components.Search;
 const { createCustomDocumentEventListener } = craftercms.utils.dom;
+const Search = craftercms.components.Search && Object.prototype.hasOwnProperty.call(craftercms.components.Search, 'default') ? craftercms.components.Search['default'] : craftercms.components.Search;
 const ChevronRightRounded = craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded');
 const Collapse = craftercms.libs.MaterialUI.Collapse && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Collapse, 'default') ? craftercms.libs.MaterialUI.Collapse['default'] : craftercms.libs.MaterialUI.Collapse;
 const ListItemButton$1 = craftercms.libs.MaterialUI.ListItemButton && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.ListItemButton, 'default') ? craftercms.libs.MaterialUI.ListItemButton['default'] : craftercms.libs.MaterialUI.ListItemButton;
 const ToolsPanelListItemButton = craftercms.components.ToolsPanelListItemButton && Object.prototype.hasOwnProperty.call(craftercms.components.ToolsPanelListItemButton, 'default') ? craftercms.components.ToolsPanelListItemButton['default'] : craftercms.components.ToolsPanelListItemButton;
 const CommentRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded');
 const NotificationsNoneRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded');
-const ContentPasteRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ContentPasteRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ContentPasteRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ContentPasteRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ContentPasteRounded');
+const InventoryRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded');
 const ChevronLeftRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded');
 const { map, catchError } = craftercms.libs.rxjs;
 const { forkJoin, of } = craftercms.libs.rxjs;
-const AccountTreeOutlinedIcon = craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/AccountTreeOutlined');
 const TaskAltRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded');
 const CalendarMonthRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded');
 const CheckCircleRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded');
 const ErrorOutlineRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded');
 const AddRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/AddRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/AddRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/AddRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/AddRounded');
-const DeleteOutlineRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/DeleteOutlineRounded');
 const DragIndicatorRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/DragIndicatorRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/DragIndicatorRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/DragIndicatorRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/DragIndicatorRounded');
 const RuleRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RuleRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RuleRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RuleRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RuleRounded');
 const ArrowDropDownRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ArrowDropDownRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ArrowDropDownRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ArrowDropDownRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ArrowDropDownRounded');
@@ -79,6 +81,18 @@ var __assign = function() {
     };
     return __assign.apply(this, arguments);
 };
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+}
 
 function __awaiter(thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -9150,14 +9164,14 @@ function getSandboxItemStateLabel(item) {
 }
 
 var rowSx = { display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 };
-var iconWrapSx = { display: 'inline-flex', alignItems: 'center', flexShrink: 0, '& .MuiSvgIcon-root': { fontSize: '1.1rem' } };
+var iconWrapSx$1 = { display: 'inline-flex', alignItems: 'center', flexShrink: 0, '& .MuiSvgIcon-root': { fontSize: '1.1rem' } };
 var AttachedSandboxItemDisplay = function (_a) {
     var item = _a.item, label = _a.label, onClick = _a.onClick;
     var inWorkflow = isInWorkflow(item.stateMap) || item.systemType === 'folder';
     var stateLabel = getSandboxItemStateLabel(item);
     return (React.createElement(Box, { sx: { minWidth: 0, py: 0.25 } },
         React.createElement(Box, { sx: rowSx },
-            React.createElement(Box, { sx: iconWrapSx },
+            React.createElement(Box, { sx: iconWrapSx$1 },
                 React.createElement(ItemTypeIcon, { item: item, fontSize: "small" })),
             React.createElement(Typography, { variant: "body2", noWrap: true, onClick: onClick, sx: function (theme) { return ({
                     minWidth: 0,
@@ -9171,8 +9185,409 @@ var AttachedSandboxItemDisplay = function (_a) {
                     '&:hover': onClick ? { textDecoration: 'underline' } : undefined
                 }); } }, label)),
         stateLabel ? (React.createElement(Box, { sx: __assign(__assign({}, rowSx), { pl: 0.25, mt: 0.25 }) },
-            React.createElement(Box, { sx: iconWrapSx }, inWorkflow ? (React.createElement(ItemStateIcon, { item: item, fontSize: "small", displayTooltip: false })) : (React.createElement(ItemPublishingTargetIcon, { item: item, fontSize: "small", displayTooltip: false }))),
+            React.createElement(Box, { sx: iconWrapSx$1 }, inWorkflow ? (React.createElement(ItemStateIcon, { item: item, fontSize: "small", displayTooltip: false })) : (React.createElement(ItemPublishingTargetIcon, { item: item, fontSize: "small", displayTooltip: false }))),
             React.createElement(Typography, { variant: "body2", color: "text.secondary", noWrap: true, sx: { minWidth: 0, flex: 1 } }, stateLabel))) : null));
+};
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+function useEnv() {
+  return useSelector((state) => state.env);
+}
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+// region History
+const showHistoryDialog = /*#__PURE__*/ createAction('SHOW_HISTORY_DIALOG');
+// endregion
+// region Publish
+const showPublishDialog = /*#__PURE__*/ createAction('SHOW_PUBLISH_DIALOG');
+const closePublishDialog = /*#__PURE__*/ createAction('CLOSE_PUBLISH_DIALOG');
+// endregion
+// region New Content
+const showNewContentDialog = /*#__PURE__*/ createAction('SHOW_NEW_CONTENT_DIALOG');
+const closeNewContentDialog = /*#__PURE__*/ createAction('CLOSE_NEW_CONTENT_DIALOG');
+// endregion
+// region Dependencies
+const showDependenciesDialog = /*#__PURE__*/ createAction('SHOW_DEPENDENCIES_DIALOG');
+// endregion
+// region Reject
+const showRejectDialog = /*#__PURE__*/ createAction('SHOW_REJECT_DIALOG');
+const closeRejectDialog = /*#__PURE__*/ createAction('CLOSE_REJECT_DIALOG');
+// endregion
+// region Legacy Form
+const showEditDialog = /*#__PURE__*/ createAction('SHOW_EDIT_DIALOG');
+const newContentCreationComplete = /*#__PURE__*/ createAction('NEW_CONTENT_CREATION_COMPLETE');
+// endregion
+// region Preview Dialog
+const showPreviewDialog = /*#__PURE__*/ createAction('SHOW_PREVIEW_DIALOG');
+const updatePreviewDialog = /*#__PURE__*/ createAction('UPDATE_PREVIEW_DIALOG');
+// endregion
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+const fetchGuestModel = /*#__PURE__*/ createAction('FETCH_GUEST_MODEL');
+const contentTypeDropTargetsResponse = /*#__PURE__*/ createAction('CONTENT_TYPE_DROP_TARGETS_RESPONSE');
+/*#__PURE__*/ createAction(contentTypeDropTargetsResponse.type);
+const setPreviewEditMode = /*#__PURE__*/ createAction('EDIT_MODE_CHANGED');
+
+function resolvePreviewType(item) {
+    if (item.type) {
+        return item.type;
+    }
+    var mimeType = item.mimeType || '';
+    if (mimeType.includes('audio/')) {
+        return 'Audio';
+    }
+    if (mimeType.startsWith('image/')) {
+        return 'Image';
+    }
+    if (mimeType.startsWith('video/')) {
+        return 'Video';
+    }
+    if (mimeType === 'application/pdf') {
+        return 'Pdf';
+    }
+    switch (item.systemType) {
+        case 'page':
+            return 'Page';
+        case 'component':
+        case 'taxonomy':
+            return 'Component';
+        case 'renderingTemplate':
+            return 'Template';
+        case 'script':
+            return 'Groovy';
+        default:
+            return 'File';
+    }
+}
+function resolveEditorMode(item) {
+    if (item.systemType === 'renderingTemplate') {
+        return 'ftl';
+    }
+    if (item.systemType === 'script') {
+        return 'groovy';
+    }
+    switch (item.mimeType) {
+        case 'text/x-freemarker':
+            return 'ftl';
+        case 'text/x-groovy':
+            return 'groovy';
+        case 'application/javascript':
+            return 'javascript';
+        case 'text/css':
+            return 'css';
+        default:
+            return 'txt';
+    }
+}
+/**
+ * Opens content in Studio preview with edit mode off (inspect / browse).
+ */
+function openContentInInspectMode(item, context) {
+    var dispatch = context.dispatch;
+    var path = item.path;
+    if (!path) {
+        return;
+    }
+    dispatch(setPreviewEditMode({ editMode: false }));
+    dispatch(fetchGuestModel({ path: path }));
+}
+/**
+ * Opens the same preview dialog used by Studio Search (showPreviewDialog / showEditDialog).
+ */
+function previewStudioItem(item, context) {
+    var _a;
+    var dispatch = context.dispatch, site = context.site, authoringBase = context.authoringBase, guestBase = context.guestBase;
+    var path = item.path;
+    var title = item.label || item.name || path;
+    var type = resolvePreviewType(item);
+    if ((_a = item.mimeType) === null || _a === void 0 ? void 0 : _a.includes('audio/')) {
+        type = 'Audio';
+    }
+    switch (type) {
+        case 'Image':
+            dispatch(showPreviewDialog({
+                type: 'image',
+                title: title,
+                url: path
+            }));
+            break;
+        case 'Page':
+            dispatch(showPreviewDialog({
+                type: 'page',
+                title: title,
+                url: "".concat(guestBase).concat(getPreviewURLFromPath(path), "?crafterCMSGuestDisabled=true")
+            }));
+            break;
+        case 'Component':
+        case 'Taxonomy':
+            dispatch(showEditDialog({ site: site, path: path, authoringBase: authoringBase, readonly: true }));
+            break;
+        case 'Video':
+            dispatch(showPreviewDialog({
+                type: 'video',
+                title: title,
+                url: path
+            }));
+            break;
+        case 'Audio':
+            dispatch(showPreviewDialog({
+                type: 'audio',
+                title: title,
+                url: path,
+                mimeType: item.mimeType
+            }));
+            break;
+        case 'Pdf':
+            dispatch(showPreviewDialog({
+                type: 'pdf',
+                title: title,
+                url: path
+            }));
+            break;
+        default: {
+            var mode = 'txt';
+            if (type === 'Template') {
+                mode = 'ftl';
+            }
+            else if (type === 'Groovy') {
+                mode = 'groovy';
+            }
+            else if (type === 'JavaScript') {
+                mode = 'javascript';
+            }
+            else if (type === 'CSS') {
+                mode = 'css';
+            }
+            else {
+                mode = resolveEditorMode(item);
+            }
+            dispatch(showPreviewDialog({
+                type: 'editor',
+                title: title,
+                url: path,
+                path: path,
+                mode: mode
+            }));
+            fetchContentXML(site, path).subscribe({
+                next: function (content) {
+                    dispatch(updatePreviewDialog({
+                        content: content
+                    }));
+                },
+                error: function (err) {
+                    console.error('Failed to fetch content for preview:', err);
+                    dispatch(updatePreviewDialog({
+                        content: "// Error loading content: ".concat((err === null || err === void 0 ? void 0 : err.message) || 'Unknown error')
+                    }));
+                }
+            });
+            break;
+        }
+    }
+}
+
+function useStudioItemPreview() {
+    var dispatch = useDispatch();
+    var site = useActiveSiteId();
+    var _a = useEnv(), authoringBase = _a.authoringBase, guestBase = _a.guestBase;
+    var previewItem = useCallback$1(function (item) {
+        if (!(item === null || item === void 0 ? void 0 : item.path) || !site) {
+            return;
+        }
+        previewStudioItem(item, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+    }, [authoringBase, dispatch, guestBase, site]);
+    var previewPath = useCallback$1(function (path, label) {
+        if (!path || !site) {
+            return;
+        }
+        fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({
+            next: function (sandboxItem) {
+                previewStudioItem(sandboxItem, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+            },
+            error: function () {
+                previewStudioItem({ path: path, label: label || path }, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+            }
+        });
+    }, [authoringBase, dispatch, guestBase, site]);
+    var inspectPath = useCallback$1(function (path, label) {
+        if (!path || !site) {
+            return;
+        }
+        fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({
+            next: function (sandboxItem) {
+                openContentInInspectMode(sandboxItem, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+            },
+            error: function () {
+                openContentInInspectMode({ path: path, label: label || path }, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+            }
+        });
+    }, [authoringBase, dispatch, guestBase, site]);
+    var inspectItem = useCallback$1(function (item) {
+        if (!(item === null || item === void 0 ? void 0 : item.path) || !site) {
+            return;
+        }
+        openContentInInspectMode(item, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
+    }, [authoringBase, dispatch, guestBase, site]);
+    return { previewItem: previewItem, previewPath: previewPath, inspectPath: inspectPath, inspectItem: inspectItem };
+}
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+// region Batch Actions
+const batchActions = /*#__PURE__*/ createAction('BATCH_ACTIONS');
+// endregion
+// region dispatch DOM Event
+const dispatchDOMEvent = /*#__PURE__*/ createAction('DISPATCH_DOM_EVENT');
+// endregion
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+const fetchItemVersions = /*#__PURE__*/ createAction('FETCH_ITEM_VERSIONS');
+
+function openStudioItemHistory(dispatch, item) {
+    if (!(item === null || item === void 0 ? void 0 : item.path)) {
+        return;
+    }
+    dispatch(batchActions([
+        fetchItemVersions({ item: item, rootPath: getRootPath(item.path) }),
+        showHistoryDialog({})
+    ]));
+}
+function openStudioItemDependencies(dispatch, item) {
+    if (!(item === null || item === void 0 ? void 0 : item.path)) {
+        return;
+    }
+    dispatch(showDependenciesDialog({ item: item, rootPath: getRootPath(item.path) }));
+}
+function resolveSandboxItemInternalName(item) {
+    var _a, _b;
+    var detailed = item;
+    var internalName = (_a = detailed.internalName) === null || _a === void 0 ? void 0 : _a.trim();
+    if (internalName) {
+        return internalName;
+    }
+    var label = (_b = item.label) === null || _b === void 0 ? void 0 : _b.trim();
+    if (label) {
+        return label;
+    }
+    if (item.path) {
+        var segments = item.path.split('/').filter(Boolean);
+        return segments[segments.length - 1] || item.path;
+    }
+    return 'Untitled';
+}
+
+var iconWrapSx = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    flexShrink: 0,
+    '& .MuiSvgIcon-root': { fontSize: '1.1rem' }
+};
+var AttachedContentItemRow = function (_a) {
+    var item = _a.item, onRemove = _a.onRemove, _b = _a.showPath, showPath = _b === void 0 ? true : _b, _c = _a.showSelectionCheckbox, showSelectionCheckbox = _c === void 0 ? false : _c, _d = _a.selectionChecked, selectionChecked = _d === void 0 ? true : _d, onSelectionChange = _a.onSelectionChange;
+    var dispatch = useDispatch();
+    var previewItem = useStudioItemPreview().previewItem;
+    var internalName = resolveSandboxItemInternalName(item);
+    var stateLabel = getSandboxItemStateLabel(item);
+    var inWorkflow = isInWorkflow(item.stateMap) || item.systemType === 'folder';
+    return (React.createElement(Box, { sx: {
+            display: 'flex',
+            alignItems: 'flex-start',
+            gap: 1,
+            py: 0.75,
+            px: 1,
+            minWidth: 0
+        } },
+        showSelectionCheckbox ? (React.createElement(Checkbox, { size: "small", checked: selectionChecked, onChange: function (_, checked) { return onSelectionChange === null || onSelectionChange === void 0 ? void 0 : onSelectionChange(checked); }, inputProps: { 'aria-label': "Select ".concat(internalName) }, sx: { p: 0.25, flexShrink: 0 } })) : null,
+        React.createElement(Box, { sx: iconWrapSx },
+            React.createElement(ItemTypeIcon, { item: item, fontSize: "small" })),
+        React.createElement(Stack, { spacing: 0.25, sx: { flex: 1, minWidth: 0 } },
+            React.createElement(Typography, { variant: "body2", fontWeight: 600, noWrap: true, title: internalName }, internalName),
+            stateLabel ? (React.createElement(Box, { sx: { display: 'flex', alignItems: 'center', gap: 0.75, minWidth: 0 } },
+                React.createElement(Box, { sx: iconWrapSx }, inWorkflow ? (React.createElement(ItemStateIcon, { item: item, fontSize: "small", displayTooltip: false })) : (React.createElement(ItemPublishingTargetIcon, { item: item, fontSize: "small", displayTooltip: false }))),
+                React.createElement(Typography, { variant: "caption", color: "text.secondary", noWrap: true, title: stateLabel }, stateLabel))) : null,
+            showPath && item.path ? (React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { wordBreak: 'break-all', overflowWrap: 'anywhere' }, title: item.path }, item.path)) : null),
+        React.createElement(Stack, { direction: "row", spacing: 0.25, sx: { flexShrink: 0, alignItems: 'center' } },
+            React.createElement(Tooltip, { title: "Preview" },
+                React.createElement(IconButton, { size: "small", "aria-label": "Preview item", onClick: function () { return previewItem(item); } },
+                    React.createElement(VisibilityRoundedIcon, { fontSize: "small" }))),
+            React.createElement(Tooltip, { title: "History" },
+                React.createElement(IconButton, { size: "small", "aria-label": "View item history", onClick: function () { return openStudioItemHistory(dispatch, item); } },
+                    React.createElement(HistoryRoundedIcon, { fontSize: "small" }))),
+            React.createElement(Tooltip, { title: "Dependencies" },
+                React.createElement(IconButton, { size: "small", "aria-label": "View item dependencies", onClick: function () { return openStudioItemDependencies(dispatch, item); } },
+                    React.createElement(AccountTreeOutlinedIcon, { fontSize: "small" }))),
+            onRemove ? (React.createElement(Tooltip, { title: "Remove" },
+                React.createElement(IconButton, { size: "small", "aria-label": "Remove item", onClick: onRemove },
+                    React.createElement(DeleteOutlineRoundedIcon, { fontSize: "small" })))) : null)));
 };
 
 function extractMentionedUserIds(body, users) {
@@ -9446,13 +9861,16 @@ var CommentsSection = function (_a) {
 function pluginGet(url) {
     return get(url);
 }
-/** State-changing plugin REST endpoints (POST). Query parameters stay on the URL. */
+/**
+ * State-changing plugin REST endpoints. Crafter Studio plugin scripts use
+ * *.get.groovy for query-parameter mutations (POST/DELETE routing is unreliable).
+ */
 function pluginPost(url) {
-    return post(url, {});
+    return get(url);
 }
-/** Destructive plugin REST endpoints (DELETE). Query parameters stay on the URL. */
+/** Destructive plugin REST endpoints (query params on URL, served by *.get.groovy). */
 function pluginDelete(url) {
-    return del(url);
+    return get(url);
 }
 
 var CRAFTERWF_PLUGIN_ID = 'org.rd.plugin.crafterwf';
@@ -10280,7 +10698,7 @@ function createPackageTask(siteId, workflowPackageId, title, priority, dueOn, as
     return createTask(siteId, title, priority, dueOn, TASK_TARGET.WORKFLOW_PACKAGE, workflowPackageId, assigneeId, assigneeUsername, startOn);
 }
 
-function formatDateTime$3(value) {
+function formatDateTime(value) {
     if (!value) {
         return '';
     }
@@ -10296,7 +10714,7 @@ function formatDateTime$3(value) {
         minute: '2-digit'
     });
 }
-function toDateTimeInputValue$3(value) {
+function toDateTimeInputValue(value) {
     if (!value) {
         return '';
     }
@@ -10311,6 +10729,7 @@ function toDateTimeInputValue$3(value) {
     var minutes = String(date.getMinutes()).padStart(2, '0');
     return "".concat(year, "-").concat(month, "-").concat(day, "T").concat(hours, ":").concat(minutes);
 }
+
 var PackageTasksSection = function (_a) {
     var tasks = _a.tasks, onCreateTask = _a.onCreateTask, onCompleteTask = _a.onCompleteTask, onArchiveTask = _a.onArchiveTask, onTasksChange = _a.onTasksChange, _b = _a.showArchived, showArchived = _b === void 0 ? false : _b, onShowArchivedChange = _a.onShowArchivedChange;
     var siteId = useActiveSiteId();
@@ -10549,8 +10968,8 @@ var PackageTasksSection = function (_a) {
                         React.createElement(Stack, { spacing: 0.35, sx: { mb: 0.75 } },
                             React.createElement(Typography, { variant: "caption", color: "text.secondary" },
                                 "Created ",
-                                formatDateTime$3(task.createdOn)),
-                            editingStartTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue$3(task.startOn), onChange: function (e) { return handleStartDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingStartTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingStartTaskId(task.id); }, sx: {
+                                formatDateTime(task.createdOn)),
+                            editingStartTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue(task.startOn), onChange: function (e) { return handleStartDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingStartTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingStartTaskId(task.id); }, sx: {
                                     fontWeight: 700,
                                     border: 0,
                                     bgcolor: 'transparent',
@@ -10562,8 +10981,8 @@ var PackageTasksSection = function (_a) {
                                     textDecoration: task.archived ? 'none' : 'underline',
                                     textUnderlineOffset: 2,
                                     '&:hover': task.archived ? undefined : { color: 'primary.main' }
-                                } }, task.startOn ? "Start ".concat(formatDateTime$3(task.startOn)) : 'Add start date')),
-                            editingDueTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue$3(task.dueOn), onChange: function (e) { return handleDueDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingDueTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingDueTaskId(task.id); }, sx: {
+                                } }, task.startOn ? "Start ".concat(formatDateTime(task.startOn)) : 'Add start date')),
+                            editingDueTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue(task.dueOn), onChange: function (e) { return handleDueDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingDueTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingDueTaskId(task.id); }, sx: {
                                     fontWeight: 700,
                                     border: 0,
                                     bgcolor: 'transparent',
@@ -10575,7 +10994,7 @@ var PackageTasksSection = function (_a) {
                                     textDecoration: task.archived ? 'none' : 'underline',
                                     textUnderlineOffset: 2,
                                     '&:hover': task.archived ? undefined : { color: 'primary.main' }
-                                } }, task.dueOn ? "Due ".concat(formatDateTime$3(task.dueOn)) : 'Add due date'))),
+                                } }, task.dueOn ? "Due ".concat(formatDateTime(task.dueOn)) : 'Add due date'))),
                         React.createElement(Box, { sx: {
                                 display: 'grid',
                                 gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
@@ -10933,234 +11352,6 @@ function resolveAttachmentDisplayName(attachment) {
     return attachment.url || 'Attachment';
 }
 
-/*
- * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License version 3 as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-function useEnv() {
-  return useSelector((state) => state.env);
-}
-
-/*
- * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License version 3 as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-// endregion
-// region Publish
-const showPublishDialog = /*#__PURE__*/ createAction('SHOW_PUBLISH_DIALOG');
-const closePublishDialog = /*#__PURE__*/ createAction('CLOSE_PUBLISH_DIALOG');
-// endregion
-// region New Content
-const showNewContentDialog = /*#__PURE__*/ createAction('SHOW_NEW_CONTENT_DIALOG');
-const closeNewContentDialog = /*#__PURE__*/ createAction('CLOSE_NEW_CONTENT_DIALOG');
-// endregion
-// region Reject
-const showRejectDialog = /*#__PURE__*/ createAction('SHOW_REJECT_DIALOG');
-const closeRejectDialog = /*#__PURE__*/ createAction('CLOSE_REJECT_DIALOG');
-// endregion
-// region Legacy Form
-const showEditDialog = /*#__PURE__*/ createAction('SHOW_EDIT_DIALOG');
-const newContentCreationComplete = /*#__PURE__*/ createAction('NEW_CONTENT_CREATION_COMPLETE');
-// endregion
-// region Preview Dialog
-const showPreviewDialog = /*#__PURE__*/ createAction('SHOW_PREVIEW_DIALOG');
-const updatePreviewDialog = /*#__PURE__*/ createAction('UPDATE_PREVIEW_DIALOG');
-// endregion
-
-function resolvePreviewType(item) {
-    if (item.type) {
-        return item.type;
-    }
-    var mimeType = item.mimeType || '';
-    if (mimeType.includes('audio/')) {
-        return 'Audio';
-    }
-    if (mimeType.startsWith('image/')) {
-        return 'Image';
-    }
-    if (mimeType.startsWith('video/')) {
-        return 'Video';
-    }
-    if (mimeType === 'application/pdf') {
-        return 'Pdf';
-    }
-    switch (item.systemType) {
-        case 'page':
-            return 'Page';
-        case 'component':
-        case 'taxonomy':
-            return 'Component';
-        case 'renderingTemplate':
-            return 'Template';
-        case 'script':
-            return 'Groovy';
-        default:
-            return 'File';
-    }
-}
-function resolveEditorMode(item) {
-    if (item.systemType === 'renderingTemplate') {
-        return 'ftl';
-    }
-    if (item.systemType === 'script') {
-        return 'groovy';
-    }
-    switch (item.mimeType) {
-        case 'text/x-freemarker':
-            return 'ftl';
-        case 'text/x-groovy':
-            return 'groovy';
-        case 'application/javascript':
-            return 'javascript';
-        case 'text/css':
-            return 'css';
-        default:
-            return 'txt';
-    }
-}
-/**
- * Opens the same preview dialog used by Studio Search (showPreviewDialog / showEditDialog).
- */
-function previewStudioItem(item, context) {
-    var _a;
-    var dispatch = context.dispatch, site = context.site, authoringBase = context.authoringBase, guestBase = context.guestBase;
-    var path = item.path;
-    var title = item.label || item.name || path;
-    var type = resolvePreviewType(item);
-    if ((_a = item.mimeType) === null || _a === void 0 ? void 0 : _a.includes('audio/')) {
-        type = 'Audio';
-    }
-    switch (type) {
-        case 'Image':
-            dispatch(showPreviewDialog({
-                type: 'image',
-                title: title,
-                url: path
-            }));
-            break;
-        case 'Page':
-            dispatch(showPreviewDialog({
-                type: 'page',
-                title: title,
-                url: "".concat(guestBase).concat(getPreviewURLFromPath(path), "?crafterCMSGuestDisabled=true")
-            }));
-            break;
-        case 'Component':
-        case 'Taxonomy':
-            dispatch(showEditDialog({ site: site, path: path, authoringBase: authoringBase, readonly: true }));
-            break;
-        case 'Video':
-            dispatch(showPreviewDialog({
-                type: 'video',
-                title: title,
-                url: path
-            }));
-            break;
-        case 'Audio':
-            dispatch(showPreviewDialog({
-                type: 'audio',
-                title: title,
-                url: path,
-                mimeType: item.mimeType
-            }));
-            break;
-        case 'Pdf':
-            dispatch(showPreviewDialog({
-                type: 'pdf',
-                title: title,
-                url: path
-            }));
-            break;
-        default: {
-            var mode = 'txt';
-            if (type === 'Template') {
-                mode = 'ftl';
-            }
-            else if (type === 'Groovy') {
-                mode = 'groovy';
-            }
-            else if (type === 'JavaScript') {
-                mode = 'javascript';
-            }
-            else if (type === 'CSS') {
-                mode = 'css';
-            }
-            else {
-                mode = resolveEditorMode(item);
-            }
-            dispatch(showPreviewDialog({
-                type: 'editor',
-                title: title,
-                url: path,
-                path: path,
-                mode: mode
-            }));
-            fetchContentXML(site, path).subscribe({
-                next: function (content) {
-                    dispatch(updatePreviewDialog({
-                        content: content
-                    }));
-                },
-                error: function (err) {
-                    console.error('Failed to fetch content for preview:', err);
-                    dispatch(updatePreviewDialog({
-                        content: "// Error loading content: ".concat((err === null || err === void 0 ? void 0 : err.message) || 'Unknown error')
-                    }));
-                }
-            });
-            break;
-        }
-    }
-}
-
-function useStudioItemPreview() {
-    var dispatch = useDispatch();
-    var site = useActiveSiteId();
-    var _a = useEnv(), authoringBase = _a.authoringBase, guestBase = _a.guestBase;
-    var previewItem = useCallback$1(function (item) {
-        if (!(item === null || item === void 0 ? void 0 : item.path) || !site) {
-            return;
-        }
-        previewStudioItem(item, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
-    }, [authoringBase, dispatch, guestBase, site]);
-    var previewPath = useCallback$1(function (path, label) {
-        if (!path || !site) {
-            return;
-        }
-        fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({
-            next: function (sandboxItem) {
-                previewStudioItem(sandboxItem, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
-            },
-            error: function () {
-                previewStudioItem({ path: path, label: label || path }, { dispatch: dispatch, site: site, authoringBase: authoringBase, guestBase: guestBase });
-            }
-        });
-    }, [authoringBase, dispatch, guestBase, site]);
-    return { previewItem: previewItem, previewPath: previewPath };
-}
-
 var projectToolsConfigurationWidgetId = 'org.rd.plugin.crafterwf.ProjectToolsConfiguration';
 /** Matches wf_workflow_step.name VARCHAR(255); UI cap keeps columns readable */
 var STEP_NAME_MAX_LENGTH = 80;
@@ -11171,37 +11362,6 @@ var PACKAGE_TITLE_MAX_LENGTH = 512;
 var PACKAGE_DESCRIPTION_MAX_LENGTH = 10000;
 
 var dense = true;
-function formatDateTime$2(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return value;
-    }
-    return date.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit'
-    });
-}
-function toDateTimeInputValue$2(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return '';
-    }
-    var year = date.getFullYear();
-    var month = String(date.getMonth() + 1).padStart(2, '0');
-    var day = String(date.getDate()).padStart(2, '0');
-    var hours = String(date.getHours()).padStart(2, '0');
-    var minutes = String(date.getMinutes()).padStart(2, '0');
-    return "".concat(year, "-").concat(month, "-").concat(day, "T").concat(hours, ":").concat(minutes);
-}
 /** Long paths/URLs in list rows need this so flex layout does not overflow the dialog. */
 var listItemRowSx = { alignItems: 'flex-start', py: 0.5, minWidth: 0 };
 var listItemTextSx = { minWidth: 0, pr: 1 };
@@ -11218,18 +11378,6 @@ function formatContentTypeLabel(contentTypeId) {
         return "".concat(label, " (").concat(category, ")");
     }
     return label;
-}
-function resolveSandboxItemLabel(item) {
-    var _a;
-    var label = (_a = item.label) === null || _a === void 0 ? void 0 : _a.trim();
-    if (label) {
-        return label;
-    }
-    if (item.path) {
-        var segments = item.path.split('/').filter(Boolean);
-        return segments[segments.length - 1] || item.path;
-    }
-    return 'Untitled';
 }
 function groupContentByType(items) {
     var groups = new Map();
@@ -11249,10 +11397,10 @@ function groupContentByType(items) {
 var CardDetails = function (_a) {
     var _b, _c, _d, _e;
     var card = _a.card, cardDetails = _a.cardDetails, onRemoveAttachment = _a.onRemoveAttachment, onRemoveContentItem = _a.onRemoveContentItem, onAddComment = _a.onAddComment, onResolveComment = _a.onResolveComment, onArchiveComment = _a.onArchiveComment, _f = _a.showArchivedComments, showArchivedComments = _f === void 0 ? false : _f, onShowArchivedCommentsChange = _a.onShowArchivedCommentsChange, onCreateTask = _a.onCreateTask, onCompleteTask = _a.onCompleteTask, onArchiveTask = _a.onArchiveTask, onTasksChange = _a.onTasksChange, _g = _a.showArchivedTasks, showArchivedTasks = _g === void 0 ? false : _g, onShowArchivedTasksChange = _a.onShowArchivedTasksChange, description = _a.description, onSaveDescription = _a.onSaveDescription, _h = _a.savingDescription, savingDescription = _h === void 0 ? false : _h, dueOn = _a.dueOn, onDueOnChange = _a.onDueOnChange, _j = _a.savingDueOn, savingDueOn = _j === void 0 ? false : _j, _k = _a.auditRefreshKey, auditRefreshKey = _k === void 0 ? 0 : _k;
-    var _l = useStudioItemPreview(), previewItem = _l.previewItem, previewPath = _l.previewPath;
-    var _m = useState(false), editingDescription = _m[0], setEditingDescription = _m[1];
-    var _o = useState(description), descriptionDraft = _o[0], setDescriptionDraft = _o[1];
-    var _p = useState(false), editingDueOn = _p[0], setEditingDueOn = _p[1];
+    var previewPath = useStudioItemPreview().previewPath;
+    var _l = useState(false), editingDescription = _l[0], setEditingDescription = _l[1];
+    var _m = useState(description), descriptionDraft = _m[0], setDescriptionDraft = _m[1];
+    var _o = useState(false), editingDueOn = _o[0], setEditingDueOn = _o[1];
     useEffect(function () {
         setDescriptionDraft(description);
         setEditingDescription(false);
@@ -11321,7 +11469,7 @@ var CardDetails = function (_a) {
             React.createElement(Divider, { flexItem: true, sx: { my: 0.25 } }),
             React.createElement(Stack, { spacing: 0.35, sx: { minWidth: 0 } },
                 React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { fontWeight: 600, letterSpacing: 0.06, textTransform: 'uppercase' } }, "Due date"),
-                editingDueOn ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: savingDueOn, value: toDateTimeInputValue$2(dueOn), onChange: function (event) {
+                editingDueOn ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: savingDueOn, value: toDateTimeInputValue(dueOn), onChange: function (event) {
                         onDueOnChange(event.target.value || null);
                         setEditingDueOn(false);
                     }, onBlur: function () { return setEditingDueOn(false); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 280, '& .MuiInputBase-input': { fontWeight: 600, py: 0.75 } } })) : (React.createElement(Typography, { variant: "body2", component: "button", type: "button", disabled: savingDueOn, onClick: function () { return !savingDueOn && setEditingDueOn(true); }, sx: {
@@ -11336,7 +11484,7 @@ var CardDetails = function (_a) {
                         textDecoration: savingDueOn ? 'none' : 'underline',
                         textUnderlineOffset: 2,
                         '&:hover': savingDueOn ? undefined : { color: 'primary.main' }
-                    } }, dueOn ? "Due ".concat(formatDateTime$2(dueOn)) : 'Add due date'))))),
+                    } }, dueOn ? "Due ".concat(formatDateTime(dueOn)) : 'Add due date'))))),
         React.createElement(Divider, { flexItem: true, sx: { my: 0.25 } }),
         React.createElement(Stack, { spacing: 0.75 },
             React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { fontWeight: 600, letterSpacing: 0.06, textTransform: 'uppercase' } }, "Related content"),
@@ -11346,12 +11494,8 @@ var CardDetails = function (_a) {
                     React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { fontWeight: 600, pl: 0.25 } }, formatContentTypeLabel(contentTypeId)),
                     React.createElement(List$1, { dense: dense, disablePadding: true, sx: { bgcolor: 'action.hover', borderRadius: 1, minWidth: 0, overflowX: 'hidden' } }, items.map(function (contentItem, contentIndex) {
                         var path = contentItem.path || '';
-                        var label = resolveSandboxItemLabel(contentItem);
-                        return (React.createElement(ListItem, { key: path || "".concat(contentTypeId, "-").concat(contentIndex), secondaryAction: path ? (React.createElement(IconButton, { edge: "end", "aria-label": "remove attachment", size: "small", onClick: function () { return handleRemoveContentItem(path); } },
-                                React.createElement(ClearRoundedIcon, { fontSize: "small" }))) : undefined, sx: listItemRowSx },
-                            React.createElement(ListItemText, { sx: listItemTextSx, primary: React.createElement(Tooltip, { title: path || label, placement: "top-start", enterDelay: 400 },
-                                    React.createElement("span", null,
-                                        React.createElement(AttachedSandboxItemDisplay, { item: contentItem, label: label, onClick: function () { return previewItem(contentItem); } }))), primaryTypographyProps: { variant: 'body2', component: 'div' } })));
+                        return (React.createElement(ListItem, { key: path || "".concat(contentTypeId, "-").concat(contentIndex), sx: __assign(__assign({}, listItemRowSx), { display: 'block', px: 0.5 }) },
+                            React.createElement(AttachedContentItemRow, { item: contentItem, onRemove: path ? function () { return handleRemoveContentItem(path); } : undefined })));
                     }))));
             })))),
         React.createElement(Divider, { flexItem: true, sx: { my: 0.25 } }),
@@ -11379,28 +11523,6 @@ var CardDetails = function (_a) {
         React.createElement(Divider, { flexItem: true, sx: { my: 0.25 } }),
         React.createElement(PackageAuditTrailSection, { packageId: card.id, refreshKey: auditRefreshKey })));
 };
-
-/*
- * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License version 3 as published by
- * the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-// region Batch Actions
-const batchActions = /*#__PURE__*/ createAction('BATCH_ACTIONS');
-// endregion
-// region dispatch DOM Event
-const dispatchDOMEvent = /*#__PURE__*/ createAction('DISPATCH_DOM_EVENT');
-// endregion
 
 function getSchemaStatus(siteId) {
     return get("".concat(PLUGIN_SERVICE_BASE, "/admin/schema/status.json?siteId=").concat(encodeURIComponent(siteId)));
@@ -11547,29 +11669,124 @@ function resolveContentLabel(siteId, contentPath) {
     });
 }
 
-function normalizeSelectedPaths(selection) {
-    if (Array.isArray(selection)) {
-        return selection
-            .map(function (item) {
+var SelectedContentSourcePanel = function (_a) {
+    var selectedPaths = _a.selectedPaths, onRemove = _a.onRemove;
+    var siteId = useActiveSiteId();
+    var _b = useState({}), itemsByPath = _b[0], setItemsByPath = _b[1];
+    var _c = useState(false), loading = _c[0], setLoading = _c[1];
+    var pathsKey = useMemo$1(function () { return selectedPaths.slice().sort().join('\0'); }, [selectedPaths]);
+    useEffect(function () {
+        if (!siteId || selectedPaths.length === 0) {
+            setItemsByPath({});
+            setLoading(false);
+            return;
+        }
+        setLoading(true);
+        fetchItemsByPath(siteId, selectedPaths, { castAsDetailedItem: true }).subscribe({
+            next: function (items) {
+                var nextMap = {};
+                items.forEach(function (item) {
+                    if (item === null || item === void 0 ? void 0 : item.path) {
+                        nextMap[item.path] = item;
+                    }
+                });
+                selectedPaths.forEach(function (path) {
+                    if (!nextMap[path]) {
+                        nextMap[path] = { path: path };
+                    }
+                });
+                setItemsByPath(nextMap);
+                setLoading(false);
+            },
+            error: function () {
+                var fallback = {};
+                selectedPaths.forEach(function (path) {
+                    fallback[path] = { path: path };
+                });
+                setItemsByPath(fallback);
+                setLoading(false);
+            }
+        });
+    }, [pathsKey, siteId, selectedPaths]);
+    return (React.createElement(Box, { sx: {
+            width: { xs: '100%', md: 380 },
+            flexShrink: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            minHeight: 0,
+            borderLeft: function (theme) { return ({ md: "1px solid ".concat(theme.palette.divider) }); },
+            bgcolor: 'background.paper'
+        } },
+        React.createElement(Box, { sx: { px: 2, py: 1.25, borderBottom: function (theme) { return "1px solid ".concat(theme.palette.divider); } } },
+            React.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, "Selected source"),
+            React.createElement(Typography, { variant: "caption", color: "text.secondary" }, selectedPaths.length === 0
+                ? 'Select content from search — use checkboxes to build your attach list'
+                : "".concat(selectedPaths.length, " item").concat(selectedPaths.length === 1 ? '' : 's', " selected \u2014 uncheck to remove"))),
+        React.createElement(Box, { sx: { flex: 1, minHeight: 0, overflowY: 'auto' } }, loading && selectedPaths.length > 0 ? (React.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', py: 3 } },
+            React.createElement(CircularProgress, { size: 24 }))) : selectedPaths.length === 0 ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 2, py: 2 } }, "No content selected yet.")) : (selectedPaths.map(function (path, index) {
             var _a;
-            if (typeof item === 'string') {
-                return item.trim();
+            return (React.createElement(React.Fragment, { key: path },
+                index > 0 ? React.createElement(Divider, null) : null,
+                React.createElement(AttachedContentItemRow, { item: (_a = itemsByPath[path]) !== null && _a !== void 0 ? _a : { path: path }, showSelectionCheckbox: true, selectionChecked: true, onSelectionChange: function (checked) {
+                        if (!checked) {
+                            onRemove(path);
+                        }
+                    }, onRemove: function () { return onRemove(path); } })));
+        })))));
+};
+
+var ContentSearchAttachDialog = function (_a) {
+    var open = _a.open, onClose = _a.onClose, onAttach = _a.onAttach;
+    var _b = useState([]), selectedPaths = _b[0], setSelectedPaths = _b[1];
+    var handleClose = useCallback$1(function () {
+        setSelectedPaths([]);
+        onClose();
+    }, [onClose]);
+    var handleSelect = useCallback$1(function (path, isSelected) {
+        setSelectedPaths(function (current) {
+            if (isSelected) {
+                return current.includes(path) ? current : __spreadArray(__spreadArray([], current, true), [path], false);
             }
-            if (item && typeof item === 'object') {
-                var path = (_a = item.path) !== null && _a !== void 0 ? _a : item.uri;
-                return typeof path === 'string' ? path.trim() : '';
-            }
-            return '';
-        })
-            .filter(Boolean);
-    }
-    if (selection && typeof selection === 'object') {
-        return Object.values(selection)
-            .flatMap(function (item) { return normalizeSelectedPaths([item]); })
-            .filter(Boolean);
-    }
-    return [];
-}
+            return current.filter(function (entry) { return entry !== path; });
+        });
+    }, []);
+    var handleRemove = useCallback$1(function (path) {
+        setSelectedPaths(function (current) { return current.filter(function (entry) { return entry !== path; }); });
+    }, []);
+    var handleAttach = useCallback$1(function () {
+        if (selectedPaths.length === 0) {
+            return;
+        }
+        onAttach(selectedPaths);
+        setSelectedPaths([]);
+    }, [onAttach, selectedPaths]);
+    return (React.createElement(Dialog, { open: open, onClose: handleClose, fullWidth: true, maxWidth: "lg", scroll: "paper", disableRestoreFocus: true, "aria-labelledby": "crafterwf-content-search-title", PaperProps: { sx: { height: 'min(85vh, 720px)', maxHeight: '85vh' } } },
+        React.createElement(DialogContent, { sx: {
+                p: 0,
+                display: 'flex',
+                flexDirection: { xs: 'column', md: 'row' },
+                minHeight: 0,
+                flex: 1,
+                overflow: 'hidden'
+            } },
+            React.createElement(Box, { sx: {
+                    flex: 1,
+                    minWidth: 0,
+                    minHeight: 0,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    '& > section:last-of-type': { display: 'none' }
+                } },
+                React.createElement(Search, { embedded: true, mode: "select", onClose: handleClose, onSelect: handleSelect })),
+            React.createElement(SelectedContentSourcePanel, { selectedPaths: selectedPaths, onRemove: handleRemove })),
+        React.createElement(DialogActions, { sx: { px: 2, py: 1.5 } },
+            React.createElement(Button, { onClick: handleClose }, "Cancel"),
+            React.createElement(Button, { variant: "contained", disabled: selectedPaths.length === 0, onClick: handleAttach },
+                "Attach",
+                selectedPaths.length > 0 ? " (".concat(selectedPaths.length, ")") : ''))));
+};
+
 var CardActions = function (_a) {
     var card = _a.card, cardDetails = _a.cardDetails, onMenuOpen = _a.onMenuOpen, onDetailsChanged = _a.onDetailsChanged, onPackageChanged = _a.onPackageChanged, onNestedDialogChange = _a.onNestedDialogChange, _b = _a.variant, variant = _b === void 0 ? 'icon' : _b;
     var siteId = useActiveSiteId();
@@ -11642,8 +11859,8 @@ var CardActions = function (_a) {
         setContentSearchOpen(true);
         handleCardActionsClose();
     };
-    var handleContentSearchAccept = function (selection) {
-        normalizeSelectedPaths(selection).forEach(function (path) {
+    var handleContentSearchAccept = function (paths) {
+        paths.forEach(function (path) {
             attachContentToPackage(resolveAttachmentLabel(path), path);
         });
         closeContentSearch();
@@ -11748,9 +11965,7 @@ var CardActions = function (_a) {
             React.createElement(Divider$1, { style: { display: hasItems ? 'block' : 'none' } }),
             React.createElement(MenuItem$1, { key: "archivePackage", onClick: handleArchivePackage },
                 React.createElement(Typography, null, "Archive Package"))),
-        React.createElement(Dialog, { open: contentSearchOpen, onClose: closeContentSearch, fullWidth: true, maxWidth: "lg", scroll: "paper", disableRestoreFocus: true, "aria-labelledby": "crafterwf-content-search-title", PaperProps: { sx: { height: 'min(85vh, 720px)', maxHeight: '85vh' } } },
-            React.createElement(DialogContent, { sx: { p: 0, display: 'flex', flexDirection: 'column', minHeight: 0, overflow: 'hidden' } },
-                React.createElement(Search, { embedded: true, mode: "select", onClose: closeContentSearch, onAcceptSelection: handleContentSearchAccept })))));
+        React.createElement(ContentSearchAttachDialog, { open: contentSearchOpen, onClose: closeContentSearch, onAttach: handleContentSearchAccept })));
 };
 
 var CALENDAR_UPDATED_EVENT = 'crafterwf:calendar-updated';
@@ -12760,7 +12975,8 @@ var Board = function (_a) {
                 React.createElement(Button, { onClick: handleConfirmStepActionMove, variant: "contained", disabled: movingCard }, movingCard ? 'Moving…' : 'Confirm')))));
 };
 
-var WORKFLOW_LABEL = 'Workflow';
+/** Tools panel label when the site has more than one workflow (accordion). */
+var MULTI_WORKFLOW_LABEL = 'Workflow';
 var DEFAULT_WORKFLOW_ICON = '@mui/icons-material/AccountTreeOutlined';
 function resolveWorkflowIcon(props) {
     var _a;
@@ -12801,6 +13017,7 @@ function OpenBoardDialogPanelButton(props) {
     };
     var singleWorkflow = workflows.length === 1 ? workflows[0] : null;
     var multipleWorkflows = workflows.length > 1;
+    var panelTitle = singleWorkflow ? singleWorkflow.name : MULTI_WORKFLOW_LABEL;
     var handlePrimaryClick = function () {
         if (loading) {
             return;
@@ -12813,7 +13030,7 @@ function OpenBoardDialogPanelButton(props) {
             setExpanded(function (prev) { return !prev; });
             return;
         }
-        openWorkflowBoard(dispatch, WORKFLOW_LABEL, { workflowId: '' });
+        openWorkflowBoard(dispatch, MULTI_WORKFLOW_LABEL, { workflowId: '' });
     };
     var toggleExpanded = function () {
         if (multipleWorkflows) {
@@ -12821,7 +13038,7 @@ function OpenBoardDialogPanelButton(props) {
         }
     };
     return (React.createElement(React.Fragment, null,
-        React.createElement(ToolsPanelListItemButton, { icon: { id: workflowIcon }, title: WORKFLOW_LABEL, disabled: loading, onClick: handlePrimaryClick, onSecondaryActionClick: multipleWorkflows ? toggleExpanded : undefined, secondaryActionIcon: multipleWorkflows ? (React.createElement(ExpandMoreRoundedIcon, { sx: {
+        React.createElement(ToolsPanelListItemButton, { icon: { id: workflowIcon }, title: panelTitle, disabled: loading, onClick: handlePrimaryClick, onSecondaryActionClick: multipleWorkflows ? toggleExpanded : undefined, secondaryActionIcon: multipleWorkflows ? (React.createElement(ExpandMoreRoundedIcon, { sx: {
                     transform: expanded ? 'rotate(90deg)' : 'rotate(0deg)',
                     transition: 'transform 0.2s'
                 } })) : (React.createElement(ChevronRightRounded, null)) }),
@@ -13110,14 +13327,19 @@ function notificationTargetLinkLabel(notification) {
 function canOpenNotificationTarget(notification) {
     return Boolean(notification.targetType && notification.targetId);
 }
-function openNotificationTarget(dispatch, siteId, notification, previewPath) {
+function openNotificationTarget(dispatch, siteId, notification, previewPath, inspectPath) {
     var targetType = notification.targetType, targetId = notification.targetId, targetWorkflowId = notification.targetWorkflowId, targetPackageId = notification.targetPackageId;
     if (!targetType || !targetId || !siteId) {
         return;
     }
     switch (targetType) {
         case NOTIFICATION_TARGET.CONTENT:
-            previewPath(targetId, notification.targetTitle || targetId);
+            if (inspectPath) {
+                inspectPath(targetId, notification.targetTitle || targetId);
+            }
+            else {
+                previewPath(targetId, notification.targetTitle || targetId);
+            }
             break;
         case NOTIFICATION_TARGET.WORKFLOW_PACKAGE:
             if (targetWorkflowId) {
@@ -13178,11 +13400,11 @@ function formatDate$1(value) {
 var NotificationsPanel = function () {
     var siteId = useActiveSiteId();
     var dispatch = useDispatch();
-    var previewPath = useStudioItemPreview().previewPath;
-    var _a = useState([]), notifications = _a[0], setNotifications = _a[1];
-    var _b = useState(false), loading = _b[0], setLoading = _b[1];
-    var _c = useState(null), error = _c[0], setError = _c[1];
-    var _d = useState(false), showArchived = _d[0], setShowArchived = _d[1];
+    var _a = useStudioItemPreview(), previewPath = _a.previewPath, inspectPath = _a.inspectPath;
+    var _b = useState([]), notifications = _b[0], setNotifications = _b[1];
+    var _c = useState(false), loading = _c[0], setLoading = _c[1];
+    var _d = useState(null), error = _d[0], setError = _d[1];
+    var _e = useState(false), showArchived = _e[0], setShowArchived = _e[1];
     var loadNotifications = useCallback$1(function () {
         if (!siteId) {
             setNotifications([]);
@@ -13212,7 +13434,7 @@ var NotificationsPanel = function () {
         if (!canOpenNotificationTarget(notification)) {
             return;
         }
-        openNotificationTarget(dispatch, siteId, notification, previewPath);
+        openNotificationTarget(dispatch, siteId, notification, previewPath, inspectPath);
     };
     var handleResolve = function (notificationId, resolved) {
         resolveNotification(siteId, notificationId, resolved).subscribe({
@@ -13265,7 +13487,7 @@ var NotificationsPanel = function () {
                         typeLabel,
                         ":",
                         ' '),
-                    canOpen ? (React.createElement(Box, { component: "button", type: "button", onClick: function () { return handleOpenTarget(notification); }, sx: {
+                    canOpen ? (React.createElement(Box, { component: "button", type: "button", title: notification.targetType === 'content' ? 'Open in inspect mode' : undefined, onClick: function () { return handleOpenTarget(notification); }, sx: {
                             display: 'inline',
                             p: 0,
                             border: 'none',
@@ -13289,6 +13511,23 @@ var NotificationsPanel = function () {
         }))),
         React.createElement(Button, { size: "small", sx: { alignSelf: 'flex-start', px: 0, minWidth: 0 }, onClick: function () { return setShowArchived(function (prev) { return !prev; }); } }, showArchived ? 'Hide archived' : 'Show archived')));
 };
+
+var TOOLBAR_BADGE_SX = {
+    '& .MuiBadge-badge': {
+        fontSize: '0.65rem',
+        fontWeight: 600,
+        minWidth: 16,
+        height: 16,
+        padding: '0 4px'
+    }
+};
+function ToolbarIconBadge(_a) {
+    var _b = _a.count, count = _b === void 0 ? 0 : _b, _c = _a.color, color = _c === void 0 ? 'error' : _c, _d = _a.max, max = _d === void 0 ? 99 : _d, sx = _a.sx, children = _a.children, rest = __rest(_a, ["count", "color", "max", "sx", "children"]);
+    if (count <= 0) {
+        return React.createElement(React.Fragment, null, children);
+    }
+    return (React.createElement(Badge, __assign({ badgeContent: count, color: color, max: max, overlap: "circular", sx: __assign(__assign({}, TOOLBAR_BADGE_SX), sx) }, rest), children));
+}
 
 var NOTIFICATIONS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.notificationsPanel';
 function NotificationsToolbarButton(props) {
@@ -13328,7 +13567,7 @@ function NotificationsToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openNotificationsPanel }),
-                React.createElement(Badge, { badgeContent: unreadCount > 0 ? unreadCount : undefined, color: "error", max: 99 },
+                React.createElement(ToolbarIconBadge, { count: unreadCount, color: "error" },
                     React.createElement(NotificationsNoneRoundedIcon, null))))));
 }
 
@@ -13418,37 +13657,6 @@ function organizeTasksByAssignee(tasks, sortBy, currentUserId, assigneeLabelFor)
     return ordered.map(function (group) { return (__assign(__assign({}, group), { tasks: sortTasks(group.tasks, sortBy) })); });
 }
 
-function formatDateTime$1(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return value;
-    }
-    return date.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit'
-    });
-}
-function toDateTimeInputValue$1(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return '';
-    }
-    var year = date.getFullYear();
-    var month = String(date.getMonth() + 1).padStart(2, '0');
-    var day = String(date.getDate()).padStart(2, '0');
-    var hours = String(date.getHours()).padStart(2, '0');
-    var minutes = String(date.getMinutes()).padStart(2, '0');
-    return "".concat(year, "-").concat(month, "-").concat(day, "T").concat(hours, ":").concat(minutes);
-}
 function dateTimeInputToApiValue(value) {
     if (!(value === null || value === void 0 ? void 0 : value.trim())) {
         return null;
@@ -13867,8 +14075,8 @@ var TasksPanel = function () {
                                     React.createElement(Stack, { spacing: 0.35, sx: { mb: 0.75 } },
                                         React.createElement(Typography, { variant: "caption", color: "text.secondary" },
                                             "Created ",
-                                            formatDateTime$1(task.createdOn)),
-                                        editingStartTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue$1(task.startOn), onChange: function (e) { return handleStartDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingStartTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingStartTaskId(task.id); }, sx: {
+                                            formatDateTime(task.createdOn)),
+                                        editingStartTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue(task.startOn), onChange: function (e) { return handleStartDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingStartTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingStartTaskId(task.id); }, sx: {
                                                 fontWeight: 700,
                                                 border: 0,
                                                 bgcolor: 'transparent',
@@ -13880,8 +14088,8 @@ var TasksPanel = function () {
                                                 textDecoration: task.archived ? 'none' : 'underline',
                                                 textUnderlineOffset: 2,
                                                 '&:hover': task.archived ? undefined : { color: 'primary.main' }
-                                            } }, task.startOn ? "Start ".concat(formatDateTime$1(task.startOn)) : 'Add start date')),
-                                        editingDueTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue$1(task.dueOn), onChange: function (e) { return handleDueDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingDueTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingDueTaskId(task.id); }, sx: {
+                                            } }, task.startOn ? "Start ".concat(formatDateTime(task.startOn)) : 'Add start date')),
+                                        editingDueTaskId === task.id ? (React.createElement(TextField, { size: "small", type: "datetime-local", autoFocus: true, disabled: task.archived, value: toDateTimeInputValue(task.dueOn), onChange: function (e) { return handleDueDateChange(task, e.target.value || null); }, onBlur: function () { return setEditingDueTaskId(null); }, InputLabelProps: { shrink: true }, sx: { maxWidth: 240, '& .MuiInputBase-input': { fontWeight: 700, py: 0.5 } } })) : (React.createElement(Typography, { variant: "caption", component: "button", type: "button", disabled: task.archived, onClick: function () { return !task.archived && setEditingDueTaskId(task.id); }, sx: {
                                                 fontWeight: 700,
                                                 border: 0,
                                                 bgcolor: 'transparent',
@@ -13893,7 +14101,7 @@ var TasksPanel = function () {
                                                 textDecoration: task.archived ? 'none' : 'underline',
                                                 textUnderlineOffset: 2,
                                                 '&:hover': task.archived ? undefined : { color: 'primary.main' }
-                                            } }, task.dueOn ? "Due ".concat(formatDateTime$1(task.dueOn)) : 'Add due date'))),
+                                            } }, task.dueOn ? "Due ".concat(formatDateTime(task.dueOn)) : 'Add due date'))),
                                     React.createElement(Box, { sx: {
                                             display: 'grid',
                                             gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
@@ -13976,8 +14184,8 @@ function TasksToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openTasksPanel }),
-                React.createElement(Badge, { badgeContent: openCount > 0 ? openCount : undefined, color: overdueCount > 0 ? 'error' : 'primary', max: 99 },
-                    React.createElement(ContentPasteRoundedIcon, null))))));
+                React.createElement(ToolbarIconBadge, { count: openCount, color: overdueCount > 0 ? 'error' : 'primary' },
+                    React.createElement(InventoryRoundedIcon, null))))));
 }
 
 function extractCalendarPackageList(response) {
@@ -14165,37 +14373,6 @@ function getTaskFromCalendarEvent(event) {
     return (_a = event.meta) === null || _a === void 0 ? void 0 : _a.task;
 }
 
-function formatDateTime(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return value;
-    }
-    return date.toLocaleString(undefined, {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit'
-    });
-}
-function toDateTimeInputValue(value) {
-    if (!value) {
-        return '';
-    }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return '';
-    }
-    var year = date.getFullYear();
-    var month = String(date.getMonth() + 1).padStart(2, '0');
-    var day = String(date.getDate()).padStart(2, '0');
-    var hours = String(date.getHours()).padStart(2, '0');
-    var minutes = String(date.getMinutes()).padStart(2, '0');
-    return "".concat(year, "-").concat(month, "-").concat(day, "T").concat(hours, ":").concat(minutes);
-}
 var TaskDetailDialog = function (_a) {
     var _b, _c;
     var open = _a.open, task = _a.task, onClose = _a.onClose, onOpenPackage = _a.onOpenPackage, onChanged = _a.onChanged;
@@ -15137,22 +15314,16 @@ function CalendarToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openCalendar }),
-                React.createElement(Badge, { badgeContent: todayCount > 0 ? todayCount : undefined, color: "primary", max: 99 },
+                React.createElement(ToolbarIconBadge, { count: todayCount, color: "primary" },
                     React.createElement(CalendarMonthRoundedIcon, null))))));
 }
 
-var PURPLE_BADGE_SX = {
-    '& .MuiBadge-badge': {
-        backgroundColor: '#9c27b0',
-        color: '#fff'
-    }
-};
 function ActiveWorkflowsToolbarButton(props) {
     var _this = this;
     var dispatch = useDispatch();
     var siteId = useActiveSiteId();
     var contentPath = usePreviewContentPath();
-    var title = typeof props.title === 'string' && props.title.trim() ? props.title : 'Active workflows';
+    var title = typeof props.title === 'string' && props.title.trim() ? props.title : 'Page packages';
     var _a = useState([]), packages = _a[0], setPackages = _a[1];
     var _b = useState(false), loading = _b[0], setLoading = _b[1];
     var _c = useState(false), starting = _c[0], setStarting = _c[1];
@@ -15230,7 +15401,7 @@ function ActiveWorkflowsToolbarButton(props) {
                 case 3:
                     e_1 = _a.sent();
                     console.error(e_1);
-                    window.alert('Unable to start workflow. Check Project Tools → Workflows and try again.');
+                    showStudioErrorSnack('Unable to start workflow. Check Project Tools → Workflows and try again.');
                     return [3 /*break*/, 5];
                 case 4:
                     setStarting(false);
@@ -15260,7 +15431,7 @@ function ActiveWorkflowsToolbarButton(props) {
                 case 4:
                     available = _a;
                     if (!available.length) {
-                        window.alert('No workflows are configured for this site. Create one in Project Tools → Crafter Workflow.');
+                        showStudioErrorSnack('No workflows are configured for this site. Create one in Project Tools → Crafter Workflow.');
                         return [2 /*return*/];
                     }
                     if (!(available.length === 1)) return [3 /*break*/, 6];
@@ -15308,7 +15479,7 @@ function ActiveWorkflowsToolbarButton(props) {
         React.createElement(Tooltip, { title: tooltipTitle },
             React.createElement("span", null,
                 React.createElement(IconButton, __assign({ "aria-label": title, onClick: handleClick, size: "large", disabled: !contentPath || loading || starting }, props),
-                    React.createElement(Badge, { badgeContent: packageCount > 0 ? packageCount : undefined, max: 99, sx: PURPLE_BADGE_SX }, starting ? React.createElement(CircularProgress, { size: 22, color: "inherit" }) : React.createElement(AccountTreeOutlinedIcon, null))))),
+                    React.createElement(ToolbarIconBadge, { count: packageCount, color: "secondary", sx: __assign(__assign({}, TOOLBAR_BADGE_SX), { '& .MuiBadge-badge': __assign(__assign({}, TOOLBAR_BADGE_SX['& .MuiBadge-badge']), { backgroundColor: '#9c27b0', color: '#fff' }) }) }, starting ? React.createElement(CircularProgress, { size: 22, color: "inherit" }) : React.createElement(AccountTreeOutlinedIcon, null))))),
         React.createElement(Menu$1, { anchorEl: menuAnchor, open: Boolean(menuAnchor), onClose: function () { return setMenuAnchor(null); }, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }, transformOrigin: { vertical: 'top', horizontal: 'right' } }, workflowGroups.map(function (group) { return (React.createElement(MenuItem, { key: group.workflowId, onClick: function () { return handleOpenWorkflowGroup(group); } },
             React.createElement(ListItemText$1, { primary: group.workflowName, secondary: "".concat(group.packages.length, " package").concat(group.packages.length === 1 ? '' : 's') }))); })),
         React.createElement(Dialog, { open: startDialogOpen, onClose: function () { return setStartDialogOpen(false); }, fullWidth: true, maxWidth: "xs" },
@@ -15530,14 +15701,11 @@ var WorkflowStepRulesDialog = function (_a) {
         fetchAll$1({ limit: 500, offset: 0 }).subscribe({
             next: function (groups) {
                 var mapped = groups
-                    .map(function (group) {
-                    var _a;
-                    return ({
-                        id: Number((_a = group.id) !== null && _a !== void 0 ? _a : 0),
-                        name: (group.name || group.groupName || '').trim()
-                    });
-                })
-                    .filter(function (group) { return group.name; });
+                    .map(function (group) { return ({
+                    id: Number(group.id),
+                    name: (group.name || group.groupName || '').trim()
+                }); })
+                    .filter(function (group) { return group.name && group.id != null && !Number.isNaN(group.id); });
                 setGroupOptions(mapped);
             },
             error: function () {
@@ -15545,7 +15713,11 @@ var WorkflowStepRulesDialog = function (_a) {
             }
         });
     }, [open]);
-    var selectedGroupOptions = useMemo$1(function () { return roleSelections.map(function (name) { var _a; return (_a = groupOptions.find(function (g) { return g.name === name; })) !== null && _a !== void 0 ? _a : { id: 0, name: name }; }); }, [roleSelections, groupOptions]);
+    var selectedGroupOptions = useMemo$1(function () {
+        return roleSelections
+            .map(function (name) { return groupOptions.find(function (g) { return g.name === name; }); })
+            .filter(function (group) { return !!group; });
+    }, [roleSelections, groupOptions]);
     var parseMultiline = function (value) {
         return value
             .split(/\r?\n/)
@@ -15628,7 +15800,8 @@ var WorkflowEditorDialog = function (_a) {
     var _j = useState(false), stagingEnabled = _j[0], setStagingEnabled = _j[1];
     var _k = useState(false), saving = _k[0], setSaving = _k[1];
     var _l = useState(), error = _l[0], setError = _l[1];
-    var _m = useState(null), rulesStepIndex = _m[0], setRulesStepIndex = _m[1];
+    var _m = useState(null), validationError = _m[0], setValidationError = _m[1];
+    var _o = useState(null), rulesStepIndex = _o[0], setRulesStepIndex = _o[1];
     useEffect(function () {
         if (open && detail) {
             setName(detail.workflow.name || '');
@@ -15636,6 +15809,7 @@ var WorkflowEditorDialog = function (_a) {
             setBoardBackground(normalizeBoardBackgroundId(detail.workflow.backgroundColor || detail.workflow.backgroundUrl));
             setSteps(mapDetailSteps(detail.steps || []));
             setError(undefined);
+            setValidationError(null);
         }
     }, [open, detail]);
     useEffect(function () {
@@ -15672,9 +15846,10 @@ var WorkflowEditorDialog = function (_a) {
     };
     var handleRemoveStep = function (index) {
         if (steps.length <= 1) {
-            window.alert('A workflow must have at least one step.');
+            setValidationError('A workflow must have at least one step.');
             return;
         }
+        setValidationError(null);
         var removedKey = steps[index].clientKey;
         setSteps(steps
             .filter(function (_, i) { return i !== index; })
@@ -15705,21 +15880,22 @@ var WorkflowEditorDialog = function (_a) {
     };
     var handleSave = function () {
         if (!name.trim()) {
-            window.alert('Workflow name is required.');
+            setValidationError('Workflow name is required.');
             return;
         }
         if (steps.some(function (step) { var _a; return !((_a = step.name) === null || _a === void 0 ? void 0 : _a.trim()); })) {
-            window.alert('Every step needs a name.');
+            setValidationError('Every step needs a name.');
             return;
         }
         if (steps.some(function (step) { var _a, _b; return ((_b = (_a = step.name) === null || _a === void 0 ? void 0 : _a.trim().length) !== null && _b !== void 0 ? _b : 0) > STEP_NAME_MAX_LENGTH; })) {
-            window.alert("Step names must be ".concat(STEP_NAME_MAX_LENGTH, " characters or fewer."));
+            setValidationError("Step names must be ".concat(STEP_NAME_MAX_LENGTH, " characters or fewer."));
             return;
         }
         if (!siteId) {
-            window.alert('No active site selected.');
+            setValidationError('No active site selected.');
             return;
         }
+        setValidationError(null);
         setSaving(true);
         setError(undefined);
         saveWorkflowDefinition(siteId, detail.workflow.id, {
@@ -15763,6 +15939,7 @@ var WorkflowEditorDialog = function (_a) {
         } },
         React.createElement(DialogTitle, { sx: { flexShrink: 0 } }, "Edit workflow"),
         React.createElement(DialogContent, { dividers: true, sx: { flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 } },
+            validationError && (React.createElement(Alert, { severity: "warning", onClose: function () { return setValidationError(null); } }, validationError)),
             error && React.createElement(ApiResponseErrorState, { error: error }),
             React.createElement(Stack, { spacing: 2, sx: { flexShrink: 0 } },
                 React.createElement(TextField, { label: "Workflow name", value: name, onChange: function (e) { return setName(e.target.value); }, fullWidth: true, required: true, inputProps: { maxLength: WORKFLOW_NAME_MAX_LENGTH } }),
@@ -15926,7 +16103,7 @@ var WorkflowsTab = function (_a) {
     };
     var handleDelete = function (workflow) {
         if (workflow.packageCount > 0) {
-            window.alert('This workflow has active packages. Archive or move packages before deleting the workflow.');
+            showStudioErrorSnack('This workflow has active packages. Archive or move packages before deleting the workflow.');
             return;
         }
         if (!window.confirm("Delete workflow \"".concat(workflow.name, "\"?"))) {

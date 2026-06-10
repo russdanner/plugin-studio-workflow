@@ -5,7 +5,7 @@ import AccountTreeOutlinedIcon from '@mui/icons-material/AccountTreeOutlined';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import HistoryRoundedIcon from '@mui/icons-material/HistoryRounded';
 import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded';
-import { Box, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, IconButton, Stack, Tooltip, Typography } from '@mui/material';
 
 import ItemTypeIcon from '@craftercms/studio-ui/components/ItemTypeIcon';
 import ItemStateIcon from '@craftercms/studio-ui/components/ItemStateIcon';
@@ -25,6 +25,10 @@ export interface AttachedContentItemRowProps {
   item: AttachedSandboxItem;
   onRemove?: () => void;
   showPath?: boolean;
+  /** Show a checkbox for selection (attach clipboard panel). */
+  showSelectionCheckbox?: boolean;
+  selectionChecked?: boolean;
+  onSelectionChange?: (checked: boolean) => void;
 }
 
 const iconWrapSx = {
@@ -34,7 +38,14 @@ const iconWrapSx = {
   '& .MuiSvgIcon-root': { fontSize: '1.1rem' }
 };
 
-const AttachedContentItemRow = ({ item, onRemove, showPath = true }: AttachedContentItemRowProps) => {
+const AttachedContentItemRow = ({
+  item,
+  onRemove,
+  showPath = true,
+  showSelectionCheckbox = false,
+  selectionChecked = true,
+  onSelectionChange
+}: AttachedContentItemRowProps) => {
   const dispatch = useDispatch();
   const { previewItem } = useStudioItemPreview();
   const internalName = resolveSandboxItemInternalName(item);
@@ -52,6 +63,15 @@ const AttachedContentItemRow = ({ item, onRemove, showPath = true }: AttachedCon
         minWidth: 0
       }}
     >
+      {showSelectionCheckbox ? (
+        <Checkbox
+          size="small"
+          checked={selectionChecked}
+          onChange={(_, checked) => onSelectionChange?.(checked)}
+          inputProps={{ 'aria-label': `Select ${internalName}` }}
+          sx={{ p: 0.25, flexShrink: 0 }}
+        />
+      ) : null}
       <Box sx={iconWrapSx}>
         <ItemTypeIcon item={item} fontSize="small" />
       </Box>

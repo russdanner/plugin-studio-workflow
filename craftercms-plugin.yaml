@@ -104,7 +104,7 @@ plugin:
           - name: configuration
             children:
               - name: title
-                value: Active workflows
+                value: Page packages
     - type: preview-app
       elementXpath: //widget[@id='org.rd.plugin.crafterwf.contentCommentsToolbarButton']
       parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
@@ -129,7 +129,7 @@ plugin:
           - name: configuration
             children:
               - name: title
-                value: Comments
+                value: Content comments
     - type: preview-app
       elementXpath: //widget[@id='org.rd.plugin.crafterwf.notificationsToolbarButton']
       parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets

@@ -42,7 +42,7 @@ function formatDate(value?: string | null): string {
 const NotificationsPanel = () => {
   const siteId = useActiveSiteId();
   const dispatch = useDispatch();
-  const { previewPath } = useStudioItemPreview();
+  const { previewPath, inspectPath } = useStudioItemPreview();
   const [notifications, setNotifications] = useState<WorkflowNotification[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,7 +78,7 @@ const NotificationsPanel = () => {
     if (!canOpenNotificationTarget(notification)) {
       return;
     }
-    openNotificationTarget(dispatch, siteId, notification, previewPath);
+    openNotificationTarget(dispatch, siteId, notification, previewPath, inspectPath);
   };
 
   const handleResolve = (notificationId: string, resolved: boolean) => {
@@ -178,6 +178,9 @@ const NotificationsPanel = () => {
                       <Box
                         component="button"
                         type="button"
+                        title={
+                          notification.targetType === 'content' ? 'Open in inspect mode' : undefined
+                        }
                         onClick={() => handleOpenTarget(notification)}
                         sx={{
                           display: 'inline',

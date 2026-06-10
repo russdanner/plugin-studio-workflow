@@ -131,6 +131,31 @@ Deep link opens Studio preview by content type.
 
 Package menu exposes Request Review, Reject, Publish based on linked items' `availableActionsMap`. Uses standard Studio dialogs.
 
+## Publishing and Crafter Studio workflow
+
+The plugin is an **editorial coordination superset** around Crafter’s built-in publish and workflow features — not a parallel publishing system.
+
+### Manual actions from the board
+
+When an author uses **Request Review**, **Reject**, or **Publish** on linked content from a package card, the plugin opens the **same Studio dialogs** driven by each item’s `availableActionsMap`. Behavior matches stock Studio: permissions, validation, iconography, scheduling, and **OOTB email/in-app notifications** from Crafter are unchanged.
+
+### Automatic step publish actions
+
+When a package **enters a step** with a configured `actionType` (see [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md)), `WorkflowStepActionService` calls Studio’s `workflowService` (`requestPublish` / `publish`) **as the user who moved the package**. That uses the same publishing pipeline as if the user had triggered the action manually in Studio — including environment targets (staging/live), dependency handling, and failure messages. On failure the package can revert to the previous step; success may advance to `actionSuccessStepId`.
+
+| `actionType` | Studio API |
+|--------------|------------|
+| `request_publish_staging` | `workflowService.requestPublish` → staging target |
+| `request_publish_live` | `workflowService.requestPublish` → live target |
+| `publish_staging` | `workflowService.publish` → staging target |
+| `publish_live` | `workflowService.publish` → live target |
+
+### Delivery while content is in a package
+
+Attaching sandbox content to a workflow package does **not** change Crafter’s publish model. **In-flight sandbox edits are not on delivery** until a successful Studio publish (manual or step action). Delivery continues to serve the **last published** version — the same rule as stock Studio without this plugin.
+
+What the plugin adds: visibility (board, audit, comments, tasks), step rules, and optional automation of Studio publish actions on step entry. What it does **not** add today: mandatory enrollment, content locks, or hiding publish when a package exists — see [Out of scope](#out-of-scope) and feedback **FB-014**.
+
 ### C7 — Notifications (in-app)
 
 | Trigger | Recipient |
@@ -172,7 +197,7 @@ Separate Tools panel widget for commenting on the currently selected content ite
 
 | Widget ID | Purpose |
 |-----------|---------|
-| `openBoardButton` | Open kanban dialog |
+| `openBoardButton` | Open kanban dialog (Tools panel; see [Tools panel workflow label](#tools-panel-workflow-label)) |
 | `board` | Kanban board component |
 | `notificationsToolbarButton` / `notificationsPanel` | Notification bell and inbox |
 | `tasksToolbarButton` / `tasksPanel` | Tasks list |
@@ -181,9 +206,21 @@ Separate Tools panel widget for commenting on the currently selected content ite
 
 ## User workflows
 
+### Tools panel workflow label
+
+The **Workflow** entry in the Studio **Tools** panel (left sidebar) opens the kanban board. Its label depends on how many workflows are configured for the site:
+
+| Workflows on site | Tools panel label | Interaction |
+|-------------------|-------------------|-------------|
+| **One** | That workflow’s **name** (e.g. *Editorial Workflow*) | Click opens the board for that workflow directly. |
+| **More than one** | **Workflow** | Click expands an accordion listing each workflow by name; choose one to open its board. |
+| **None** | **Workflow** | Click opens the board shell (configure workflows in Project Tools → Crafter Workflow). |
+
+This is separate from Crafter’s built-in **asset workflow** (publish states on content items). Preview toolbar widgets use distinct labels: **Page packages**, **Content comments**, **Tasks**, **Notifications**, **Calendar**.
+
 ### Open and use a workflow board
 
-1. Author clicks Tools panel workflow button
+1. Author clicks Tools panel workflow button (or a workflow name in the accordion)
 2. Board loads via `workflow/board.json`
 3. Author drags packages, adds packages, opens details, comments, tasks
 

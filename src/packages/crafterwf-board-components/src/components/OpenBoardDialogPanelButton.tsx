@@ -14,7 +14,8 @@ import { useDispatch } from 'react-redux';
 import { listWorkflows, WorkflowSummary } from '../api/adminApi';
 import { openWorkflowBoard } from '../utils/openWorkflowBoard';
 
-const WORKFLOW_LABEL = 'Workflow';
+/** Tools panel label when the site has more than one workflow (accordion). */
+const MULTI_WORKFLOW_LABEL = 'Workflow';
 const DEFAULT_WORKFLOW_ICON = '@mui/icons-material/AccountTreeOutlined';
 
 function resolveWorkflowIcon(props: Record<string, unknown>): string {
@@ -60,6 +61,7 @@ export function OpenBoardDialogPanelButton(props: Record<string, unknown>) {
 
   const singleWorkflow = workflows.length === 1 ? workflows[0] : null;
   const multipleWorkflows = workflows.length > 1;
+  const panelTitle = singleWorkflow ? singleWorkflow.name : MULTI_WORKFLOW_LABEL;
 
   const handlePrimaryClick = () => {
     if (loading) {
@@ -73,7 +75,7 @@ export function OpenBoardDialogPanelButton(props: Record<string, unknown>) {
       setExpanded((prev) => !prev);
       return;
     }
-    openWorkflowBoard(dispatch, WORKFLOW_LABEL, { workflowId: '' });
+    openWorkflowBoard(dispatch, MULTI_WORKFLOW_LABEL, { workflowId: '' });
   };
 
   const toggleExpanded = () => {
@@ -86,7 +88,7 @@ export function OpenBoardDialogPanelButton(props: Record<string, unknown>) {
     <>
       <ToolsPanelListItemButton
         icon={{ id: workflowIcon }}
-        title={WORKFLOW_LABEL}
+        title={panelTitle}
         disabled={loading}
         onClick={handlePrimaryClick}
         onSecondaryActionClick={multipleWorkflows ? toggleExpanded : undefined}

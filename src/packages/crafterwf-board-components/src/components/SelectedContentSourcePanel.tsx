@@ -74,8 +74,8 @@ const SelectedContentSourcePanel = ({ selectedPaths, onRemove }: SelectedContent
         </Typography>
         <Typography variant="caption" color="text.secondary">
           {selectedPaths.length === 0
-            ? 'Select content from search results'
-            : `${selectedPaths.length} item${selectedPaths.length === 1 ? '' : 's'} selected`}
+            ? 'Select content from search — use checkboxes to build your attach list'
+            : `${selectedPaths.length} item${selectedPaths.length === 1 ? '' : 's'} selected — uncheck to remove`}
         </Typography>
       </Box>
 
@@ -94,6 +94,13 @@ const SelectedContentSourcePanel = ({ selectedPaths, onRemove }: SelectedContent
               {index > 0 ? <Divider /> : null}
               <AttachedContentItemRow
                 item={itemsByPath[path] ?? ({ path } as AttachedSandboxItem)}
+                showSelectionCheckbox
+                selectionChecked
+                onSelectionChange={(checked) => {
+                  if (!checked) {
+                    onRemove(path);
+                  }
+                }}
                 onRemove={() => onRemove(path)}
               />
             </React.Fragment>
