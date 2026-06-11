@@ -53,6 +53,7 @@ import {
 import { resolveStepColor } from '../colors';
 import { PACKAGE_TITLE_MAX_LENGTH } from '../consts';
 import { notifyWorkflowsUpdated } from '../utils/activeWorkflows';
+import { notifyCommentsUpdated } from '../utils/commentBadgeUtils';
 import { notifyCalendarUpdated } from '../types/calendarEvent';
 import {
   extractContentPathFromAttachmentUrl,
@@ -452,6 +453,7 @@ const BoardCard = ({
       next: () => {
         loadCommentsOnly();
         scheduleBoardRefresh();
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -464,6 +466,7 @@ const BoardCard = ({
       next: () => {
         loadCommentsOnly();
         scheduleBoardRefresh();
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -476,6 +479,7 @@ const BoardCard = ({
       next: () => {
         loadCommentsOnly();
         scheduleBoardRefresh();
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);

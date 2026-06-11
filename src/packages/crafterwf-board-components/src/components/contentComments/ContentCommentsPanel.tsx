@@ -30,6 +30,7 @@ import {
   archiveComment
 } from '../../api/workflowApi';
 import { resolveStepColor } from '../../colors';
+import { markCommentsViewed, notifyCommentsUpdated } from '../../utils/commentBadgeUtils';
 import { usePreviewContentPath } from '../../utils/studioPreview';
 
 function coverColorDot(color: string | undefined): string | undefined {
@@ -69,6 +70,8 @@ const ContentCommentsPanel = () => {
           setExpandedId(pkgList[0].workflowPackageId);
         }
         setLoading(false);
+        markCommentsViewed(siteId, contentPath);
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -119,6 +122,7 @@ const ContentCommentsPanel = () => {
     createContentComment(siteId, contentPath, body, mentionedUserIds).subscribe({
       next() {
         refreshContentComments();
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -130,6 +134,7 @@ const ContentCommentsPanel = () => {
     createPackageComment(siteId, workflowPackageId, body, mentionedUserIds).subscribe({
       next() {
         refreshPackageComments(workflowPackageId);
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -142,6 +147,7 @@ const ContentCommentsPanel = () => {
       next() {
         refreshContentComments();
         packages.forEach((pkg) => refreshPackageComments(pkg.workflowPackageId));
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);
@@ -154,6 +160,7 @@ const ContentCommentsPanel = () => {
       next() {
         refreshContentComments();
         packages.forEach((pkg) => refreshPackageComments(pkg.workflowPackageId));
+        notifyCommentsUpdated();
       },
       error(e) {
         console.error(e);

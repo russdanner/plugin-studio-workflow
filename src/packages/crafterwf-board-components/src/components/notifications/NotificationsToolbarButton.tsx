@@ -54,7 +54,7 @@ export function NotificationsToolbarButton(props: Record<string, unknown>) {
     <Tooltip title={title}>
       <span>
         <IconButton aria-label={title} size="large" {...props} onClick={openNotificationsPanel}>
-          <ToolbarIconBadge count={unreadCount} color="error">
+          <ToolbarIconBadge count={unreadCount} overdueCount={0} color="error">
             <NotificationsNoneRoundedIcon />
           </ToolbarIconBadge>
         </IconButton>

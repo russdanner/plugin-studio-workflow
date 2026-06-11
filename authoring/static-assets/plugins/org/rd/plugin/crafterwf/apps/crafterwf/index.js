@@ -12239,6 +12239,76 @@ var CardActions = function (_a) {
         React.createElement(ContentSearchAttachDialog, { open: contentSearchOpen, onClose: closeContentSearch, onAttach: handleContentSearchAccept })));
 };
 
+var COMMENTS_UPDATED_EVENT = 'crafterwf:comments-updated';
+function notifyCommentsUpdated() {
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent(COMMENTS_UPDATED_EVENT));
+    }
+}
+function commentsViewedStorageKey(siteId, contentPath) {
+    return "crafterwf:comments-viewed:".concat(siteId, ":").concat(contentPath);
+}
+function markCommentsViewed(siteId, contentPath) {
+    if (typeof window === 'undefined') {
+        return;
+    }
+    sessionStorage.setItem(commentsViewedStorageKey(siteId, contentPath), new Date().toISOString());
+}
+function getCommentsLastViewed(siteId, contentPath) {
+    var _a;
+    if (typeof window === 'undefined') {
+        return undefined;
+    }
+    return (_a = sessionStorage.getItem(commentsViewedStorageKey(siteId, contentPath))) !== null && _a !== void 0 ? _a : undefined;
+}
+function commentMentionsUsername(body, username) {
+    if (!(body === null || body === void 0 ? void 0 : body.trim()) || !(username === null || username === void 0 ? void 0 : username.trim())) {
+        return false;
+    }
+    var escaped = username.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    var pattern = new RegExp("(?<![\\w.@])@".concat(escaped, "(?![\\w.\\-@])"), 'i');
+    return pattern.test(body);
+}
+function isUnreadComment(comment, currentUserId, lastViewedAt) {
+    if (comment.archived || comment.resolved) {
+        return false;
+    }
+    if (currentUserId != null && comment.authorId === currentUserId) {
+        return false;
+    }
+    if (lastViewedAt && comment.createdOn) {
+        var viewed = Date.parse(lastViewedAt);
+        var created = Date.parse(comment.createdOn);
+        if (!Number.isNaN(viewed) && !Number.isNaN(created) && created <= viewed) {
+            return false;
+        }
+    }
+    return true;
+}
+function countCommentBadgeState(comments, currentUserId, currentUsername, siteId, contentPath) {
+    var lastViewedAt = getCommentsLastViewed(siteId, contentPath);
+    var unreadCount = 0;
+    var mentionCount = 0;
+    comments.forEach(function (comment) {
+        if (!isUnreadComment(comment, currentUserId, lastViewedAt)) {
+            return;
+        }
+        unreadCount += 1;
+        if (currentUsername && commentMentionsUsername(comment.body, currentUsername)) {
+            mentionCount += 1;
+        }
+    });
+    return { unreadCount: unreadCount, mentionCount: mentionCount };
+}
+function collectCommentsForContentPath(contentComments, packages) {
+    var all = __spreadArray([], contentComments, true);
+    packages.forEach(function (pkg) {
+        var _a;
+        all.push.apply(all, ((_a = pkg.comments) !== null && _a !== void 0 ? _a : []));
+    });
+    return all;
+}
+
 var CALENDAR_UPDATED_EVENT = 'crafterwf:calendar-updated';
 function notifyCalendarUpdated() {
     if (typeof window !== 'undefined') {
@@ -12580,6 +12650,7 @@ var BoardCard = function (_a) {
             next: function () {
                 loadCommentsOnly();
                 scheduleBoardRefresh();
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -12591,6 +12662,7 @@ var BoardCard = function (_a) {
             next: function () {
                 loadCommentsOnly();
                 scheduleBoardRefresh();
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -12602,6 +12674,7 @@ var BoardCard = function (_a) {
             next: function () {
                 loadCommentsOnly();
                 scheduleBoardRefresh();
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13377,6 +13450,8 @@ var ContentCommentsPanel = function () {
                     setExpandedId(pkgList[0].workflowPackageId);
                 }
                 setLoading(false);
+                markCommentsViewed(siteId, contentPath);
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13425,6 +13500,7 @@ var ContentCommentsPanel = function () {
         createContentComment(siteId, contentPath, body, mentionedUserIds).subscribe({
             next: function () {
                 refreshContentComments();
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13435,6 +13511,7 @@ var ContentCommentsPanel = function () {
         createPackageComment(siteId, workflowPackageId, body, mentionedUserIds).subscribe({
             next: function () {
                 refreshPackageComments(workflowPackageId);
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13446,6 +13523,7 @@ var ContentCommentsPanel = function () {
             next: function () {
                 refreshContentComments();
                 packages.forEach(function (pkg) { return refreshPackageComments(pkg.workflowPackageId); });
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13457,6 +13535,7 @@ var ContentCommentsPanel = function () {
             next: function () {
                 refreshContentComments();
                 packages.forEach(function (pkg) { return refreshPackageComments(pkg.workflowPackageId); });
+                notifyCommentsUpdated();
             },
             error: function (e) {
                 console.error(e);
@@ -13519,18 +13598,115 @@ var ContentCommentsPanel = function () {
             })))));
 };
 
+/** Shared toolbar badge styling (compact numeric badge). */
+var TOOLBAR_BADGE_SX = {
+    '& .MuiBadge-badge': {
+        fontSize: '0.65rem',
+        fontWeight: 600,
+        minWidth: 16,
+        height: 16,
+        padding: '0 4px',
+        boxShadow: '0 0 0 2px var(--mui-palette-background-paper, #fff)'
+    }
+};
+var TOOLBAR_DOT_BADGE_SX = {
+    '& .MuiBadge-badge': {
+        minWidth: 8,
+        width: 8,
+        height: 8,
+        padding: 0,
+        fontSize: 0,
+        lineHeight: 0,
+        boxShadow: '0 0 0 2px var(--mui-palette-background-paper, #fff)'
+    }
+};
+function mergeDotBadgeSx(sx) {
+    var _a;
+    var extra = sx;
+    return __assign(__assign(__assign({}, sx), TOOLBAR_DOT_BADGE_SX), { '& .MuiBadge-badge': __assign(__assign({}, ((_a = extra === null || extra === void 0 ? void 0 : extra['& .MuiBadge-badge']) !== null && _a !== void 0 ? _a : {})), TOOLBAR_DOT_BADGE_SX['& .MuiBadge-badge']) });
+}
+/**
+ * Toolbar badge: dot when there is activity; numeric count only when overdueCount &gt; 0.
+ */
+function ToolbarIconBadge(_a) {
+    var _b = _a.count, count = _b === void 0 ? 0 : _b, _c = _a.overdueCount, overdueCount = _c === void 0 ? 0 : _c, _d = _a.color, color = _d === void 0 ? 'error' : _d, _e = _a.max, max = _e === void 0 ? 99 : _e, sx = _a.sx, children = _a.children, rest = __rest(_a, ["count", "overdueCount", "color", "max", "sx", "children"]);
+    var hasNumeric = overdueCount > 0;
+    var hasActivity = count > 0;
+    if (!hasNumeric && !hasActivity) {
+        return React.createElement(React.Fragment, null, children);
+    }
+    if (hasNumeric) {
+        return (React.createElement(Badge, __assign({ badgeContent: overdueCount, color: color, max: max, overlap: "circular", sx: __assign(__assign({}, TOOLBAR_BADGE_SX), sx) }, rest), children));
+    }
+    return (React.createElement(Badge, __assign({ variant: "dot", color: color, overlap: "circular", sx: mergeDotBadgeSx(sx) }, rest), children));
+}
+
 var CONTENT_COMMENTS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.contentCommentsPanel';
 function ContentCommentsToolbarButton(props) {
     var dispatch = useDispatch();
     var siteId = useActiveSiteId();
+    var contentPath = usePreviewContentPath();
     var title = typeof props.title === 'string' && props.title.trim() ? props.title : 'Comments';
+    var _a = useState(0), unreadCount = _a[0], setUnreadCount = _a[1];
+    var _b = useState(0), mentionCount = _b[0], setMentionCount = _b[1];
+    var _c = useState(), currentUserId = _c[0], setCurrentUserId = _c[1];
+    var _d = useState(), currentUsername = _d[0], setCurrentUsername = _d[1];
+    useEffect(function () {
+        var subscription = me().subscribe({
+            next: function (currentUser) {
+                setCurrentUserId(currentUser === null || currentUser === void 0 ? void 0 : currentUser.id);
+                setCurrentUsername(currentUser === null || currentUser === void 0 ? void 0 : currentUser.username);
+            },
+            error: function (e) {
+                console.error(e);
+            }
+        });
+        return function () { return subscription.unsubscribe(); };
+    }, []);
+    var refreshBadge = useCallback$1(function () {
+        if (!siteId || !contentPath) {
+            setUnreadCount(0);
+            setMentionCount(0);
+            return;
+        }
+        findPackagesByContentPath(siteId, contentPath, true, false).subscribe({
+            next: function (response) {
+                var _a, _b, _c;
+                var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                var comments = collectCommentsForContentPath((_b = result === null || result === void 0 ? void 0 : result.contentComments) !== null && _b !== void 0 ? _b : [], (_c = result === null || result === void 0 ? void 0 : result.packages) !== null && _c !== void 0 ? _c : []);
+                var counts = countCommentBadgeState(comments, currentUserId, currentUsername, siteId, contentPath);
+                setUnreadCount(counts.unreadCount);
+                setMentionCount(counts.mentionCount);
+            },
+            error: function (e) {
+                console.error(e);
+            }
+        });
+    }, [contentPath, currentUserId, currentUsername, siteId]);
+    useEffect(function () {
+        refreshBadge();
+        var intervalId = window.setInterval(refreshBadge, 30000);
+        var handleUpdated = function () { return refreshBadge(); };
+        window.addEventListener(COMMENTS_UPDATED_EVENT, handleUpdated);
+        return function () {
+            window.clearInterval(intervalId);
+            window.removeEventListener(COMMENTS_UPDATED_EVENT, handleUpdated);
+        };
+    }, [refreshBadge]);
     var openCommentsPanel = function () {
+        if (siteId && contentPath) {
+            markCommentsViewed(siteId, contentPath);
+            setUnreadCount(0);
+            setMentionCount(0);
+        }
         dispatch(buildOpenCommentsIcePanelAction(title, CONTENT_COMMENTS_PANEL_WIDGET_ID, siteId !== null && siteId !== void 0 ? siteId : undefined));
+        refreshBadge();
     };
-    return (React.createElement(Tooltip, { title: title },
+    return (React.createElement(Tooltip, { title: !contentPath ? 'Open a page in preview to see comments' : title },
         React.createElement("span", null,
-            React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openCommentsPanel }),
-                React.createElement(CommentRoundedIcon, null)))));
+            React.createElement(IconButton, __assign({ "aria-label": title, size: "large", disabled: !contentPath }, props, { onClick: openCommentsPanel }),
+                React.createElement(ToolbarIconBadge, { count: unreadCount, overdueCount: mentionCount, color: mentionCount > 0 ? 'error' : 'primary' },
+                    React.createElement(CommentRoundedIcon, null))))));
 }
 
 var NOTIFICATIONS_UPDATED_EVENT = 'crafterwf:notifications-updated';
@@ -13868,23 +14044,6 @@ var NotificationsPanel = function () {
         React.createElement(Button, { size: "small", sx: { alignSelf: 'flex-start', px: 0, minWidth: 0 }, onClick: function () { return setShowArchived(function (prev) { return !prev; }); } }, showArchived ? 'Hide archived' : 'Show archived')));
 };
 
-var TOOLBAR_BADGE_SX = {
-    '& .MuiBadge-badge': {
-        fontSize: '0.65rem',
-        fontWeight: 600,
-        minWidth: 16,
-        height: 16,
-        padding: '0 4px'
-    }
-};
-function ToolbarIconBadge(_a) {
-    var _b = _a.count, count = _b === void 0 ? 0 : _b, _c = _a.color, color = _c === void 0 ? 'error' : _c, _d = _a.max, max = _d === void 0 ? 99 : _d, sx = _a.sx, children = _a.children, rest = __rest(_a, ["count", "color", "max", "sx", "children"]);
-    if (count <= 0) {
-        return React.createElement(React.Fragment, null, children);
-    }
-    return (React.createElement(Badge, __assign({ badgeContent: count, color: color, max: max, overlap: "circular", sx: __assign(__assign({}, TOOLBAR_BADGE_SX), sx) }, rest), children));
-}
-
 var NOTIFICATIONS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.notificationsPanel';
 function NotificationsToolbarButton(props) {
     var dispatch = useDispatch();
@@ -13923,7 +14082,7 @@ function NotificationsToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openNotificationsPanel }),
-                React.createElement(ToolbarIconBadge, { count: unreadCount, color: "error" },
+                React.createElement(ToolbarIconBadge, { count: unreadCount, overdueCount: 0, color: "error" },
                     React.createElement(NotificationsNoneRoundedIcon, null))))));
 }
 
@@ -14540,7 +14699,7 @@ function TasksToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openTasksPanel }),
-                React.createElement(ToolbarIconBadge, { count: openCount, color: overdueCount > 0 ? 'error' : 'primary' },
+                React.createElement(ToolbarIconBadge, { count: openCount, overdueCount: overdueCount, color: overdueCount > 0 ? 'error' : 'primary' },
                     React.createElement(InventoryRoundedIcon, null))))));
 }
 
@@ -15158,6 +15317,11 @@ function CalendarSourceIcon(_a) {
     return React.createElement(TaskAltRoundedIcon, { fontSize: fontSize, sx: { flexShrink: 0 } });
 }
 
+function isPastDueDate(isoDate, reference) {
+    if (reference === void 0) { reference = new Date(); }
+    var due = parseCalendarDate(isoDate);
+    return !!(due && due.getTime() < reference.getTime());
+}
 function eventOccursOnDay(event, day) {
     var start = parseCalendarDate(event.startsOn);
     if (!start) {
@@ -15210,6 +15374,25 @@ function isCountableCalendarEvent(event) {
 }
 function countEventsOnDay(events, day) {
     return eventsForDay(events, day).filter(isCountableCalendarEvent).length;
+}
+function isOverdueCalendarEvent(event, reference) {
+    var _a;
+    if (reference === void 0) { reference = new Date(); }
+    if (!isCountableCalendarEvent(event)) {
+        return false;
+    }
+    if (event.sourceId === 'task') {
+        var task = (_a = event.meta) === null || _a === void 0 ? void 0 : _a.task;
+        return !!(task && !task.complete && isPastDueDate(task.dueOn, reference));
+    }
+    if (event.sourceId === 'package') {
+        return isPastDueDate(event.startsOn, reference);
+    }
+    return false;
+}
+function countOverdueCalendarEvents(events, reference) {
+    if (reference === void 0) { reference = new Date(); }
+    return events.filter(function (event) { return isOverdueCalendarEvent(event, reference); }).length;
 }
 function formatEventTime(startsOn) {
     var date = parseCalendarDate(startsOn);
@@ -15637,14 +15820,18 @@ function CalendarToolbarButton(props) {
     var siteId = useActiveSiteId();
     var title = typeof props.title === 'string' && props.title.trim() ? props.title : 'Calendar';
     var _a = useState(0), todayCount = _a[0], setTodayCount = _a[1];
+    var _b = useState(0), overdueCount = _b[0], setOverdueCount = _b[1];
     var refreshTodayCount = useCallback$1(function () {
         if (!siteId) {
             setTodayCount(0);
+            setOverdueCount(0);
             return;
         }
         loadSiteCalendarEvents(siteId).subscribe({
             next: function (events) {
-                setTodayCount(countEventsOnDay(events, startOfDay(new Date())));
+                var today = startOfDay(new Date());
+                setTodayCount(countEventsOnDay(events, today));
+                setOverdueCount(countOverdueCalendarEvents(events));
             },
             error: function (e) {
                 console.error(e);
@@ -15670,7 +15857,7 @@ function CalendarToolbarButton(props) {
     return (React.createElement(Tooltip, { title: title },
         React.createElement("span", null,
             React.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openCalendar }),
-                React.createElement(ToolbarIconBadge, { count: todayCount, color: "primary" },
+                React.createElement(ToolbarIconBadge, { count: todayCount, overdueCount: overdueCount, color: overdueCount > 0 ? 'error' : 'primary' },
                     React.createElement(CalendarMonthRoundedIcon, null))))));
 }
 
@@ -15953,6 +16140,12 @@ function ActiveWorkflowsToolbarButton(props) {
     var _f = useState([]), workflows = _f[0], setWorkflows = _f[1];
     var workflowGroups = useMemo$1(function () { return groupPackagesByWorkflow(packages); }, [packages]);
     var packageCount = packages.length;
+    var overduePackageCount = useMemo$1(function () {
+        return packages.filter(function (pkg) {
+            var due = parseCalendarDate(pkg.dueOn);
+            return !!(due && due.getTime() < Date.now());
+        }).length;
+    }, [packages]);
     var refreshPackages = useCallback$1(function () {
         if (!siteId || !contentPath) {
             setPackages([]);
@@ -16101,7 +16294,9 @@ function ActiveWorkflowsToolbarButton(props) {
         React.createElement(Tooltip, { title: tooltipTitle },
             React.createElement("span", null,
                 React.createElement(IconButton, __assign({ "aria-label": title, onClick: handleClick, size: "large", disabled: !contentPath || loading || starting }, props),
-                    React.createElement(ToolbarIconBadge, { count: packageCount, color: "secondary", sx: __assign(__assign({}, TOOLBAR_BADGE_SX), { '& .MuiBadge-badge': __assign(__assign({}, TOOLBAR_BADGE_SX['& .MuiBadge-badge']), { backgroundColor: '#9c27b0', color: '#fff' }) }) }, starting ? React.createElement(CircularProgress, { size: 22, color: "inherit" }) : React.createElement(AccountTreeOutlinedIcon, null))))),
+                    React.createElement(ToolbarIconBadge, { count: packageCount, overdueCount: overduePackageCount, color: overduePackageCount > 0 ? 'error' : 'secondary', sx: overduePackageCount === 0
+                            ? { '& .MuiBadge-badge': { backgroundColor: '#9c27b0' } }
+                            : undefined }, starting ? React.createElement(CircularProgress, { size: 22, color: "inherit" }) : React.createElement(AccountTreeOutlinedIcon, null))))),
         React.createElement(Menu$1, { anchorEl: menuAnchor, open: Boolean(menuAnchor), onClose: function () { return setMenuAnchor(null); }, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }, transformOrigin: { vertical: 'top', horizontal: 'right' } }, workflowGroups.map(function (group) { return (React.createElement(MenuItem, { key: group.workflowId, onClick: function () { return handleOpenWorkflowGroup(group); } },
             React.createElement(ListItemText$1, { primary: group.workflowName, secondary: "".concat(group.packages.length, " package").concat(group.packages.length === 1 ? '' : 's') }))); })),
         React.createElement(Dialog, { open: startDialogOpen, onClose: function () { return setStartDialogOpen(false); }, fullWidth: true, maxWidth: "xs" },

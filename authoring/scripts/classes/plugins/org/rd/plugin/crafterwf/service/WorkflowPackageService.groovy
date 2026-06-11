@@ -330,6 +330,7 @@ class WorkflowPackageService {
                 coverColor        : pkg.cover_color,
                 workflowStepId    : pkg.workflow_step_id,
                 workflowStepName  : pkg.workflow_step_name,
+                dueOn             : pkg.due_on,
                 comments          : listPackageComments(
                     siteId, pkg.workflow_package_id as String, includeResolved, includeArchived
                 )

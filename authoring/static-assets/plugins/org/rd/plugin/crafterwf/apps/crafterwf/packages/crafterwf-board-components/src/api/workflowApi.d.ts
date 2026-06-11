@@ -133,6 +133,7 @@ export interface ContentPackageWithComments {
     coverColor?: string;
     workflowStepId?: string;
     workflowStepName?: string;
+    dueOn?: string;
     comments: WorkflowComment[];
 }
 export interface ContentCommentsResult {

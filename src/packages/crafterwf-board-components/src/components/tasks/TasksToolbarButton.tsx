@@ -57,7 +57,11 @@ export function TasksToolbarButton(props: Record<string, unknown>) {
     <Tooltip title={title}>
       <span>
         <IconButton aria-label={title} size="large" {...props} onClick={openTasksPanel}>
-          <ToolbarIconBadge count={openCount} color={overdueCount > 0 ? 'error' : 'primary'}>
+          <ToolbarIconBadge
+            count={openCount}
+            overdueCount={overdueCount}
+            color={overdueCount > 0 ? 'error' : 'primary'}
+          >
             <InventoryRoundedIcon />
           </ToolbarIconBadge>
         </IconButton>

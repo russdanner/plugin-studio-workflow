@@ -29,7 +29,7 @@ class WorkflowPackageAttachmentDao {
         def placeholders = pathVariants.collect { '?' }.join(', ')
         db.withSql { sql ->
             return sql.rows(
-                'SELECT p.id AS workflow_package_id, p.title, p.cover_color, p.workflow_step_id, p.workflow_id ' +
+                'SELECT p.id AS workflow_package_id, p.title, p.cover_color, p.workflow_step_id, p.workflow_id, p.due_on ' +
                 'FROM ' + db.table('wf_workflow_package_content_ref') + ' r ' +
                 'INNER JOIN ' + db.table('wf_workflow_package') + ' p ' +
                 'ON p.id = r.workflow_package_id AND p.site_id = r.site_id ' +
@@ -42,7 +42,8 @@ class WorkflowPackageAttachmentDao {
                     workflow_id         : row.workflow_id,
                     title               : row.title,
                     cover_color         : row.cover_color,
-                    workflow_step_id    : row.workflow_step_id
+                    workflow_step_id    : row.workflow_step_id,
+                    due_on              : row.due_on
                 ]
             }
         }

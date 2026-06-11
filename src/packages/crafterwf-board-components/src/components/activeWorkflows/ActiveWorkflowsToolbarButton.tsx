@@ -33,7 +33,8 @@ import {
 } from '../../utils/activeWorkflows';
 import { usePreviewContentPath } from '../../utils/studioPreview';
 import { showStudioErrorSnack } from '../../utils/showStudioErrorSnack';
-import { TOOLBAR_BADGE_SX, ToolbarIconBadge } from '../../utils/toolbarBadge';
+import { parseCalendarDate } from '../../utils/taskCalendarUtils';
+import { ToolbarIconBadge } from '../../utils/toolbarBadge';
 import WorkflowBypassGuard from '../workflowBypass/WorkflowBypassGuard';
 
 export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
@@ -52,6 +53,14 @@ export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
 
   const workflowGroups = useMemo(() => groupPackagesByWorkflow(packages), [packages]);
   const packageCount = packages.length;
+  const overduePackageCount = useMemo(
+    () =>
+      packages.filter((pkg) => {
+        const due = parseCalendarDate(pkg.dueOn);
+        return !!(due && due.getTime() < Date.now());
+      }).length,
+    [packages]
+  );
 
   const refreshPackages = useCallback(() => {
     if (!siteId || !contentPath) {
@@ -182,15 +191,13 @@ export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
           >
             <ToolbarIconBadge
               count={packageCount}
-              color="secondary"
-              sx={{
-                ...TOOLBAR_BADGE_SX,
-                '& .MuiBadge-badge': {
-                  ...TOOLBAR_BADGE_SX['& .MuiBadge-badge'],
-                  backgroundColor: '#9c27b0',
-                  color: '#fff'
-                }
-              }}
+              overdueCount={overduePackageCount}
+              color={overduePackageCount > 0 ? 'error' : 'secondary'}
+              sx={
+                overduePackageCount === 0
+                  ? { '& .MuiBadge-badge': { backgroundColor: '#9c27b0' } }
+                  : undefined
+              }
             >
               {starting ? <CircularProgress size={22} color="inherit" /> : <AccountTreeOutlinedIcon />}
             </ToolbarIconBadge>

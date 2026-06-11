@@ -1,5 +1,11 @@
+import { WorkflowTask } from '../api/taskApi';
 import { CalendarEvent } from '../types/calendarEvent';
 import { isSameDay, parseCalendarDate, startOfDay } from './taskCalendarUtils';
+
+function isPastDueDate(isoDate?: string | null, reference = new Date()): boolean {
+  const due = parseCalendarDate(isoDate);
+  return !!(due && due.getTime() < reference.getTime());
+}
 
 export function eventOccursOnDay(event: CalendarEvent, day: Date): boolean {
   const start = parseCalendarDate(event.startsOn);
@@ -55,6 +61,24 @@ export function isCountableCalendarEvent(event: CalendarEvent): boolean {
 
 export function countEventsOnDay(events: CalendarEvent[], day: Date): number {
   return eventsForDay(events, day).filter(isCountableCalendarEvent).length;
+}
+
+export function isOverdueCalendarEvent(event: CalendarEvent, reference = new Date()): boolean {
+  if (!isCountableCalendarEvent(event)) {
+    return false;
+  }
+  if (event.sourceId === 'task') {
+    const task = event.meta?.task as WorkflowTask | undefined;
+    return !!(task && !task.complete && isPastDueDate(task.dueOn, reference));
+  }
+  if (event.sourceId === 'package') {
+    return isPastDueDate(event.startsOn, reference);
+  }
+  return false;
+}
+
+export function countOverdueCalendarEvents(events: CalendarEvent[], reference = new Date()): number {
+  return events.filter((event) => isOverdueCalendarEvent(event, reference)).length;
 }
 
 export function formatEventTime(startsOn?: string | null): string {
