@@ -12,6 +12,8 @@ Cross-cutting features beyond the core workflow aggregate.
 | **Audit log** | [AUDIT_LOG.md](./AUDIT_LOG.md) | ✅ Task + package events; Project Tools tab |
 | **Step rules** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ JSON `roleRule` / `contentRule`; enforced on move |
 | **Step publish actions** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ `actionType` on steps; runs on package move |
+| **Content event listeners** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ `createListeners` / `editListeners` in workflow JSON; server enrollment on content save |
+| **Workflow bypass guard** | [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md) | ✅ Warn + audit + notify on Studio publish/reject outside action steps |
 
 ```mermaid
 flowchart TB
@@ -22,6 +24,7 @@ flowchart TB
         A[Audit log]
         SR[Step rules JSON]
         SA[Step publish actions]
+        EL[Content event listeners]
     end
 
     subgraph Deferred["Deferred"]
@@ -34,6 +37,7 @@ flowchart TB
     CORE --> N
     CORE --> T
     CORE --> A
+    CORE --> EL
     N -.-> E
     CORE -.-> H
     CORE -.-> R

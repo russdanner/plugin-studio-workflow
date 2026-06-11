@@ -1,6 +1,7 @@
 package plugins.org.rd.plugin.crafterwf.util
 
 import plugins.org.rd.plugin.crafterwf.model.StepActionType
+import plugins.org.rd.plugin.crafterwf.util.EventListenerJson
 
 class WorkflowDefinitionSupport {
 
@@ -34,8 +35,36 @@ class WorkflowDefinitionSupport {
             backgroundUrl   : definition.backgroundUrl,
             backgroundColor : definition.backgroundColor ?: definition.backgroundUrl,
             position        : definition.position != null ? definition.position : 0,
-            isDefault       : definition.isDefault == true
+            isDefault       : definition.isDefault == true,
+            createListeners       : EventListenerJson.toListenerDtos(definition.createListeners),
+            editListeners         : EventListenerJson.toListenerDtos(definition.editListeners),
+            bypassWarningMessage  : definition.bypassWarningMessage?.toString() ?: '',
+            allowUiBypass         : allowsUiBypass(definition)
         ]
+    }
+
+    static boolean allowsUiBypass(Map definition) {
+        return definition?.allowUiBypass == true || definition?.allowUiBypass == 'true' ||
+            definition?.allowUiBypass == 1 || definition?.allowUiBypass == '1'
+    }
+
+    static List<String> actionStepIds(Map definition) {
+        def ids = [] as LinkedHashSet
+        sortedSteps(definition).each { step ->
+            def actionType = resolveActionType(step)
+            if (StepActionType.isActionStep(actionType)) {
+                ids << (step.id as String)
+            }
+        }
+        return ids.toList()
+    }
+
+    static String stepName(Map definition, String stepId) {
+        if (!stepId) {
+            return ''
+        }
+        def step = stepLookup(definition)[stepId]
+        return step?.name?.toString()?.trim() ?: stepId
     }
 
     static Map toStepDto(Map step) {

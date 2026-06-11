@@ -154,7 +154,7 @@ When a package **enters a step** with a configured `actionType` (see [WORKFLOW_D
 
 Attaching sandbox content to a workflow package does **not** change Crafter’s publish model. **In-flight sandbox edits are not on delivery** until a successful Studio publish (manual or step action). Delivery continues to serve the **last published** version — the same rule as stock Studio without this plugin.
 
-What the plugin adds: visibility (board, audit, comments, tasks), step rules, and optional automation of Studio publish actions on step entry. What it does **not** add today: mandatory enrollment, content locks, or hiding publish when a package exists — see [Out of scope](#out-of-scope) and feedback **FB-014**.
+What the plugin adds: visibility (board, audit, comments, tasks), step rules, optional automation of Studio publish actions on step entry, and a **soft bypass guard** (block or acknowledge + audit + notify — see [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md)). What it does **not** add today: mandatory enrollment, content locks, or **server-side** publish blocking — see [Out of scope](#out-of-scope).
 
 ### C7 — Notifications (in-app)
 

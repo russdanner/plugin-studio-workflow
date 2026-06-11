@@ -24,6 +24,7 @@ export interface WorkflowSummary {
 
 import { StepActionType } from '../stepActions';
 import { StepContentRule, StepRoleRule } from '../stepRules';
+import { WorkflowEventListener } from '../eventListeners';
 
 export interface WorkflowStepDto {
   id?: string;
@@ -61,8 +62,15 @@ export interface WorkflowDetail {
     backgroundColor?: string;
     position?: number;
     isDefault?: boolean;
+    createListeners?: WorkflowEventListener[];
+    editListeners?: WorkflowEventListener[];
+    bypassWarningMessage?: string;
+    /** When true, authors may acknowledge and continue Studio publish/reject off-step. Default false. */
+    allowUiBypass?: boolean;
   };
   steps: WorkflowStepDto[];
+  createListeners?: WorkflowEventListener[];
+  editListeners?: WorkflowEventListener[];
 }
 
 export function getSchemaStatus(siteId: string) {
@@ -103,13 +111,21 @@ export function deleteWorkflow(siteId: string, workflowId: string) {
 }
 
 export function saveWorkflowDefinition(siteId: string, workflowId: string, payload: WorkflowDetail) {
+  const createListeners = payload.createListeners ?? payload.workflow.createListeners ?? [];
+  const editListeners = payload.editListeners ?? payload.workflow.editListeners ?? [];
   return post(
     `${PLUGIN_SERVICE_BASE}/admin/workflow/save.json?siteId=${encodeURIComponent(siteId)}`,
     {
       siteId,
       workflowId,
-      workflow: payload.workflow,
-      steps: payload.steps
+      workflow: {
+        ...payload.workflow,
+        createListeners,
+        editListeners
+      },
+      steps: payload.steps,
+      createListeners,
+      editListeners
     }
   );
 }

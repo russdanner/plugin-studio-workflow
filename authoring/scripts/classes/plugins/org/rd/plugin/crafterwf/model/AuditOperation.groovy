@@ -8,4 +8,6 @@ class AuditOperation {
     static final String PACKAGE_STEP_CHANGED = 'package_step_changed'
     static final String PACKAGE_STEP_ACTION = 'package_step_action'
     static final String PACKAGE_MODIFIED = 'package_modified'
+    static final String WORKFLOW_BYPASS_ACKNOWLEDGED = 'workflow_bypass_acknowledged'
+    static final String WORKFLOW_BYPASS_ACTION = 'workflow_bypass_action'
 }

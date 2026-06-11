@@ -270,6 +270,27 @@ plugin:
                 value: index.js
     - type: preview-app
       parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.workflowBypassGuard']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.workflowBypassGuard
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
       elementXpath: //widget[@id='org.rd.plugin.crafterwf.board']
       element:
         name: widget

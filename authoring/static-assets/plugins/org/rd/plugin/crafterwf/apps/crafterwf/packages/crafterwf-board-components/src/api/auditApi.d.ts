@@ -1,5 +1,5 @@
 export declare type AuditTargetType = 'workflow' | 'package' | 'task';
-export declare type AuditOperation = 'task_created' | 'task_modified' | 'package_created' | 'package_step_changed' | 'package_step_action' | 'package_modified';
+export declare type AuditOperation = 'task_created' | 'task_modified' | 'package_created' | 'package_step_changed' | 'package_step_action' | 'package_modified' | 'workflow_bypass_acknowledged' | 'workflow_bypass_action';
 export interface AuditLogEntry {
     id: string;
     siteId: string;

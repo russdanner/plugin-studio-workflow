@@ -2,6 +2,7 @@ package plugins.org.rd.plugin.crafterwf.service
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import plugins.org.rd.plugin.crafterwf.util.WorkflowBeanLookup
 
 class PublishingEnvironmentSupport {
 
@@ -61,24 +62,16 @@ class PublishingEnvironmentSupport {
         return resolveBean(applicationContext, WORKFLOW_SERVICE_BEANS)
     }
 
-    /**
-     * Studio REST scripts expose {@code applicationContext} as {@code ApplicationContextAccessor}.
-     * Use {@code .get(beanName)} only — not {@code getBean} (sandbox + project convention).
-     */
     private static def resolveBean(def applicationContext, List<String> beanNames) {
         if (!applicationContext || !beanNames) {
             return null
         }
 
         for (String beanName : beanNames) {
-            try {
-                def bean = applicationContext.get(beanName)
-                if (bean) {
-                    logger.debug('Resolved Spring bean: {}', beanName)
-                    return bean
-                }
-            } catch (Exception e) {
-                logger.trace('Could not resolve bean {}: {}', beanName, e.message)
+            def bean = WorkflowBeanLookup.resolve(applicationContext, beanName)
+            if (bean) {
+                logger.debug('Resolved Spring bean: {}', beanName)
+                return bean
             }
         }
 

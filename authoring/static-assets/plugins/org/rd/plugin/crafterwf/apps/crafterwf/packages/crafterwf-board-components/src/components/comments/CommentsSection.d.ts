@@ -1,7 +1,6 @@
 import { WorkflowComment } from '../../api/workflowApi';
-export interface MentionUserOption {
-    id: number;
-    username: string;
+import { MentionUserRef } from '../../utils/mentionUtils';
+export interface MentionUserOption extends MentionUserRef {
     label: string;
 }
 export interface CommentsSectionProps {

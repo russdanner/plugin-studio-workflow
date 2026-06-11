@@ -47,6 +47,8 @@ Root object:
 | `position` | number | no | Sort order in admin list (default `0`) |
 | `isDefault` | boolean | no | Default board when `workflowId` is omitted |
 | `steps` | array | yes | Ordered workflow steps |
+| `createListeners` | array | no | Content **create** event listeners (see below) |
+| `editListeners` | array | no | Content **edit** event listeners (see below) |
 
 Each step object:
 
@@ -62,6 +64,45 @@ Each step object:
 | `actionSuccessStepId` | string | no | Step to move package to after a successful action |
 | `roleRule` | object | no | Who may move packages into this step (`mode`: `all` \| `include` \| `exclude`, `roles`: string[]) |
 | `contentRule` | object | no | Content constraints (`mode`: `all` \| `any`, `pathPatterns`, `contentTypes`) |
+
+### Content event listeners
+
+Workflow definitions may declare `createListeners` and `editListeners`. Each listener runs when Studio saves content that matches its filters. **Create listeners** run on `NEW`, `DUPLICATE`, and `COPY` lifecycle operations (duplicate/paste create new content items). When `editListeners` is empty, **create listeners also run on content edit/save** (Studio fires an UPDATE lifecycle event on every save).
+
+| Field | Type | Required | Description |
+|-------|------|----------|-------------|
+| `id` | string | no | Stable listener id (auto-generated on save if omitted) |
+| `contentType` | string | no | Content type path (e.g. `/page/page_generic`); empty = any type |
+| `pathRegex` | string | no | Java regex against the content path; empty = any path |
+| `packageNamePrefix` | string | yes | Prefix for auto-created package titles |
+| `stepId` | string | yes | Target workflow step id |
+
+**Action (per matching listener):**
+
+1. Find an active package in this workflow that already contains the content path, or whose title matches `{packageNamePrefix}{displayName}`.
+2. If none exists, create a package in `stepId` (bypasses `allowAddPackage`) and attach the content item.
+3. If the package is not already in `stepId`, move it there (step publish actions run on move).
+
+Listeners are configured in **Project Tools → Workflows → Edit workflow → Content event listeners** (Create / Edit tabs).
+
+**Runtime wiring (server only):** Studio runs each content type’s stock `controller.groovy`, which calls `CommonLifecycleApi.execute()`. `./scripts/install-plugin.sh` installs a patched `CommonLifecycleApi.groovy` and `CrafterwfWorkflowLifecycleBridge.groovy` under Studio **`default-site/scripts/libs/`** (the lifecycle Groovy classpath). That hook delegates to the plugin’s `WorkflowContentEventService` — no browser/client involvement. The install script also **normalizes** site `controller.groovy` files back to stock (removes legacy per-controller bridge patches). **Restart authoring Tomcat** after install so lifecycle classes reload. **Commit the site** if controllers were normalized.
+
+**Logs:** every save/duplicate prints `[crafterwf] CommonLifecycleApi op=...` and `[crafterwf] lifecycle site=...` to `catalina.out`. Enrollment logs `[crafterwf] bridge event...` and SLF4J `Workflow lifecycle event:` / `Processing workflow content event:`.
+
+Example listener block:
+
+```json
+"createListeners": [
+  {
+    "id": "pages-backlog",
+    "contentType": "/page/page_generic",
+    "pathRegex": "^/site/website/.*",
+    "packageNamePrefix": "Page: ",
+    "stepId": "backlog"
+  }
+],
+"editListeners": []
+```
 
 Example (abbreviated):
 
@@ -97,6 +138,15 @@ Steps may set `actionType` and optional `actionSuccessStepId`. When a package is
 | `publish_staging` / `publish_live` | After move into step | Optional move to `actionSuccessStepId` |
 
 On failure (no attachments, staging disabled, publish error), the package may revert to the previous step and the user sees the Studio error message. An audit entry records `package_step_action`.
+
+## Workflow bypass guard
+
+When a workflow has at least one action step (`actionType` ≠ `none`), Studio **publish**, **request publish**, and **reject** actions on attached content are intercepted if the package is **not** on one of those steps. See [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md).
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `allowUiBypass` | boolean | Default `false`. When true, Studio publish/reject off-step shows an acknowledgement dialog; when false, the action is blocked in the UI. |
+| `bypassWarningMessage` | string | Optional custom text in the guard dialog (workflow root). Empty = plugin default (wording depends on `allowUiBypass`). |
 
 ## Service behavior
 

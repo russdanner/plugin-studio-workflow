@@ -1,0 +1,8 @@
+# Crafter Workflow plugin — lifecycle sandbox (CommonLifecycleApi hook)
+new scripts.libs.CrafterwfWorkflowLifecycleBridge
+method scripts.libs.CrafterwfWorkflowLifecycleBridge handle java.lang.Object java.lang.String java.lang.String java.lang.String java.lang.Object java.lang.Object
+method org.springframework.context.ApplicationContext getBean java.lang.String
+method org.craftercms.studio.api.v1.script.ScriptEngineManager getScriptEngine java.lang.String
+method groovy.lang.GroovyClassLoader loadClass java.lang.String
+method java.lang.Class getMethod java.lang.String java.lang.Class[]
+method java.lang.reflect.Method invoke java.lang.Object java.lang.Object[]

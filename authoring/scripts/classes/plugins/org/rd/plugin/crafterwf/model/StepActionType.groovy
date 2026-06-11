@@ -49,6 +49,10 @@ class StepActionType {
         ]
     }
 
+    static boolean isActionStep(String actionType) {
+        return normalize(actionType) != null
+    }
+
     static boolean requiresStaging(String actionType) {
         return actionType == REQUEST_PUBLISH_STAGING || actionType == PUBLISH_STAGING
     }

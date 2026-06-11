@@ -18,6 +18,7 @@ export interface WorkflowSummary {
 }
 import { StepActionType } from '../stepActions';
 import { StepContentRule, StepRoleRule } from '../stepRules';
+import { WorkflowEventListener } from '../eventListeners';
 export interface WorkflowStepDto {
     id?: string;
     name: string;
@@ -52,8 +53,15 @@ export interface WorkflowDetail {
         backgroundColor?: string;
         position?: number;
         isDefault?: boolean;
+        createListeners?: WorkflowEventListener[];
+        editListeners?: WorkflowEventListener[];
+        bypassWarningMessage?: string;
+        /** When true, authors may acknowledge and continue Studio publish/reject off-step. Default false. */
+        allowUiBypass?: boolean;
     };
     steps: WorkflowStepDto[];
+    createListeners?: WorkflowEventListener[];
+    editListeners?: WorkflowEventListener[];
 }
 export declare function getSchemaStatus(siteId: string): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
 export declare function installSchema(siteId: string): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;

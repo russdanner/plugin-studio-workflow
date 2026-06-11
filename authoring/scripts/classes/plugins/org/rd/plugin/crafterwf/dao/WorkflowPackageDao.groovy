@@ -171,6 +171,42 @@ class WorkflowPackageDao {
         }
     }
 
+    Map findActiveByWorkflowAndTitle(String siteId, String workflowId, String title) {
+        if (!title?.trim()) {
+            return null
+        }
+        db.withSql { sql ->
+            def row = sql.firstRow(
+                'SELECT id, workflow_id, workflow_step_id, site_id, title, description, position, ' +
+                'cover_color, due_on, status, created_by, created_on, modified_by, modified_on, closed_on FROM ' +
+                db.table('wf_workflow_package') +
+                ' WHERE site_id = ? AND workflow_id = ? AND status = \'active\' AND title = ? ' +
+                'ORDER BY modified_on DESC LIMIT 1',
+                [siteId, workflowId, title.trim()]
+            )
+            return row ? toMap(row) : null
+        }
+    }
+
+    Map findActiveByWorkflowAndContentPath(String siteId, String workflowId, String contentPath) {
+        if (!contentPath?.trim()) {
+            return null
+        }
+        db.withSql { sql ->
+            def row = sql.firstRow(
+                'SELECT p.id, p.workflow_id, p.workflow_step_id, p.site_id, p.title, p.description, p.position, ' +
+                'p.cover_color, p.due_on, p.status, p.created_by, p.created_on, p.modified_by, p.modified_on, p.closed_on ' +
+                'FROM ' + db.table('wf_workflow_package') + ' p ' +
+                'INNER JOIN ' + db.table('wf_workflow_package_content_ref') + ' r ' +
+                'ON r.workflow_package_id = p.id AND r.site_id = p.site_id ' +
+                'WHERE p.site_id = ? AND p.workflow_id = ? AND p.status = \'active\' AND r.content_path = ? ' +
+                'ORDER BY p.modified_on DESC LIMIT 1',
+                [siteId, workflowId, contentPath.trim()]
+            )
+            return row ? toMap(row) : null
+        }
+    }
+
     void reassignPackagesStep(String siteId, String fromStepId, String toStepId, Long userId) {
         def now = WorkflowDb.now()
         db.withSql { sql ->

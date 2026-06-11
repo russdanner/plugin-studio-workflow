@@ -37,7 +37,7 @@ class ContentTypeSupport {
         ]
         for (def beanName in beans) {
             try {
-                def service = applicationContext?.get(beanName)
+                def service = WorkflowBeanLookup.resolve(applicationContext, beanName)
                 if (!service) {
                     continue
                 }

@@ -5,6 +5,8 @@ import groovy.json.JsonSlurper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import plugins.org.rd.plugin.crafterwf.model.StepActionType
+import plugins.org.rd.plugin.crafterwf.util.EventListenerJson
+import plugins.org.rd.plugin.crafterwf.util.WorkflowBeanLookup
 import plugins.org.rd.plugin.crafterwf.util.WorkflowDefinitionSupport
 
 class WorkflowDefinitionService {
@@ -46,10 +48,12 @@ class WorkflowDefinitionService {
     Map getWorkflowDetail(String siteId, String workflowId) {
         def definition = loadDefinition(siteId, workflowId)
         return [
-            workflow: WorkflowDefinitionSupport.toWorkflowDto(definition),
-            steps   : WorkflowDefinitionSupport.sortedSteps(definition).collect {
+            workflow        : WorkflowDefinitionSupport.toWorkflowDto(definition),
+            steps           : WorkflowDefinitionSupport.sortedSteps(definition).collect {
                 WorkflowDefinitionSupport.toStepDto(it)
-            }
+            },
+            createListeners : EventListenerJson.toListenerDtos(definition.createListeners),
+            editListeners   : EventListenerJson.toListenerDtos(definition.editListeners)
         ]
     }
 
@@ -130,7 +134,8 @@ class WorkflowDefinitionService {
     }
 
     Map saveWorkflowDefinition(String siteId, String workflowId, Map workflowFields, List stepsInput, Long userId,
-                               Closure reassignPackagesFn) {
+                               Closure reassignPackagesFn, List createListenersInput = null,
+                               List editListenersInput = null) {
         def existing = loadDefinition(siteId, workflowId)
         def existingLookup = WorkflowDefinitionSupport.stepLookup(existing)
         def existingIds = existingLookup.keySet() as Set
@@ -188,15 +193,29 @@ class WorkflowDefinitionService {
             }
         }
 
+        def createListeners = createListenersInput != null
+            ? EventListenerJson.normalizeListeners(createListenersInput, normalizedSteps, 'createListeners')
+            : EventListenerJson.toListenerDtos(existing.createListeners)
+        def editListeners = editListenersInput != null
+            ? EventListenerJson.normalizeListeners(editListenersInput, normalizedSteps, 'editListeners')
+            : EventListenerJson.toListenerDtos(existing.editListeners)
+
         def definition = [
-            id           : workflowId,
-            name         : workflowFields?.name?.toString()?.trim() ?: existing.name,
-            description  : workflowFields?.description?.toString() ?: existing.description ?: '',
-            backgroundUrl: (workflowFields?.backgroundUrl ?: workflowFields?.backgroundColor)?.toString() ?:
+            id              : workflowId,
+            name            : workflowFields?.name?.toString()?.trim() ?: existing.name,
+            description     : workflowFields?.description?.toString() ?: existing.description ?: '',
+            backgroundUrl   : (workflowFields?.backgroundUrl ?: workflowFields?.backgroundColor)?.toString() ?:
                 existing.backgroundUrl,
-            position     : existing.position != null ? existing.position : 0,
-            isDefault    : workflowFields?.isDefault != null ? workflowFields.isDefault == true : existing.isDefault == true,
-            steps        : normalizedSteps
+            position        : existing.position != null ? existing.position : 0,
+            isDefault       : workflowFields?.isDefault != null ? workflowFields.isDefault == true : existing.isDefault == true,
+            steps           : normalizedSteps,
+            createListeners : createListeners,
+            editListeners   : editListeners,
+            bypassWarningMessage: workflowFields?.bypassWarningMessage?.toString() ?:
+                existing.bypassWarningMessage?.toString() ?: '',
+            allowUiBypass       : workflowFields?.allowUiBypass != null
+                ? WorkflowDefinitionSupport.allowsUiBypass([allowUiBypass: workflowFields.allowUiBypass])
+                : WorkflowDefinitionSupport.allowsUiBypass(existing)
         ]
         writeDefinition(siteId, workflowId, definition, 'Update workflow definition')
         return definition
@@ -319,7 +338,7 @@ class WorkflowDefinitionService {
 
     String readTextFromLegacyContentService(String siteId, String path) {
         try {
-            def legacy = applicationContext?.get('cstudioContentService')
+            def legacy = WorkflowBeanLookup.resolve(applicationContext, 'cstudioContentService')
             if (legacy) {
                 def text = legacy.getContentAsString(siteId, path)
                 if (text?.trim()) {
@@ -364,7 +383,7 @@ class WorkflowDefinitionService {
     }
 
     def requireContentService() {
-        def service = applicationContext?.get('contentService')
+        def service = WorkflowBeanLookup.resolve(applicationContext, 'contentService')
         if (!service) {
             throw new IllegalStateException('contentService bean is not available')
         }
@@ -372,7 +391,7 @@ class WorkflowDefinitionService {
     }
 
     def requireLegacyContentService() {
-        def service = applicationContext?.get('cstudioContentService')
+        def service = WorkflowBeanLookup.resolve(applicationContext, 'cstudioContentService')
         if (!service) {
             throw new IllegalStateException('cstudioContentService bean is not available')
         }

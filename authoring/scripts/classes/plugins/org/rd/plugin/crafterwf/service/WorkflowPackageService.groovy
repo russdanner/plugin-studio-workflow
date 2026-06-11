@@ -7,6 +7,7 @@ import plugins.org.rd.plugin.crafterwf.model.AuditTargetType
 import plugins.org.rd.plugin.crafterwf.model.CommentTargetType
 import plugins.org.rd.plugin.crafterwf.service.AuditLogService
 import plugins.org.rd.plugin.crafterwf.util.ContentTypeSupport
+import plugins.org.rd.plugin.crafterwf.util.WorkflowBeanLookup
 import plugins.org.rd.plugin.crafterwf.util.WorkflowDefinitionSupport
 
 class WorkflowPackageService {
@@ -18,6 +19,7 @@ class WorkflowPackageService {
     private final AuditLogService auditLogService
     private final StepRuleService stepRuleService
     private final ContentTypeSupport contentTypeSupport
+    private final def applicationContext
     private WorkflowStepActionService stepActionService
 
     WorkflowPackageService(WorkflowPackageDao packageDao, WorkflowPackageAttachmentDao attachmentDao,
@@ -30,6 +32,7 @@ class WorkflowPackageService {
         this.definitionService = definitionService
         this.auditLogService = auditLogService
         this.stepRuleService = stepRuleService
+        this.applicationContext = applicationContext
         this.contentTypeSupport = applicationContext ? new ContentTypeSupport(applicationContext) : null
     }
 
@@ -101,11 +104,19 @@ class WorkflowPackageService {
     }
 
     Map createPackage(String siteId, String workflowStepId, String title, String description,
-                      String coverColor, Long userId, String username) {
+                      String coverColor, Long userId, String username, boolean systemEnrollment = false) {
         def located = definitionService.findStepByIdInSite(siteId, workflowStepId)
-        def step = located.step
-        def workflowId = located.workflowId as String
-        if (!WorkflowDefinitionSupport.allowsAddPackage(step)) {
+        return createPackageInWorkflow(
+            siteId, located.workflowId as String, workflowStepId, title, description,
+            coverColor, userId, username, systemEnrollment
+        )
+    }
+
+    Map createPackageInWorkflow(String siteId, String workflowId, String workflowStepId, String title,
+                                String description, String coverColor, Long userId, String username,
+                                boolean systemEnrollment = false) {
+        def step = definitionService.findStep(siteId, workflowId, workflowStepId)
+        if (!systemEnrollment && !WorkflowDefinitionSupport.allowsAddPackage(step)) {
             throw new IllegalArgumentException("Adding packages is not allowed in step \"${step.name}\"")
         }
         def position = new BigDecimal('1000')
@@ -117,9 +128,11 @@ class WorkflowPackageService {
             AuditOperation.PACKAGE_CREATED,
             AuditTargetType.PACKAGE,
             pkg.id as String,
-            "Created package \"${pkg.title}\" in step \"${step.name}\""
+            systemEnrollment
+                ? "Auto-enrolled content into package \"${pkg.title}\" in step \"${step.name}\""
+                : "Created package \"${pkg.title}\" in step \"${step.name}\""
         )
-        def stepActionResult = runStepActionsIfNeeded(siteId, pkg.id as String, userId, username, true, null)
+        def stepActionResult = runStepActionsIfNeeded(siteId, pkg.id as String, userId, username, !systemEnrollment, null)
         return toPackageDto(requirePackage(siteId, pkg.id as String), stepActionResult)
     }
 
@@ -324,9 +337,64 @@ class WorkflowPackageService {
         }
     }
 
+    Map enrollContentFromListener(String siteId, String workflowId, Map listener, String contentPath,
+                                  String contentType, Long userId, String username) {
+        def stepId = listener?.stepId?.toString()?.trim()
+        def prefix = listener?.packageNamePrefix?.toString()?.trim()
+        if (!stepId || !prefix) {
+            throw new IllegalArgumentException('Listener action requires stepId and packageNamePrefix')
+        }
+        definitionService.findStep(siteId, workflowId, stepId)
+        def displayName = resolveContentDisplayName(siteId, contentPath)
+        def packageTitle = buildListenerPackageTitle(prefix, displayName, contentPath)
+        def pkg = packageDao.findActiveByWorkflowAndContentPath(siteId, workflowId, contentPath)
+        if (!pkg) {
+            pkg = packageDao.findActiveByWorkflowAndTitle(siteId, workflowId, packageTitle)
+        }
+        def created = false
+        if (!pkg) {
+            def createdDto = createPackageInWorkflow(
+                siteId, workflowId, stepId, packageTitle, '', null, userId, username, true
+            )
+            pkg = packageDao.findById(siteId, createdDto.id as String)
+            created = true
+        }
+        def packageId = pkg.id as String
+        def refs = attachmentDao.findContentRefs(siteId, packageId)
+        def alreadyAttached = refs.any { (it.content_path as String) == contentPath }
+        if (!alreadyAttached) {
+            attachContent(siteId, packageId, contentPath, displayName, null, userId, username)
+        }
+        def currentStepId = pkg.workflow_step_id as String
+        def moved = false
+        if (currentStepId != stepId) {
+            movePackage(siteId, packageId, stepId, 0, userId, username, true, !created)
+            moved = true
+        }
+        def updated = packageDao.findById(siteId, packageId)
+        return [
+            workflowPackageId: packageId,
+            title            : updated.title,
+            workflowStepId   : updated.workflow_step_id,
+            created          : created,
+            attached         : !alreadyAttached,
+            moved            : moved
+        ]
+    }
+
     Map attachContent(String siteId, String workflowPackageId, String contentPath, String displayName,
                       String previewServer, Long userId, String username) {
         requirePackage(siteId, workflowPackageId)
+        def refs = attachmentDao.findContentRefs(siteId, workflowPackageId)
+        if (refs.any { (it.content_path as String) == contentPath }) {
+            def existing = refs.find { (it.content_path as String) == contentPath }
+            return [
+                id   : existing.id,
+                name : normalizeDisplayName(existing.display_name as String, existing.content_path as String),
+                url  : buildContentPreviewUrl(previewServer, siteId, existing.content_path as String),
+                _type: 'content'
+            ]
+        }
         def safeName = normalizeDisplayName(displayName, contentPath)
         def contentType = contentTypeSupport?.resolveContentType(siteId, contentPath)
         def ref = attachmentDao.insertContentRef(siteId, workflowPackageId, contentPath, safeName, userId, contentType)
@@ -416,6 +484,26 @@ class WorkflowPackageService {
         return "${base}/studio/plugin%3Fsite%3D${siteId}%26type%3Dapps%26pluginId%3Dorg.rd.plugin.crafterwf%26name%3Dcrafterwf%26file%3Dapp.js%23/preview%3FcontentId%3D${encodedPath}%26siteId%3D${siteId}"
     }
 
+    private String resolveContentDisplayName(String siteId, String contentPath) {
+        try {
+            def contentService = WorkflowBeanLookup.resolve(applicationContext, 'contentService')
+            if (contentService?.metaClass?.respondsTo(contentService, 'getContent', String, String)) {
+                def item = contentService.getContent(siteId, contentPath)
+                def name = item?.internalName ?: item?.internal_name ?: item?.'internal-name'
+                if (name) {
+                    return name.toString().trim()
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return normalizeDisplayName(null, contentPath)
+    }
+
+    private static String buildListenerPackageTitle(String prefix, String displayName, String contentPath) {
+        def safeName = normalizeDisplayName(displayName, contentPath)
+        return "${prefix}${safeName}"
+    }
+
     private static String normalizeDisplayName(String displayName, String contentPath) {
         def name = displayName?.trim()
         if (!name || name.equalsIgnoreCase('undefined') || name.equalsIgnoreCase('null')) {
@@ -423,6 +511,9 @@ class WorkflowPackageService {
         }
         if (!name && contentPath) {
             def segments = contentPath.tokenize('/')
+            if (segments && segments.last() in ['index.xml', 'index.html']) {
+                segments = segments[0..-2]
+            }
             name = segments ? segments.last() : contentPath
         }
         return name ?: 'Attachment'

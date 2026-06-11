@@ -45,6 +45,7 @@ List API enriches notifications with navigation context where possible: `targetT
 |-------|------------|--------|
 | Task assigned / updated / completed / archived | Assignee (not actor) | `TaskNotificationSupport` |
 | Comment `@mention` | Mentioned users | `CommentService.notifyMentionedUsers` |
+| Workflow bypass action | Package stakeholders + site/system admins | `WorkflowBypassService` (see [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md)) |
 
 Package move and generic comment-added notifications are **not** yet implemented.
 

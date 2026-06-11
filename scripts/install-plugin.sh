@@ -171,7 +171,93 @@ if [[ -f "${WHITELIST_APPEND}" && -f "${WHITELIST}" ]]; then
   fi
 fi
 
-SITE_PLUGIN="${CRAFTER_DATA}/repos/sites/${SITE_ID}/sandbox/config/studio/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf/index.js"
+SITE_REPO_ROOT="$(dirname "${SITE_REPO}")"
+PUBLISHED_REPO="${SITE_REPO_ROOT}/published"
+
+patch_lifecycle_controllers() {
+  local repo_path="$1"
+  local label="$2"
+  if [[ -d "${repo_path}/config/studio/content-types" ]]; then
+    echo "Normalizing ${label} content-type controllers (server hook is CommonLifecycleApi)..."
+    python3 "${SCRIPT_DIR}/patch-content-lifecycle-controllers.py" "${repo_path}" || true
+  fi
+}
+
+patch_lifecycle_controllers "${SITE_REPO}" "sandbox"
+patch_lifecycle_controllers "${PUBLISHED_REPO}" "published"
+
+# Lifecycle scripts run in Studio default-site Groovy classpath (not site plugin classes).
+CRAFTER_AUTHORING="${CRAFTER_AUTHORING:-$(dirname "${CRAFTER_DATA}")}"
+STUDIO_WEBAPP="${CRAFTER_AUTHORING}/bin/apache-tomcat/webapps/studio"
+DEFAULT_SITE_LIBS="${STUDIO_WEBAPP}/default-site/scripts/libs"
+STUDIO_GROOVY_WHITELIST="${STUDIO_WEBAPP}/WEB-INF/classes/crafter/studio/groovy/whitelist"
+LIFECYCLE_MARKER="# Crafter Workflow lifecycle hook (org.rd.plugin.crafterwf)"
+
+install_default_site_lifecycle() {
+  local src_dir="${PLUGIN_PATH}/authoring/default-site/scripts/libs"
+  local whitelist_append="${PLUGIN_PATH}/authoring/default-site/groovy/crafterwf-lifecycle-whitelist.append"
+  if [[ ! -d "${DEFAULT_SITE_LIBS}" ]]; then
+    echo "Note: Studio default-site libs not found at ${DEFAULT_SITE_LIBS} — lifecycle hook not installed."
+    return 0
+  fi
+  for lib in CommonLifecycleApi.groovy CrafterwfWorkflowLifecycleBridge.groovy; do
+    if [[ -f "${src_dir}/${lib}" ]]; then
+      cp -f "${src_dir}/${lib}" "${DEFAULT_SITE_LIBS}/${lib}"
+      echo "Installed ${lib} to Studio default-site."
+    fi
+  done
+  if [[ -f "${whitelist_append}" && -f "${STUDIO_GROOVY_WHITELIST}" ]]; then
+    if ! grep -qF "${LIFECYCLE_MARKER}" "${STUDIO_GROOVY_WHITELIST}" 2>/dev/null; then
+      {
+        echo ""
+        echo "${LIFECYCLE_MARKER}"
+        grep -v '^#' "${whitelist_append}" | grep -v '^[[:space:]]*$' || true
+      } >> "${STUDIO_GROOVY_WHITELIST}"
+      echo "Appended Crafter Workflow entries to Studio lifecycle Groovy whitelist."
+    else
+      while IFS= read -r line; do
+        [[ -z "${line}" || "${line}" =~ ^# ]] && continue
+        if ! grep -qF "${line}" "${STUDIO_GROOVY_WHITELIST}" 2>/dev/null; then
+          echo "${line}" >> "${STUDIO_GROOVY_WHITELIST}"
+        fi
+      done < "${whitelist_append}"
+    fi
+  fi
+  echo "Restart Crafter authoring (Tomcat) so lifecycle Groovy classes reload."
+}
+
+install_default_site_lifecycle
+
+sync_repo_tree() {
+  local src="$1"
+  local dst="$2"
+  local label="$3"
+  if [[ -d "${src}" ]]; then
+    mkdir -p "${dst}"
+    cp -a "${src}/." "${dst}/"
+    echo "Synced ${label} to published layer."
+  fi
+}
+
+# Studio may execute lifecycle controllers and load plugin classes from published.
+sync_repo_tree "${SITE_REPO}/config/studio/scripts/classes" \
+  "${PUBLISHED_REPO}/config/studio/scripts/classes" \
+  "plugin Groovy classes"
+sync_repo_tree "${SITE_REPO}/config/studio/workflow/definitions" \
+  "${PUBLISHED_REPO}/config/studio/workflow/definitions" \
+  "workflow definitions"
+
+# Studio may serve plugin JS from the published layer; keep it in sync with sandbox.
+PUBLISHED_PLUGIN="${SITE_REPO_ROOT}/published/config/studio/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf"
+SANDBOX_PLUGIN="${SITE_REPO}/config/studio/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf"
+if [[ -f "${SANDBOX_PLUGIN}/index.js" ]]; then
+  mkdir -p "${PUBLISHED_PLUGIN}"
+  cp -f "${SANDBOX_PLUGIN}/index.js" "${PUBLISHED_PLUGIN}/index.js"
+  [[ -f "${SANDBOX_PLUGIN}/app.js" ]] && cp -f "${SANDBOX_PLUGIN}/app.js" "${PUBLISHED_PLUGIN}/app.js"
+  echo "Synced plugin UI bundle to published layer."
+fi
+
+SITE_PLUGIN="${SANDBOX_PLUGIN}/index.js"
 if [[ -f "${SITE_PLUGIN}" ]]; then
   echo "Site UI bundle: $(stat -c '%y (%s bytes)' "${SITE_PLUGIN}")"
 else

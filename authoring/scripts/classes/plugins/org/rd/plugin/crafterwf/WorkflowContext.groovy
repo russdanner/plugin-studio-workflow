@@ -18,7 +18,10 @@ import plugins.org.rd.plugin.crafterwf.service.WorkflowBoardService
 import plugins.org.rd.plugin.crafterwf.service.WorkflowDefinitionService
 import plugins.org.rd.plugin.crafterwf.service.WorkflowPackageService
 import plugins.org.rd.plugin.crafterwf.service.StepRuleService
+import plugins.org.rd.plugin.crafterwf.service.WorkflowBypassService
+import plugins.org.rd.plugin.crafterwf.service.WorkflowContentEventService
 import plugins.org.rd.plugin.crafterwf.service.WorkflowStepActionService
+import plugins.org.rd.plugin.crafterwf.util.WorkflowBeanLookup
 
 /**
  * Factory for plugin services backed by Studio's JDBC pool.
@@ -34,6 +37,8 @@ class WorkflowContext {
     final AuditLogService auditLogService
     final WorkflowAdminService adminService
     final StepRuleService stepRuleService
+    final WorkflowContentEventService contentEventService
+    final WorkflowBypassService bypassService
 
     private WorkflowContext(WorkflowDb db, def applicationContext) {
         this.db = db
@@ -62,6 +67,17 @@ class WorkflowContext {
         )
         packageService.setStepActionService(stepActionService)
         this.adminService = new WorkflowAdminService(db, packageDao, definitionService, applicationContext)
+        this.contentEventService = new WorkflowContentEventService(definitionService, packageService, applicationContext)
+        this.bypassService = new WorkflowBypassService(
+            definitionService,
+            packageDao,
+            attachmentDao,
+            taskDao,
+            commentDao,
+            auditLogService,
+            notificationService,
+            applicationContext
+        )
     }
 
     static WorkflowContext create(def applicationContext, def pluginConfig = null, boolean ignoredAutoMigrate = true) {
@@ -101,7 +117,8 @@ class WorkflowContext {
         }
 
         try {
-            def securityService = applicationContext?.get('securityService')
+            def securityService = WorkflowBeanLookup.resolve(applicationContext, 'securityService')
+                ?: WorkflowBeanLookup.resolve(applicationContext, 'cstudioSecurityService')
             if (securityService != null) {
                 def current = securityService.getCurrentUser()
                 if (current instanceof String && current.trim()) {
@@ -132,7 +149,7 @@ class WorkflowContext {
             return null
         }
         try {
-            def userService = applicationContext?.get('userService')
+            def userService = WorkflowBeanLookup.resolve(applicationContext, 'userService')
             if (userService != null) {
                 def user = userService.getUserByIdOrUsername(-1L, username.trim())
                 if (user?.id != null) {

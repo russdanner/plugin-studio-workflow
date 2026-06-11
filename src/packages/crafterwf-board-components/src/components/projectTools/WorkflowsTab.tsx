@@ -241,9 +241,16 @@ const WorkflowsTab = ({ schemaReady }: WorkflowsTabProps) => {
             setEditorDetail(null);
           }}
           onSaved={() => {
-            setEditorOpen(false);
-            setEditorDetail(null);
             loadWorkflows();
+            getWorkflow(siteId, editorDetail.workflow.id).subscribe({
+              next: (response) => {
+                setEditorDetail(response.response.result as WorkflowDetail);
+              },
+              error() {
+                setEditorOpen(false);
+                setEditorDetail(null);
+              }
+            });
           }}
         />
       )}

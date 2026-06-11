@@ -16,15 +16,15 @@ import {
 } from '@mui/material';
 import SendRoundedIcon from '@mui/icons-material/SendRounded';
 
+import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 import { fetchAll as fetchAllUsers } from '@craftercms/studio-ui/services/users';
 
 import { WorkflowComment } from '../../api/workflowApi';
-import { extractMentionedUserIds } from '../../utils/mentionUtils';
-import { UserAvatarFromUsername, UserAvatarLabel, userLabel } from '../users/studioUserDisplay';
+import { extractMentionedUserIds, MentionUserRef } from '../../utils/mentionUtils';
+import { UserAvatarFromUsername, UserAvatarLabel, userDisplayName } from '../users/studioUserDisplay';
+import CommentBodyWithMentions from './CommentBodyWithMentions';
 
-export interface MentionUserOption {
-  id: number;
-  username: string;
+export interface MentionUserOption extends MentionUserRef {
   label: string;
 }
 
@@ -69,6 +69,7 @@ const CommentsSection = ({
   compact = false,
   mentionUsers: mentionUsersProp
 }: CommentsSectionProps) => {
+  const siteId = useActiveSiteId();
   const [commentDraft, setCommentDraft] = useState('');
   const [mentionUsers, setMentionUsers] = useState<MentionUserOption[]>(mentionUsersProp ?? []);
   const [mentionOpen, setMentionOpen] = useState(false);
@@ -92,7 +93,9 @@ const CommentsSection = ({
           .map((user) => ({
             id: user.id,
             username: user.username,
-            label: userLabel(user)
+            firstName: user.firstName,
+            lastName: user.lastName,
+            label: userDisplayName(user)
           }));
         setMentionUsers(options);
       },
@@ -207,9 +210,7 @@ const CommentsSection = ({
                   {formatCommentDate(comment.createdOn)}
                 </Typography>
               </Stack>
-              <Typography variant="body2" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-                {comment.body}
-              </Typography>
+              <CommentBodyWithMentions body={comment.body} mentionUsers={mentionUsers} siteId={siteId} />
               {(onResolveComment || onArchiveComment) && !comment.archived && (
                 <Stack direction="row" spacing={1} sx={{ mt: 0.75 }}>
                   {onResolveComment && (
@@ -333,7 +334,14 @@ const CommentsSection = ({
                       insertMention(user.username);
                     }}
                   >
-                    <UserAvatarLabel user={user} label={user.label} size={22} typographyVariant="body2" />
+                    <Stack direction="row" alignItems="center" spacing={1} sx={{ width: '100%', minWidth: 0 }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <UserAvatarLabel user={user} label={user.label} size={22} typographyVariant="body2" />
+                      </Box>
+                      <Typography variant="caption" color="text.secondary" noWrap>
+                        @{user.username}
+                      </Typography>
+                    </Stack>
                   </ListItemButton>
                 ))}
               </List>

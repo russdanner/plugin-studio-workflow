@@ -3,14 +3,12 @@ package plugins.org.rd.plugin.crafterwf.db
 import groovy.sql.Sql
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import plugins.org.rd.plugin.crafterwf.util.WorkflowBeanLookup
 
 /**
  * JDBC access via Studio's connection pool. All plugin SQL uses fully qualified table names.
  *
- * Resolves {@code dataSource} only through {@code applicationContext.get(beanName)} (Crafter
- * {@link org.craftercms.commons.spring.context.ApplicationContextAccessor}), which is allowed
- * in the Studio Groovy sandbox. Does not use Spring WebApplicationContextUtils,
- * RequestContextHolder, or {@code getBean}/{@code containsBean}.
+ * Resolves {@code dataSource} via {@link WorkflowBeanLookup} ({@code get} or {@code getBean}).
  */
 class WorkflowDb {
 
@@ -104,31 +102,22 @@ class WorkflowDb {
         return new Date()
     }
 
-    /**
-     * Studio REST scripts bind {@code applicationContext} as ApplicationContextAccessor.
-     * Use {@code .get('dataSource')} only — the sandbox-whitelisted bean lookup API.
-     */
     private static Object resolveDataSource(def applicationContext) {
         if (applicationContext == null) {
             throw new IllegalStateException('applicationContext is required for database access')
         }
 
         for (String beanName : DATA_SOURCE_BEANS) {
-            try {
-                def bean = applicationContext.get(beanName)
-                if (bean != null && isJdbcDataSource(bean)) {
-                    logger.debug('Using JDBC pool bean: {}', beanName)
-                    return bean
-                }
-            } catch (Exception e) {
-                logger.trace('Could not resolve bean {}: {}', beanName, e.message)
+            def bean = WorkflowBeanLookup.resolve(applicationContext, beanName)
+            if (bean != null && isJdbcDataSource(bean)) {
+                logger.debug('Using JDBC pool bean: {}', beanName)
+                return bean
             }
         }
 
         throw new IllegalStateException(
-            "Studio DataSource bean not found (tried ${DATA_SOURCE_BEANS.join(', ')} via applicationContext.get). " +
-            'If studio.scripting.restrictBeans is enabled, add dataSource to studio.scripting.allowedBeans. ' +
-            'If studio.scripting.sandbox.whitelist.enable is true, merge authoring/config/studio/extension/groovy/crafterwf-plugin-whitelist.append into the site whitelist.'
+            "Studio DataSource bean not found (tried ${DATA_SOURCE_BEANS.join(', ')}). " +
+            'If studio.scripting.restrictBeans is enabled, add dataSource to studio.scripting.allowedBeans.'
         )
     }
 

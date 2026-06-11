@@ -51,6 +51,8 @@ const OPERATION_OPTIONS = [
   { value: 'package_created', label: 'Package created' },
   { value: 'package_step_changed', label: 'Package step changed' },
   { value: 'package_step_action', label: 'Automatic step action' },
+  { value: 'workflow_bypass_acknowledged', label: 'Workflow bypass acknowledged' },
+  { value: 'workflow_bypass_action', label: 'Workflow bypass action' },
   { value: 'package_modified', label: 'Package modified' }
 ];
 

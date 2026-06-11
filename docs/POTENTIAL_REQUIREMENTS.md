@@ -31,7 +31,7 @@ The plugin is a **coordination layer** (kanban packages, tasks, comments, audit,
 |-------|---------|-------|
 | Workflow definition & admin | ✅ | JSON definitions in site repo; Project Tools editor |
 | Kanban / package movement | ✅ | Drag-and-drop + REST; step rules on move |
-| Publish integration | ✅ | Step `actionType` and board menus delegate to stock Studio `workflowService` as the acting user; delivery unchanged until publish succeeds. Mandatory gates still ❌ (FB-014). |
+| Publish integration | ✅ | Step `actionType` and board menus delegate to stock Studio `workflowService` as the acting user; delivery unchanged until publish succeeds. UI bypass guard ✅ (**FB-014**); server-side API block still ❌. |
 | Tasks & dashboards | 🟡 | Tasks panel + board filters; not a full enterprise task dashboard |
 | Notifications | 🟡 | In-app only; email deferred |
 | Audit & compliance logging | 🟡 | Append-only audit log; not full content revision history |

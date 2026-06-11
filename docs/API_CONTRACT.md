@@ -419,6 +419,23 @@ POST body: workflow metadata + ordered `steps` array (`id`, `name`, `color`, `is
 
 | Param | `workflowId` |
 
+### `workflow-bypass/check.json`
+
+| Param | Description |
+|-------|-------------|
+| `contentPaths` | Comma-separated content store paths |
+| `action` | `publish` \| `request_publish` \| `reject` |
+
+Returns `{ requiresAcknowledgement, violations[] }` when content is in an active package off an action step.
+
+### `workflow-bypass/acknowledge.json` (POST)
+
+Body: `{ siteId, action, violations[] }` — records `workflow_bypass_acknowledged` audit entries.
+
+### `workflow-bypass/record-action.json` (POST)
+
+Body: `{ siteId, action, violations[] }` — records `workflow_bypass_action` audit entries and sends notifications.
+
 ## Error responses
 
 | Code | Meaning |

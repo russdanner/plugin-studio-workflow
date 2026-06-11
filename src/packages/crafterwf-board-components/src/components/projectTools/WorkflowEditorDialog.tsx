@@ -51,6 +51,8 @@ import {
   stepActionTypeFromLegacy
 } from '../../stepActions';
 import { defaultContentRule, defaultRoleRule } from '../../stepRules';
+import { EditorEventListener, mapDetailListeners } from '../../eventListeners';
+import WorkflowEventListenersSection from './WorkflowEventListenersSection';
 import WorkflowStepRulesDialog from './WorkflowStepRulesDialog';
 
 type EditorStep = WorkflowStepDto & { clientKey: string };
@@ -100,6 +102,8 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
   const siteId = useActiveSiteId();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const [bypassWarningMessage, setBypassWarningMessage] = useState('');
+  const [allowUiBypass, setAllowUiBypass] = useState(false);
   const [boardBackground, setBoardBackground] = useState(BOARD_BACKGROUND_SWATCHES[0].id);
   const [steps, setSteps] = useState<EditorStep[]>([]);
   const [stagingEnabled, setStagingEnabled] = useState(false);
@@ -107,15 +111,25 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
   const [error, setError] = useState<ApiResponse>();
   const [validationError, setValidationError] = useState<string | null>(null);
   const [rulesStepIndex, setRulesStepIndex] = useState<number | null>(null);
+  const [createListeners, setCreateListeners] = useState<EditorEventListener[]>([]);
+  const [editListeners, setEditListeners] = useState<EditorEventListener[]>([]);
 
   useEffect(() => {
     if (open && detail) {
       setName(detail.workflow.name || '');
       setDescription(detail.workflow.description || '');
+      setBypassWarningMessage(detail.workflow.bypassWarningMessage || '');
+      setAllowUiBypass(detail.workflow.allowUiBypass === true);
       setBoardBackground(
         normalizeBoardBackgroundId(detail.workflow.backgroundColor || detail.workflow.backgroundUrl)
       );
-      setSteps(mapDetailSteps(detail.steps || []));
+      const mappedSteps = mapDetailSteps(detail.steps || []);
+      setSteps(mappedSteps);
+      const defaultStepId = mappedSteps[0]?.id || '';
+      setCreateListeners(
+        mapDetailListeners(detail.createListeners ?? detail.workflow.createListeners, defaultStepId)
+      );
+      setEditListeners(mapDetailListeners(detail.editListeners ?? detail.workflow.editListeners, defaultStepId));
       setError(undefined);
       setValidationError(null);
     }
@@ -212,6 +226,13 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
       setValidationError('No active site selected.');
       return;
     }
+    const invalidListener = [...createListeners, ...editListeners].find(
+      (listener) => !listener.packageNamePrefix?.trim() || !listener.stepId
+    );
+    if (invalidListener) {
+      setValidationError('Every event listener needs a package name prefix and target step.');
+      return;
+    }
 
     setValidationError(null);
     setSaving(true);
@@ -221,8 +242,24 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
         ...detail.workflow,
         name: name.trim(),
         description: description.trim(),
-        backgroundColor: boardBackground
+        backgroundColor: boardBackground,
+        bypassWarningMessage: bypassWarningMessage.trim(),
+        allowUiBypass
       },
+      createListeners: createListeners.map((listener) => ({
+        id: listener.id,
+        contentType: listener.contentType?.trim() || '',
+        pathRegex: listener.pathRegex?.trim() || '',
+        packageNamePrefix: listener.packageNamePrefix.trim(),
+        stepId: listener.stepId
+      })),
+      editListeners: editListeners.map((listener) => ({
+        id: listener.id,
+        contentType: listener.contentType?.trim() || '',
+        pathRegex: listener.pathRegex?.trim() || '',
+        packageNamePrefix: listener.packageNamePrefix.trim(),
+        stepId: listener.stepId
+      })),
       steps: steps.map((step, index) => ({
         id: step.id,
         clientKey: step.clientKey,
@@ -272,15 +309,15 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
       }}
     >
       <DialogTitle sx={{ flexShrink: 0 }}>Edit workflow</DialogTitle>
-      <DialogContent dividers sx={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {validationError && (
-          <Alert severity="warning" onClose={() => setValidationError(null)}>
-            {validationError}
-          </Alert>
-        )}
-        {error && <ApiResponseErrorState error={error} />}
+      <DialogContent dividers sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+        <Stack spacing={2}>
+          {validationError && (
+            <Alert severity="warning" onClose={() => setValidationError(null)}>
+              {validationError}
+            </Alert>
+          )}
+          {error && <ApiResponseErrorState error={error} />}
 
-        <Stack spacing={2} sx={{ flexShrink: 0 }}>
           <TextField
             label="Workflow name"
             value={name}
@@ -297,6 +334,28 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
             multiline
             minRows={2}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={allowUiBypass}
+                onChange={(e) => setAllowUiBypass(e.target.checked)}
+              />
+            }
+            label="Allow publish/reject bypass with acknowledgement"
+          />
+          <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: -1, mb: 1 }}>
+            When off (default), Studio publish and reject are blocked until the package is on the correct
+            workflow step. When on, authors must acknowledge a warning before continuing.
+          </Typography>
+          <TextField
+            label="Workflow guard message"
+            value={bypassWarningMessage}
+            onChange={(e) => setBypassWarningMessage(e.target.value)}
+            fullWidth
+            multiline
+            minRows={2}
+            helperText="Optional message shown when publish/reject is blocked or when bypass acknowledgement is required. Leave blank for the default text."
+          />
           <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
             <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
               Board background
@@ -309,26 +368,20 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
               size={24}
             />
           </Stack>
-        </Stack>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="subtitle1" fontWeight={600}>
             Steps
           </Typography>
           <Button size="small" startIcon={<AddRoundedIcon />} onClick={handleAddStep}>
             Add step
           </Button>
-        </Box>
+          </Box>
 
-        <DragDropContext onDragEnd={handleDragEnd}>
+          <DragDropContext onDragEnd={handleDragEnd}>
           <Droppable droppableId="workflow-steps">
             {(provided) => (
-              <Stack
-                spacing={1}
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-                sx={{ flex: 1, minHeight: 0, overflowY: 'auto', pr: 0.5 }}
-              >
+              <Stack spacing={1} ref={provided.innerRef} {...provided.droppableProps} sx={{ pr: 0.5 }}>
                 {steps.map((step, index) => {
                   const hasAction = !!step.actionType && step.actionType !== STEP_ACTION_NONE;
                   const successValue =
@@ -505,6 +558,15 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
             )}
           </Droppable>
         </DragDropContext>
+
+        <WorkflowEventListenersSection
+          steps={steps}
+          createListeners={createListeners}
+          editListeners={editListeners}
+          onCreateListenersChange={setCreateListeners}
+          onEditListenersChange={setEditListeners}
+        />
+        </Stack>
       </DialogContent>
       {rulesStepIndex != null && steps[rulesStepIndex] && (
         <WorkflowStepRulesDialog

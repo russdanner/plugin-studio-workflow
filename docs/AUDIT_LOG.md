@@ -30,6 +30,8 @@ Record **who** did **what**, to **which target**, **when**, with an optional hum
 | `package_step_changed` | `package` | Package moved to a **different** WorkflowStep (reorder within same step is not logged) |
 | `package_modified` | `package` | Title, description, due date, or attachment changes |
 | `package_step_action` | `package` | Automated publish/review step action ran (success or failure) |
+| `workflow_bypass_acknowledged` | `package` | User acknowledged bypass warning before Studio publish/reject |
+| `workflow_bypass_action` | `package` | User completed Studio publish/reject outside workflow step |
 
 ### Target types
 

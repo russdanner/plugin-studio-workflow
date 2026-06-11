@@ -84,16 +84,22 @@ class WorkflowAdminService {
         )
     }
 
-    Map saveWorkflowDefinition(String siteId, String workflowId, Map workflowFields, List stepsInput, Long userId) {
+    Map saveWorkflowDefinition(String siteId, String workflowId, Map workflowFields, List stepsInput, Long userId,
+                               List createListeners = null, List editListeners = null) {
         definitionService.loadDefinition(siteId, workflowId)
         if (!stepsInput || stepsInput.isEmpty()) {
             throw new IllegalArgumentException('At least one workflow step is required')
         }
-        definitionService.saveWorkflowDefinition(siteId, workflowId, workflowFields, stepsInput, userId) { removedId, firstKeptStepId, uid ->
-            if (packageDao.countActiveByStep(siteId, removedId) > 0) {
-                packageDao.reassignPackagesStep(siteId, removedId, firstKeptStepId, uid)
-            }
-        }
+        definitionService.saveWorkflowDefinition(
+            siteId, workflowId, workflowFields, stepsInput, userId,
+            { removedId, firstKeptStepId, uid ->
+                if (packageDao.countActiveByStep(siteId, removedId) > 0) {
+                    packageDao.reassignPackagesStep(siteId, removedId, firstKeptStepId, uid)
+                }
+            },
+            createListeners,
+            editListeners
+        )
         return getWorkflow(siteId, workflowId)
     }
 

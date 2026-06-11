@@ -2,6 +2,13 @@
 # studio.scripting.sandbox.whitelist.enable is true.
 # See docs/GROOVY_SANDBOX.md
 
+# Spring bean lookup (REST uses ApplicationContextAccessor.get; lifecycle uses getBean)
+method org.springframework.context.ApplicationContext getBean java.lang.String
+
+# Content lifecycle bridge (content-type controller.groovy)
+new plugins.org.rd.plugin.crafterwf.WorkflowContentLifecycleBridge
+method plugins.org.rd.plugin.crafterwf.WorkflowContentLifecycleBridge handle java.lang.Object java.lang.String java.lang.String java.lang.String java.lang.Object java.lang.Object
+
 # JDBC pool (javax.sql.DataSource)
 method javax.sql.DataSource getConnection
 

@@ -34,6 +34,7 @@ import {
 import { usePreviewContentPath } from '../../utils/studioPreview';
 import { showStudioErrorSnack } from '../../utils/showStudioErrorSnack';
 import { TOOLBAR_BADGE_SX, ToolbarIconBadge } from '../../utils/toolbarBadge';
+import WorkflowBypassGuard from '../workflowBypass/WorkflowBypassGuard';
 
 export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
   const dispatch = useDispatch();
@@ -169,6 +170,7 @@ export function ActiveWorkflowsToolbarButton(props: Record<string, unknown>) {
 
   return (
     <>
+      <WorkflowBypassGuard />
       <Tooltip title={tooltipTitle}>
         <span>
           <IconButton

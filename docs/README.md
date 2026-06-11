@@ -10,6 +10,7 @@ These documents describe **what** the system does and **how** it is structured. 
 |----------|-------------|
 | [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) | **Authoritative glossary** — core entities and deferred features |
 | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | Workflow/step definitions in site repo JSON vs runtime DB state |
+| [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md) | Soft guard when Studio publish/reject bypasses workflow steps |
 | [FUNCTIONAL_SPEC.md](./FUNCTIONAL_SPEC.md) | Behavior, Studio UI widgets, and CrafterCMS integration |
 | [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) | MariaDB schema `crafter-workflow`, ER diagrams, migrations |
 | [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) | Stack, domain, services, widgets, migrations |

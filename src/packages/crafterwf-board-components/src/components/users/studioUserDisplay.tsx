@@ -2,6 +2,8 @@ import * as React from 'react';
 
 import { Avatar, MenuItem, Stack, Typography } from '@mui/material';
 
+import { contrastTextColor, getInitials, toColor } from '../../utils/userAvatarUtils';
+
 export interface TaskAssigneeOption {
   id: number;
   username: string;
@@ -17,17 +19,11 @@ export interface StudioUserLike {
   lastName?: string;
 }
 
-function userInitials(user: StudioUserLike): string {
-  const first = user.firstName?.trim();
-  const last = user.lastName?.trim();
-  if (first && last) {
-    return `${first.charAt(0)}${last.charAt(0)}`.toUpperCase();
+function studioAvatarInitials(user: StudioUserLike): string {
+  if (user.firstName?.trim() && user.lastName?.trim()) {
+    return getInitials({ firstName: user.firstName, lastName: user.lastName });
   }
-  if (first) {
-    return first.slice(0, 2).toUpperCase();
-  }
-  const username = user.username?.trim();
-  return username ? username.slice(0, 2).toUpperCase() : '?';
+  return getInitials(user.username);
 }
 
 function UserInitialsAvatar({
@@ -37,15 +33,19 @@ function UserInitialsAvatar({
   user: StudioUserLike;
   size?: number;
 }) {
+  const backgroundColor = toColor(user.username);
+
   return (
     <Avatar
       sx={{
         width: size,
         height: size,
-        fontSize: Math.max(10, Math.round(size * 0.42))
+        fontSize: Math.max(10, Math.round(size * 0.42)),
+        bgcolor: backgroundColor,
+        color: contrastTextColor(backgroundColor)
       }}
     >
-      {userInitials(user)}
+      {studioAvatarInitials(user)}
     </Avatar>
   );
 }
@@ -53,6 +53,12 @@ function UserInitialsAvatar({
 export function userLabel(user: StudioUserLike): string {
   const name = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
   return name ? `${name} (${user.username})` : user.username;
+}
+
+/** First and last name only; falls back to username. */
+export function userDisplayName(user: StudioUserLike): string {
+  const name = [user.firstName, user.lastName].filter(Boolean).join(' ').trim();
+  return name || user.username;
 }
 
 export function findAssigneeOption(

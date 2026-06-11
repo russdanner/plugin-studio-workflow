@@ -32,7 +32,7 @@ class SiteGroupSupport {
 
     private List<String> resolveFromUserService(String username) {
         try {
-            def userService = applicationContext?.get('userService')
+            def userService = WorkflowBeanLookup.resolve(applicationContext, 'userService')
             if (!userService) {
                 return null
             }
@@ -48,7 +48,7 @@ class SiteGroupSupport {
         def serviceNames = ['groupService', 'cstudioGroupService']
         for (def beanName in serviceNames) {
             try {
-                def service = applicationContext?.get(beanName)
+                def service = WorkflowBeanLookup.resolve(applicationContext, beanName)
                 if (!service) {
                     continue
                 }

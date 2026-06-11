@@ -22,15 +22,20 @@ class WorkflowPackageAttachmentDao {
     }
 
     List<Map> findPackagesByContentPath(String siteId, String contentPath) {
+        def pathVariants = expandContentPathVariants(contentPath)
+        if (!pathVariants) {
+            return []
+        }
+        def placeholders = pathVariants.collect { '?' }.join(', ')
         db.withSql { sql ->
             return sql.rows(
                 'SELECT p.id AS workflow_package_id, p.title, p.cover_color, p.workflow_step_id, p.workflow_id ' +
                 'FROM ' + db.table('wf_workflow_package_content_ref') + ' r ' +
                 'INNER JOIN ' + db.table('wf_workflow_package') + ' p ' +
                 'ON p.id = r.workflow_package_id AND p.site_id = r.site_id ' +
-                'WHERE r.site_id = ? AND r.content_path = ? AND p.status = \'active\' ' +
+                "WHERE r.site_id = ? AND r.content_path IN (${placeholders}) AND p.status = 'active' " +
                 'ORDER BY p.modified_on DESC',
-                [siteId, contentPath]
+                ([siteId] + pathVariants)
             ).collect { row ->
                 [
                     workflow_package_id : row.workflow_package_id,
@@ -41,6 +46,24 @@ class WorkflowPackageAttachmentDao {
                 ]
             }
         }
+    }
+
+    private static List<String> expandContentPathVariants(String contentPath) {
+        def path = contentPath?.toString()?.trim()
+        if (!path) {
+            return []
+        }
+        def variants = [] as LinkedHashSet
+        variants << path
+        if (path.endsWith('/index.xml')) {
+            def folderPath = path.replaceAll(/\/index\.xml$/, '')
+            if (folderPath) {
+                variants << folderPath
+            }
+        } else if (!path.contains('.')) {
+            variants << "${path}/index.xml"
+        }
+        return variants.toList()
     }
 
     List<Map> findLinks(String siteId, String packageId) {

@@ -24,4 +24,21 @@ if (!(steps instanceof List)) {
     throw new IllegalArgumentException('steps array is required')
 }
 
-return ctx.adminService.saveWorkflowDefinition(siteId, workflowId, workflowFields, steps, userId)
+def createListeners = body.createListeners
+if (!(createListeners instanceof List) && body.workflow instanceof Map) {
+    createListeners = body.workflow.createListeners
+}
+def editListeners = body.editListeners
+if (!(editListeners instanceof List) && body.workflow instanceof Map) {
+    editListeners = body.workflow.editListeners
+}
+
+return ctx.adminService.saveWorkflowDefinition(
+    siteId,
+    workflowId,
+    workflowFields,
+    steps,
+    userId,
+    createListeners,
+    editListeners
+)

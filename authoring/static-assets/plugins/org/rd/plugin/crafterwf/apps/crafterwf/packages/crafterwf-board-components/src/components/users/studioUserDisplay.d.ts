@@ -12,6 +12,8 @@ export interface StudioUserLike {
     lastName?: string;
 }
 export declare function userLabel(user: StudioUserLike): string;
+/** First and last name only; falls back to username. */
+export declare function userDisplayName(user: StudioUserLike): string;
 export declare function findAssigneeOption(options: TaskAssigneeOption[], id: number, username?: string): TaskAssigneeOption | undefined;
 export declare function resolveAssigneeLabel(assigneeId: number, assigneeUsername: string | undefined, options: TaskAssigneeOption[]): string;
 export declare function UserAvatarLabel({ user, label, size, typographyVariant, fontWeight }: {
