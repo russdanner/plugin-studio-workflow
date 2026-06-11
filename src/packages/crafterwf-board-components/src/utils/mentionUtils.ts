@@ -7,7 +7,49 @@ export interface MentionUserRef {
 
 export type CommentBodySegment =
   | { type: 'text'; value: string }
-  | { type: 'mention'; username: string; user?: MentionUserRef };
+  | { type: 'mention'; username: string; user?: MentionUserRef }
+  | { type: 'pendingMention'; value: string };
+
+/** Active @mention fragment at the cursor while composing (e.g. "@adm"). */
+export function getMentionQuery(text: string, cursor: number): string | null {
+  const before = text.slice(0, cursor);
+  const match = /(?:^|[\s([{])@([\w.\-]*)$/.exec(before);
+  if (!match) {
+    return null;
+  }
+  return match[1];
+}
+
+export function parseCommentDraftSegments(
+  body: string,
+  users: MentionUserRef[],
+  cursor: number
+): CommentBodySegment[] {
+  if (!body) {
+    return [];
+  }
+
+  const before = body.slice(0, cursor);
+  const atIndex = before.lastIndexOf('@');
+  const hasPending =
+    atIndex >= 0 && /^@[\w.\-]*$/.test(before.slice(atIndex)) && getMentionQuery(body, cursor) != null;
+
+  if (!hasPending) {
+    return parseCommentBodyMentions(body, users);
+  }
+
+  const prefix = body.slice(0, atIndex);
+  const pending = before.slice(atIndex);
+  const suffix = body.slice(cursor);
+  const segments = prefix ? parseCommentBodyMentions(prefix, users) : [];
+  if (pending) {
+    segments.push({ type: 'pendingMention', value: pending });
+  }
+  if (suffix) {
+    segments.push(...parseCommentBodyMentions(suffix, users));
+  }
+  return segments.length ? segments : [{ type: 'text', value: body }];
+}
 
 export function extractMentionedUserIds(body: string, users: MentionUserRef[]): number[] {
   if (!body?.trim() || !users.length) {

@@ -1,18 +1,27 @@
 package plugins.org.rd.plugin.crafterwf.service
 
+import org.slf4j.LoggerFactory
 import plugins.org.rd.plugin.crafterwf.dao.NotificationDao
+import plugins.org.rd.plugin.crafterwf.dao.NotificationPreferenceDao
 import plugins.org.rd.plugin.crafterwf.dao.TaskDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageDao
 import plugins.org.rd.plugin.crafterwf.model.CommentTargetType
 
 class NotificationService {
 
+    private static final def LOGGER = LoggerFactory.getLogger(NotificationService)
+
     private final NotificationDao notificationDao
+    private final NotificationPreferenceDao preferenceDao
+    private final NotificationEmailService emailService
     private final WorkflowPackageDao packageDao
     private final TaskDao taskDao
 
-    NotificationService(NotificationDao notificationDao, WorkflowPackageDao packageDao, TaskDao taskDao) {
+    NotificationService(NotificationDao notificationDao, NotificationPreferenceDao preferenceDao,
+                        NotificationEmailService emailService, WorkflowPackageDao packageDao, TaskDao taskDao) {
         this.notificationDao = notificationDao
+        this.preferenceDao = preferenceDao
+        this.emailService = emailService
         this.packageDao = packageDao
         this.taskDao = taskDao
     }
@@ -47,7 +56,34 @@ class NotificationService {
         def notification = notificationDao.insert(
             siteId, userId, trimmedTitle, message?.trim(), targetType?.trim(), targetId?.trim()
         )
-        return toDto(siteId, notification)
+        def dto = toDto(siteId, notification)
+        LOGGER.info(
+            '[crafterwf] In-app notification created id={} site={} userId={} title="{}" targetType={} targetId={}',
+            dto.id, siteId, userId, trimmedTitle, targetType, targetId
+        )
+        try {
+            emailService.maybeSendNotificationEmail(siteId, userId, dto)
+        } catch (Exception e) {
+            LOGGER.error(
+                '[crafterwf] Unexpected error while evaluating workflow notification email id={} site={} userId={}: {}',
+                dto.id, siteId, userId, e.message, e
+            )
+        }
+        return dto
+    }
+
+    Map getPreferences(String siteId, Long userId) {
+        requireUserId(userId)
+        return toPreferenceDto(preferenceDao.find(siteId, userId))
+    }
+
+    Map savePreferences(String siteId, Long userId, String deliveryMode, String summaryTime, Boolean emailEnabled) {
+        requireUserId(userId)
+        if (emailEnabled == null) {
+            throw new IllegalArgumentException('emailEnabled is required')
+        }
+        def saved = preferenceDao.save(siteId, userId, deliveryMode, summaryTime, emailEnabled)
+        return toPreferenceDto(saved)
     }
 
     Map markRead(String siteId, Long userId, String notificationId, boolean read) {
@@ -149,5 +185,16 @@ class NotificationService {
             return (value as int) != 0
         }
         return value == true || value == 'true' || value == '1'
+    }
+
+    private static Map toPreferenceDto(Map row) {
+        return [
+            siteId       : row.site_id,
+            userId       : row.user_id,
+            deliveryMode : row.delivery_mode ?: 'immediate',
+            summaryTime  : row.summary_time,
+            emailEnabled : isTrue(row.email_enabled),
+            modifiedOn   : row.modified_on
+        ]
     }
 }

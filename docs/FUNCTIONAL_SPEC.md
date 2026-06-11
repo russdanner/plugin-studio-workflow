@@ -165,7 +165,7 @@ What the plugin adds: visibility (board, audit, comments, tasks), step rules, op
 
 Bell widget with unread count; panel with navigation to package, task, or content preview.
 
-**Email:** deferred — see [NOTIFICATIONS.md](./NOTIFICATIONS.md).
+**Email:** immediate delivery via Studio SMTP — see [NOTIFICATIONS.md](./NOTIFICATIONS.md). Daily digest deferred.
 
 ### C8 — Tasks
 

@@ -6,7 +6,11 @@ import {
   Button,
   Chip,
   CircularProgress,
+  FormControlLabel,
+  MenuItem,
   Stack,
+  Switch,
+  TextField,
   Typography
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
@@ -16,9 +20,12 @@ import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 import useStudioItemPreview from '../../hooks/useStudioItemPreview';
 import {
   archiveNotification,
+  getNotificationPreferences,
   listNotifications,
+  NotificationPreferences,
   notifyNotificationsUpdated,
   resolveNotification,
+  saveNotificationPreferences,
   WorkflowNotification
 } from '../../api/notificationApi';
 import {
@@ -47,6 +54,31 @@ const NotificationsPanel = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showArchived, setShowArchived] = useState(false);
+  const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
+  const [preferencesLoading, setPreferencesLoading] = useState(false);
+  const [preferencesSaving, setPreferencesSaving] = useState(false);
+  const [preferencesError, setPreferencesError] = useState<string | null>(null);
+
+  const loadPreferences = useCallback(() => {
+    if (!siteId) {
+      setPreferences(null);
+      return;
+    }
+    setPreferencesLoading(true);
+    setPreferencesError(null);
+    getNotificationPreferences(siteId).subscribe({
+      next(response) {
+        setPreferences((response.response?.result as NotificationPreferences) ?? null);
+        setPreferencesLoading(false);
+      },
+      error(e) {
+        console.error(e);
+        setPreferences(null);
+        setPreferencesLoading(false);
+        setPreferencesError('Unable to load email settings.');
+      }
+    });
+  }, [siteId]);
 
   const loadNotifications = useCallback(() => {
     if (!siteId) {
@@ -73,6 +105,33 @@ const NotificationsPanel = () => {
   useEffect(() => {
     loadNotifications();
   }, [loadNotifications]);
+
+  useEffect(() => {
+    loadPreferences();
+  }, [loadPreferences]);
+
+  const handleSavePreferences = () => {
+    if (!siteId || !preferences) {
+      return;
+    }
+    setPreferencesSaving(true);
+    setPreferencesError(null);
+    saveNotificationPreferences(siteId, {
+      deliveryMode: preferences.deliveryMode,
+      summaryTime: preferences.summaryTime,
+      emailEnabled: preferences.emailEnabled
+    }).subscribe({
+      next(response) {
+        setPreferences((response.response?.result as NotificationPreferences) ?? preferences);
+        setPreferencesSaving(false);
+      },
+      error(e) {
+        console.error(e);
+        setPreferencesSaving(false);
+        setPreferencesError('Unable to save email settings.');
+      }
+    });
+  };
 
   const handleOpenTarget = (notification: WorkflowNotification) => {
     if (!canOpenNotificationTarget(notification)) {
@@ -103,31 +162,107 @@ const NotificationsPanel = () => {
     });
   };
 
-  if (loading && notifications.length === 0) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-        <CircularProgress size={28} />
-      </Box>
-    );
-  }
-
-  if (error) {
-    return (
-      <Box sx={{ p: 2 }}>
-        <Typography variant="body2" color="error">
-          {error}
-        </Typography>
-      </Box>
-    );
-  }
-
   return (
     <Stack spacing={1.25} sx={{ px: 1, pb: 2, minWidth: 0 }}>
       <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 600, letterSpacing: 0.06, textTransform: 'uppercase', px: 0.5 }}>
         Notifications
       </Typography>
 
-      {notifications.length === 0 ? (
+      <Box
+        sx={{
+          p: 1.25,
+          borderRadius: 1,
+          bgcolor: 'background.paper',
+          border: '1px solid',
+          borderColor: 'divider'
+        }}
+      >
+        <Typography variant="body2" fontWeight={600} sx={{ mb: 0.75 }}>
+          Email delivery
+        </Typography>
+        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mb: 1 }}>
+          Uses the same Crafter Studio SMTP settings as publish/review emails. Custom HTML messages for workflow tasks, mentions, and bypass alerts.
+        </Typography>
+        {preferencesLoading && !preferences ? (
+          <CircularProgress size={20} />
+        ) : preferences ? (
+          <Stack spacing={1}>
+            <FormControlLabel
+              control={
+                <Switch
+                  size="small"
+                  checked={preferences.emailEnabled}
+                  onChange={(_, checked) =>
+                    setPreferences((prev) => (prev ? { ...prev, emailEnabled: checked } : prev))
+                  }
+                />
+              }
+              label="Send email for workflow notifications"
+            />
+            <TextField
+              select
+              size="small"
+              fullWidth
+              label="Delivery"
+              value={preferences.deliveryMode}
+              disabled={!preferences.emailEnabled}
+              onChange={(event) =>
+                setPreferences((prev) =>
+                  prev
+                    ? {
+                        ...prev,
+                        deliveryMode: event.target.value as NotificationPreferences['deliveryMode']
+                      }
+                    : prev
+                )
+              }
+            >
+              <MenuItem value="immediate">Immediate</MenuItem>
+              <MenuItem value="daily_summary">Daily summary (coming soon)</MenuItem>
+            </TextField>
+            {preferences.deliveryMode === 'daily_summary' && (
+              <TextField
+                size="small"
+                fullWidth
+                label="Summary time"
+                placeholder="09:00"
+                value={preferences.summaryTime ?? ''}
+                disabled={!preferences.emailEnabled}
+                onChange={(event) =>
+                  setPreferences((prev) =>
+                    prev ? { ...prev, summaryTime: event.target.value } : prev
+                  )
+                }
+                helperText="Daily digest is not sent yet; immediate email is used until digest is implemented."
+              />
+            )}
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={preferencesSaving}
+              onClick={handleSavePreferences}
+              sx={{ alignSelf: 'flex-start' }}
+            >
+              {preferencesSaving ? 'Saving…' : 'Save email settings'}
+            </Button>
+          </Stack>
+        ) : null}
+        {preferencesError && (
+          <Typography variant="caption" color="error" sx={{ display: 'block', mt: 0.75 }}>
+            {preferencesError}
+          </Typography>
+        )}
+      </Box>
+
+      {loading && notifications.length === 0 ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 2 }}>
+          <CircularProgress size={24} />
+        </Box>
+      ) : error ? (
+        <Typography variant="body2" color="error" sx={{ px: 0.5 }}>
+          {error}
+        </Typography>
+      ) : notifications.length === 0 ? (
         <Typography variant="body2" color="text.secondary" sx={{ px: 0.5, py: 1 }}>
           No notifications.
         </Typography>

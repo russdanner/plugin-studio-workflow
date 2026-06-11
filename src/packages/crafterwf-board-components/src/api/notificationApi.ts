@@ -103,3 +103,30 @@ export function archiveNotification(siteId: string, notificationId: string, arch
     `&archived=${archived ? 'true' : 'false'}`;
   return pluginPost(url);
 }
+
+export interface NotificationPreferences {
+  siteId: string;
+  userId: number;
+  deliveryMode: 'immediate' | 'daily_summary';
+  summaryTime?: string | null;
+  emailEnabled: boolean;
+  modifiedOn?: string | null;
+}
+
+export function getNotificationPreferences(siteId: string) {
+  const url =
+    `${PLUGIN_SERVICE_BASE}/notification/preferences/get.json?siteId=${encodeURIComponent(siteId)}`;
+  return pluginGet(url);
+}
+
+export function saveNotificationPreferences(
+  siteId: string,
+  preferences: Pick<NotificationPreferences, 'deliveryMode' | 'summaryTime' | 'emailEnabled'>
+) {
+  const url =
+    `${PLUGIN_SERVICE_BASE}/notification/preferences/save.json?siteId=${encodeURIComponent(siteId)}` +
+    `&deliveryMode=${encodeURIComponent(preferences.deliveryMode)}` +
+    `&summaryTime=${encodeURIComponent(preferences.summaryTime ?? '')}` +
+    `&emailEnabled=${preferences.emailEnabled ? 'true' : 'false'}`;
+  return pluginPost(url);
+}

@@ -4,12 +4,14 @@ import groovy.json.JsonSlurper
 import plugins.org.rd.plugin.crafterwf.dao.AuditLogDao
 import plugins.org.rd.plugin.crafterwf.dao.CommentDao
 import plugins.org.rd.plugin.crafterwf.dao.NotificationDao
+import plugins.org.rd.plugin.crafterwf.dao.NotificationPreferenceDao
 import plugins.org.rd.plugin.crafterwf.dao.TaskDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageAttachmentDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageDao
 import plugins.org.rd.plugin.crafterwf.db.WorkflowDb
 import plugins.org.rd.plugin.crafterwf.service.AuditLogService
 import plugins.org.rd.plugin.crafterwf.service.CommentService
+import plugins.org.rd.plugin.crafterwf.service.NotificationEmailService
 import plugins.org.rd.plugin.crafterwf.service.NotificationService
 import plugins.org.rd.plugin.crafterwf.service.TaskNotificationSupport
 import plugins.org.rd.plugin.crafterwf.service.TaskService
@@ -47,10 +49,14 @@ class WorkflowContext {
         def attachmentDao = new WorkflowPackageAttachmentDao(db)
         def commentDao = new CommentDao(db)
         def notificationDao = new NotificationDao(db)
+        def preferenceDao = new NotificationPreferenceDao(db)
         def taskDao = new TaskDao(db)
         def auditLogDao = new AuditLogDao(db)
         this.auditLogService = new AuditLogService(auditLogDao)
-        this.notificationService = new NotificationService(notificationDao, packageDao, taskDao)
+        def emailService = new NotificationEmailService(applicationContext, preferenceDao)
+        this.notificationService = new NotificationService(
+            notificationDao, preferenceDao, emailService, packageDao, taskDao
+        )
         def taskNotifications = new TaskNotificationSupport(notificationService)
         this.taskService = new TaskService(taskDao, packageDao, taskNotifications, auditLogService)
         this.commentService = new CommentService(commentDao, packageDao, definitionService, notificationService, applicationContext)

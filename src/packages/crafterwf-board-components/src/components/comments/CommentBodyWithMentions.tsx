@@ -17,18 +17,22 @@ export function CommentBodyWithMentions({ body, mentionUsers, siteId }: CommentB
 
   return (
     <Typography variant="body2" component="div" sx={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
-      {segments.map((segment, index) =>
-        segment.type === 'text' ? (
-          <React.Fragment key={index}>{segment.value}</React.Fragment>
-        ) : (
-          <MentionHighlight
-            key={`${segment.username}-${index}`}
-            username={segment.username}
-            user={segment.user}
-            siteId={siteId}
-          />
-        )
-      )}
+      {segments.map((segment, index) => {
+        if (segment.type === 'text') {
+          return <React.Fragment key={index}>{segment.value}</React.Fragment>;
+        }
+        if (segment.type === 'mention') {
+          return (
+            <MentionHighlight
+              key={`${segment.username}-${index}`}
+              username={segment.username}
+              user={segment.user}
+              siteId={siteId}
+            />
+          );
+        }
+        return <React.Fragment key={index}>{segment.value}</React.Fragment>;
+      })}
     </Typography>
   );
 }

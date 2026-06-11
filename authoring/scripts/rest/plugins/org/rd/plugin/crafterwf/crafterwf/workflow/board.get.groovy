@@ -6,6 +6,8 @@ def ctx = WorkflowContext.create(applicationContext, pluginConfig, false)
 def userId = WorkflowContext.resolveUserId(applicationContext)
 def username = WorkflowContext.resolveUsername(applicationContext, request)
 
-def workflowId = RestParams.requireOneOf(params, ['workflowId', 'boardId'], 'workflowId or boardId is required')
+// workflowId / boardId optional — WorkflowBoardService resolves the site default when omitted
+def workflowId = RestParams.optionalString(params, 'workflowId')
+    ?: RestParams.optionalString(params, 'boardId')
 
 return ctx.boardService.getBoard(siteId, workflowId, userId, username)

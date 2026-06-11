@@ -24,3 +24,13 @@ export declare function markNotificationRead(siteId: string, notificationId: str
 export declare function markAllNotificationsRead(siteId: string): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
 export declare function resolveNotification(siteId: string, notificationId: string, resolved: boolean): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
 export declare function archiveNotification(siteId: string, notificationId: string, archived: boolean): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
+export interface NotificationPreferences {
+    siteId: string;
+    userId: number;
+    deliveryMode: 'immediate' | 'daily_summary';
+    summaryTime?: string | null;
+    emailEnabled: boolean;
+    modifiedOn?: string | null;
+}
+export declare function getNotificationPreferences(siteId: string): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
+export declare function saveNotificationPreferences(siteId: string, preferences: Pick<NotificationPreferences, 'deliveryMode' | 'summaryTime' | 'emailEnabled'>): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;

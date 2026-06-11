@@ -1,13 +1,13 @@
 # Notifications
 
-How workflow events reach users via **in-app** inbox in the Studio Tools panel. **Email delivery is designed but not yet implemented.**
+How workflow events reach users via **in-app** inbox and optional **email** in the Studio Tools panel.
 
 ## Channels
 
 | Channel | Status |
 |---------|--------|
 | **In-app** | ✅ Persistent inbox, bell badge, clickable navigation to package/task/content |
-| **Email** | ❌ Deferred — preference table exists; no send/digest job |
+| **Email** | ✅ Immediate delivery via Studio `mailSender` (direct send); custom HTML templates |
 
 Every notifiable event creates an **in-app** row in `wf_notification`.
 
@@ -33,11 +33,11 @@ List API enriches notifications with navigation context where possible: `targetT
 
 | Column | Notes |
 |--------|-------|
-| `delivery_mode` | `immediate` \| `daily_summary` (not yet honored) |
-| `summary_time` | Optional digest time |
-| `email_enabled` | Master email toggle (not yet honored) |
+| `delivery_mode` | `immediate` \| `daily_summary` (`daily_summary` stored but digest job not yet implemented) |
+| `summary_time` | Optional digest time (for future daily summary) |
+| `email_enabled` | Master email toggle — when true and mode is `immediate`, sends on each notification |
 
-**API (planned):** `notification/preferences/get.json`, `notification/preferences/save.json` — documented in [API_CONTRACT.md](./API_CONTRACT.md) but **not implemented**.
+**API:** `notification/preferences/get.json`, `notification/preferences/save.json` (POST JSON body).
 
 ## Implemented event triggers
 
@@ -69,6 +69,21 @@ See [API_CONTRACT.md](./API_CONTRACT.md):
 - `notification/archive.json`
 - `notification/create.json` (manual/test)
 
+## Email delivery
+
+Workflow notification emails use the **same Crafter Studio mail pipeline** as OOTB publish/review notifications:
+
+1. `NotificationService.createNotification` inserts the in-app row.
+2. `NotificationEmailService` reads `wf_user_notification_preference` for the recipient.
+3. When `email_enabled` and `delivery_mode=immediate`, it sends **directly** via Studio's `mailSender` + `EmailFactoryImpl` (same SMTP config as OOTB mail).
+4. Log lines are prefixed with `[crafterwf]` — e.g. `Sent workflow notification email to …`.
+
+Emails are **custom HTML** (plugin-branded) with title, message, target context, and an **Open in Crafter Studio** link (site authoring URL from `cstudioServicesConfig.getAuthoringUrl`).
+
+Recipients must have a valid email on their Studio user profile (Users → profile **email** field). Missing email or SMTP misconfiguration is skipped with a server warning; in-app notification is still created.
+
+Configure SMTP in Studio global config, e.g. `studio.mail.host`, `studio.mail.port`, `studio.mail.from.default`.
+
 ## Planned email flow
 
 ```mermaid
@@ -78,8 +93,8 @@ flowchart TD
     C --> D{email_enabled?}
     D -->|no| E[Done]
     D -->|yes| F{delivery_mode}
-    F -->|immediate| G[sendNow via Studio email]
-    F -->|daily_summary| H[Queue for digest job]
+    F -->|immediate| G[Send via mailSender + EmailFactoryImpl]
+    F -->|daily_summary| H[Queue for digest job — not yet implemented]
 ```
 
 ## Related documents

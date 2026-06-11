@@ -48,7 +48,7 @@ flowchart TB
 
 | Feature | Description |
 |---------|-------------|
-| **Email notifications** | `wf_user_notification_preference` table exists; immediate/digest send not implemented |
+| **Email notifications** | ✅ Immediate send via `cstudioEmailMessageQueue`; daily digest deferred |
 | **Groovy hooks** | Post-commit `package.moved` / `package.modified` scripts (not implemented) |
 | **WorkflowRole (DB)** | Per-workflow Studio role → capabilities tables (step `roleRule` in JSON is implemented) |
 | **Terminal step behavior** | `is_terminal` flag stored but not enforced in board logic |

@@ -1,5 +1,6 @@
 package plugins.org.rd.plugin.crafterwf.service
 
+import org.slf4j.LoggerFactory
 import plugins.org.rd.plugin.crafterwf.WorkflowContext
 import plugins.org.rd.plugin.crafterwf.dao.CommentDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageDao
@@ -7,6 +8,8 @@ import plugins.org.rd.plugin.crafterwf.model.CommentTargetType
 import plugins.org.rd.plugin.crafterwf.util.MentionParser
 
 class CommentService {
+
+    private static final def LOGGER = LoggerFactory.getLogger(CommentService)
 
     private final CommentDao commentDao
     private final WorkflowPackageDao packageDao
@@ -112,14 +115,27 @@ class CommentService {
             }
         }
         if (!recipientIds) {
+            LOGGER.info(
+                '[crafterwf] Comment @mention notification skipped — no resolved recipients site={} targetType={} targetId={}',
+                siteId, targetType, targetId
+            )
             return
         }
         def targetLabel = resolveTargetLabel(siteId, targetType, targetId)
         def actor = authorUsername?.trim() ?: 'Someone'
         def snippet = body.length() > 120 ? body.substring(0, 117) + '...' : body
 
+        LOGGER.info(
+            '[crafterwf] Comment @mention notifying {} user(s) site={} targetType={} targetId={} author={} recipients={}',
+            recipientIds.size(), siteId, targetType, targetId, actor, recipientIds
+        )
+
         recipientIds.each { mentionedUserId ->
             if (mentionedUserId == authorId) {
+                LOGGER.info(
+                    '[crafterwf] Comment @mention skipped self-notification userId={} site={}',
+                    mentionedUserId, siteId
+                )
                 return
             }
             try {

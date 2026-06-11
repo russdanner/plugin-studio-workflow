@@ -16,7 +16,7 @@ These documents describe **what** the system does and **how** it is structured. 
 | [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) | Stack, domain, services, widgets, migrations |
 | [API_CONTRACT.md](./API_CONTRACT.md) | Plugin REST API — endpoints and payloads |
 | [AUTHORIZATION.md](./AUTHORIZATION.md) | Studio site roles (no plugin permission tables in current phase) |
-| [NOTIFICATIONS.md](./NOTIFICATIONS.md) | In-app notifications (email delivery deferred) |
+| [NOTIFICATIONS.md](./NOTIFICATIONS.md) | In-app + email notifications (Studio SMTP) |
 | [COMMENTS.md](./COMMENTS.md) | Comment threads — polymorphic targets, independent of workflow |
 | [TASKS.md](./TASKS.md) | User tasks — optional links, independent of workflow |
 | [AUDIT_LOG.md](./AUDIT_LOG.md) | Append-only audit trail |
@@ -98,7 +98,7 @@ See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) and [ARCHITECTURE_DIAGRAM.md](./A
 | Step role/content rules (JSON) | ✅ |
 | Step publish actions on package move | ✅ |
 | Package due dates / site calendar | ✅ |
-| Email notifications / preferences UI | ❌ deferred |
+| Email notifications / preferences UI | ✅ immediate email + preferences panel |
 | Per-workflow RBAC tables, Groovy hooks | ❌ deferred |
 
 ## Schema version

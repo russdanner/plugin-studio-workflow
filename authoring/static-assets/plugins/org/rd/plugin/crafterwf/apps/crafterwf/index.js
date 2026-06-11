@@ -3,7 +3,7 @@ const { useState, useRef, useEffect, useContext, useLayoutEffect, useCallback: u
 const React__default = craftercms.libs.React && Object.prototype.hasOwnProperty.call(craftercms.libs.React, 'default') ? craftercms.libs.React['default'] : craftercms.libs.React;
 const RefreshRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded');
 const SettingsRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded');
-const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Chip, Button, TextField, Popper, Paper, List, ListItemButton, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogContent, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, DialogTitle, cardClasses, Fab, ToggleButtonGroup, ToggleButton, Alert, FormControlLabel, Menu: Menu$1, ListItemText: ListItemText$1, Popover, Tabs, Tab, Autocomplete, RadioGroup, Radio, FormLabel } = craftercms.libs.MaterialUI;
+const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogContent, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, DialogTitle, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, Popover, Tabs, Tab, Autocomplete, RadioGroup, Radio, FormLabel } = craftercms.libs.MaterialUI;
 const { connect, Provider, useSelector, useDispatch } = craftercms.libs.ReactRedux;
 const ReactDOM = craftercms.libs.ReactDOM && Object.prototype.hasOwnProperty.call(craftercms.libs.ReactDOM, 'default') ? craftercms.libs.ReactDOM['default'] : craftercms.libs.ReactDOM;
 const { ApiResponseErrorState } = craftercms.components;
@@ -25,8 +25,8 @@ const HistoryRoundedIcon = craftercms.utils.constants.components.get('@mui/icons
 const VisibilityRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/VisibilityRounded');
 const { createAction } = craftercms.libs.ReduxToolkit;
 const { getPreviewURLFromPath, getRootPath } = craftercms.utils.path;
-const SendRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SendRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SendRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SendRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SendRounded');
 const { fetchRolesInSite, fetchAll, me } = craftercms.services.users;
+const SendRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SendRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SendRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SendRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SendRounded');
 const { get, post } = craftercms.utils.ajax;
 const ExpandMoreRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ExpandMoreRounded');
 const Menu = craftercms.libs.MaterialUI.Menu && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Menu, 'default') ? craftercms.libs.MaterialUI.Menu['default'] : craftercms.libs.MaterialUI.Menu;
@@ -9593,6 +9593,37 @@ var AttachedContentItemRow = function (_a) {
                     React.createElement(DeleteOutlineRoundedIcon, { fontSize: "small" })))) : null)));
 };
 
+/** Active @mention fragment at the cursor while composing (e.g. "@adm"). */
+function getMentionQuery(text, cursor) {
+    var before = text.slice(0, cursor);
+    var match = /(?:^|[\s([{])@([\w.\-]*)$/.exec(before);
+    if (!match) {
+        return null;
+    }
+    return match[1];
+}
+function parseCommentDraftSegments(body, users, cursor) {
+    if (!body) {
+        return [];
+    }
+    var before = body.slice(0, cursor);
+    var atIndex = before.lastIndexOf('@');
+    var hasPending = atIndex >= 0 && /^@[\w.\-]*$/.test(before.slice(atIndex)) && getMentionQuery(body, cursor) != null;
+    if (!hasPending) {
+        return parseCommentBodyMentions(body, users);
+    }
+    var prefix = body.slice(0, atIndex);
+    var pending = before.slice(atIndex);
+    var suffix = body.slice(cursor);
+    var segments = prefix ? parseCommentBodyMentions(prefix, users) : [];
+    if (pending) {
+        segments.push({ type: 'pendingMention', value: pending });
+    }
+    if (suffix) {
+        segments.push.apply(segments, parseCommentBodyMentions(suffix, users));
+    }
+    return segments.length ? segments : [{ type: 'text', value: body }];
+}
 function extractMentionedUserIds(body, users) {
     if (!(body === null || body === void 0 ? void 0 : body.trim()) || !users.length) {
         return [];
@@ -9806,64 +9837,48 @@ function CommentBodyWithMentions(_a) {
     var body = _a.body, mentionUsers = _a.mentionUsers, siteId = _a.siteId;
     var segments = useMemo$1(function () { return parseCommentBodyMentions(body, mentionUsers); }, [body, mentionUsers]);
     return (React.createElement(Typography, { variant: "body2", component: "div", sx: { whiteSpace: 'pre-wrap', wordBreak: 'break-word' } }, segments.map(function (segment, index) {
-        return segment.type === 'text' ? (React.createElement(React.Fragment, { key: index }, segment.value)) : (React.createElement(MentionHighlight, { key: "".concat(segment.username, "-").concat(index), username: segment.username, user: segment.user, siteId: siteId }));
+        if (segment.type === 'text') {
+            return React.createElement(React.Fragment, { key: index }, segment.value);
+        }
+        if (segment.type === 'mention') {
+            return (React.createElement(MentionHighlight, { key: "".concat(segment.username, "-").concat(index), username: segment.username, user: segment.user, siteId: siteId }));
+        }
+        return React.createElement(React.Fragment, { key: index }, segment.value);
     })));
 }
 
-function formatCommentDate(value) {
-    if (!value) {
-        return '';
+var INPUT_FONT_SIZE = '0.875rem';
+var INPUT_LINE_HEIGHT = 1.43;
+var INPUT_PADDING = '8.5px 36px 8.5px 14px';
+function renderDraftSegment(segment, key) {
+    if (segment.type === 'mention') {
+        var label = segment.user ? userDisplayName(segment.user) : "@".concat(segment.username);
+        return (React.createElement(Box, { key: key, component: "span", sx: {
+                fontWeight: 700,
+                color: 'primary.main'
+            } }, label));
     }
-    var date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-        return value;
+    if (segment.type === 'pendingMention') {
+        return (React.createElement(Box, { key: key, component: "span", sx: {
+                fontWeight: 600,
+                color: 'primary.main',
+                bgcolor: 'action.selected',
+                borderRadius: 0.5
+            } }, segment.value));
     }
-    return date.toLocaleString();
+    return React.createElement(React.Fragment, { key: key }, segment.value);
 }
-function getMentionQuery(text, cursor) {
-    var before = text.slice(0, cursor);
-    var match = /(?:^|[\s([{])@([\w.\-]*)$/.exec(before);
-    if (!match) {
-        return null;
-    }
-    return match[1];
-}
-var CommentsSection = function (_a) {
-    var comments = _a.comments, onAddComment = _a.onAddComment, onResolveComment = _a.onResolveComment, onArchiveComment = _a.onArchiveComment, _b = _a.showArchived, showArchived = _b === void 0 ? false : _b, onShowArchivedChange = _a.onShowArchivedChange, _c = _a.compact, compact = _c === void 0 ? false : _c, mentionUsersProp = _a.mentionUsers;
-    var siteId = useActiveSiteId();
-    var _d = useState(''), commentDraft = _d[0], setCommentDraft = _d[1];
-    var _e = useState(mentionUsersProp !== null && mentionUsersProp !== void 0 ? mentionUsersProp : []), mentionUsers = _e[0], setMentionUsers = _e[1];
+var CommentMentionInput = function (_a) {
+    var value = _a.value, onChange = _a.onChange, onSubmit = _a.onSubmit, mentionUsers = _a.mentionUsers, _b = _a.mentionUsersLoading, mentionUsersLoading = _b === void 0 ? false : _b, _c = _a.placeholder, placeholder = _c === void 0 ? 'Add a comment… Use @ to mention someone' : _c, _d = _a.minRows, minRows = _d === void 0 ? 2 : _d, _e = _a.maxRows, maxRows = _e === void 0 ? 6 : _e;
     var _f = useState(false), mentionOpen = _f[0], setMentionOpen = _f[1];
     var _g = useState(''), mentionQuery = _g[0], setMentionQuery = _g[1];
     var _h = useState(0), cursorPosition = _h[0], setCursorPosition = _h[1];
+    var _j = useState(false), focused = _j[0], setFocused = _j[1];
     var inputRef = useRef(null);
-    var mentionAnchorRef = useRef(null);
-    useEffect(function () {
-        if (mentionUsersProp) {
-            setMentionUsers(mentionUsersProp);
-            return;
-        }
-        if (!onAddComment) {
-            return;
-        }
-        fetchAll({ limit: 500, offset: 0 }).subscribe({
-            next: function (users) {
-                var options = (users !== null && users !== void 0 ? users : [])
-                    .filter(function (user) { return user.enabled !== false; })
-                    .map(function (user) { return ({
-                    id: user.id,
-                    username: user.username,
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    label: userDisplayName(user)
-                }); });
-                setMentionUsers(options);
-            },
-            error: function (e) {
-                console.error(e);
-            }
-        });
-    }, [mentionUsersProp, onAddComment]);
+    var mirrorRef = useRef(null);
+    var wrapperRef = useRef(null);
+    var minHeight = minRows * INPUT_LINE_HEIGHT * 16 + 17;
+    var maxHeight = maxRows * INPUT_LINE_HEIGHT * 16 + 17;
     var filteredMentionUsers = useMemo$1(function () {
         var q = mentionQuery.toLowerCase();
         return mentionUsers
@@ -9874,10 +9889,11 @@ var CommentsSection = function (_a) {
         })
             .slice(0, 8);
     }, [mentionQuery, mentionUsers]);
+    var draftSegments = useMemo$1(function () { return parseCommentDraftSegments(value, mentionUsers, cursorPosition); }, [cursorPosition, mentionUsers, value]);
     var syncMentionState = useCallback$1(function (text, cursor) {
         setCursorPosition(cursor);
         var query = getMentionQuery(text, cursor);
-        if (query != null && mentionUsers.length > 0) {
+        if (query != null) {
             setMentionQuery(query);
             setMentionOpen(true);
         }
@@ -9885,9 +9901,9 @@ var CommentsSection = function (_a) {
             setMentionOpen(false);
             setMentionQuery('');
         }
-    }, [mentionUsers.length]);
+    }, []);
     var insertMention = function (username) {
-        var text = commentDraft;
+        var text = value;
         var cursor = cursorPosition;
         var before = text.slice(0, cursor);
         var after = text.slice(cursor);
@@ -9902,7 +9918,7 @@ var CommentsSection = function (_a) {
         var prefix = before.slice(0, atIndex);
         var insertion = "@".concat(username, " ");
         var next = "".concat(prefix).concat(insertion).concat(after);
-        setCommentDraft(next);
+        onChange(next);
         setMentionOpen(false);
         setMentionQuery('');
         var nextCursor = prefix.length + insertion.length;
@@ -9911,9 +9927,166 @@ var CommentsSection = function (_a) {
             if (el) {
                 el.focus();
                 el.setSelectionRange(nextCursor, nextCursor);
+                setCursorPosition(nextCursor);
             }
         });
     };
+    var syncScroll = function () {
+        var input = inputRef.current;
+        var mirror = mirrorRef.current;
+        if (input && mirror) {
+            mirror.scrollTop = input.scrollTop;
+        }
+    };
+    return (React.createElement(Box, { ref: wrapperRef, sx: { position: 'relative', pt: 0.5 } },
+        React.createElement(Box, { sx: {
+                position: 'relative',
+                border: 1,
+                borderColor: focused ? 'primary.main' : 'divider',
+                borderRadius: 1,
+                bgcolor: 'background.paper',
+                transition: function (theme) {
+                    return theme.transitions.create(['border-color'], { duration: theme.transitions.duration.shortest });
+                }
+            } },
+            React.createElement(Box, { ref: mirrorRef, "aria-hidden": true, sx: {
+                    position: 'absolute',
+                    inset: 0,
+                    px: '14px',
+                    py: '8.5px',
+                    pr: '36px',
+                    overflow: 'hidden',
+                    pointerEvents: 'none',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    fontSize: INPUT_FONT_SIZE,
+                    lineHeight: INPUT_LINE_HEIGHT,
+                    fontFamily: 'inherit',
+                    color: 'text.primary',
+                    minHeight: minHeight,
+                    maxHeight: maxHeight
+                } }, value ? (draftSegments.map(function (segment, index) { return renderDraftSegment(segment, index); })) : (React.createElement(Box, { component: "span", sx: { color: 'text.disabled' } }, placeholder))),
+            React.createElement(Box, { component: "textarea", ref: inputRef, value: value, rows: minRows, placeholder: "", onFocus: function () { return setFocused(true); }, onBlur: function () { return setFocused(false); }, onChange: function (event) {
+                    var _a;
+                    var next = event.target.value;
+                    onChange(next);
+                    syncMentionState(next, (_a = event.target.selectionStart) !== null && _a !== void 0 ? _a : next.length);
+                }, onClick: function () {
+                    var _a;
+                    var target = inputRef.current;
+                    if (target) {
+                        syncMentionState(value, (_a = target.selectionStart) !== null && _a !== void 0 ? _a : 0);
+                    }
+                }, onKeyUp: function () {
+                    var _a;
+                    var target = inputRef.current;
+                    if (target) {
+                        syncMentionState(value, (_a = target.selectionStart) !== null && _a !== void 0 ? _a : 0);
+                    }
+                }, onScroll: syncScroll, onKeyDown: function (event) {
+                    if (mentionOpen && filteredMentionUsers.length > 0) {
+                        if (event.key === 'Tab') {
+                            event.preventDefault();
+                            insertMention(filteredMentionUsers[0].username);
+                            return;
+                        }
+                        if (event.key === 'Enter' && !event.shiftKey && getMentionQuery(value, cursorPosition) != null) {
+                            event.preventDefault();
+                            insertMention(filteredMentionUsers[0].username);
+                            return;
+                        }
+                    }
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        onSubmit();
+                    }
+                    if (event.key === 'Escape' && mentionOpen) {
+                        event.preventDefault();
+                        setMentionOpen(false);
+                    }
+                }, sx: {
+                    display: 'block',
+                    width: '100%',
+                    minHeight: minHeight,
+                    maxHeight: maxHeight,
+                    p: INPUT_PADDING,
+                    border: 'none',
+                    outline: 'none',
+                    resize: 'none',
+                    bgcolor: 'transparent',
+                    color: 'transparent',
+                    caretColor: 'text.primary',
+                    fontFamily: 'inherit',
+                    fontSize: INPUT_FONT_SIZE,
+                    lineHeight: INPUT_LINE_HEIGHT,
+                    position: 'relative',
+                    zIndex: 1
+                } })),
+        React.createElement(Popper, { open: mentionOpen, anchorEl: wrapperRef.current, placement: "top-start", sx: { zIndex: function (theme) { return theme.zIndex.modal + 2; } } },
+            React.createElement(Paper, { elevation: 4, sx: { maxHeight: 220, overflow: 'auto', minWidth: 240, mt: 0.5 } }, mentionUsersLoading ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 1.5, py: 1 } }, "Loading users\u2026")) : filteredMentionUsers.length === 0 ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 1.5, py: 1 } }, mentionUsers.length === 0 ? 'No users available' : 'No matching users')) : (React.createElement(List, { dense: true, disablePadding: true }, filteredMentionUsers.map(function (user) { return (React.createElement(ListItemButton, { key: user.id, onMouseDown: function (event) {
+                    event.preventDefault();
+                    insertMention(user.username);
+                } },
+                React.createElement(Stack, { direction: "row", alignItems: "center", spacing: 1, sx: { width: '100%', minWidth: 0 } },
+                    React.createElement(Box, { sx: { flex: 1, minWidth: 0 } },
+                        React.createElement(UserAvatarLabel, { user: user, label: user.label, size: 22, typographyVariant: "body2" })),
+                    React.createElement(Typography, { variant: "caption", color: "text.secondary", noWrap: true },
+                        "@",
+                        user.username)))); }))))),
+        React.createElement(IconButton, { size: "small", color: "primary", disabled: !value.trim(), onClick: onSubmit, "aria-label": "Send comment", sx: {
+                position: 'absolute',
+                right: 6,
+                bottom: 6,
+                zIndex: 2
+            } },
+            React.createElement(SendRoundedIcon, { fontSize: "small" }))));
+};
+
+function formatCommentDate(value) {
+    if (!value) {
+        return '';
+    }
+    var date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+    return date.toLocaleString();
+}
+var CommentsSection = function (_a) {
+    var comments = _a.comments, onAddComment = _a.onAddComment, onResolveComment = _a.onResolveComment, onArchiveComment = _a.onArchiveComment, _b = _a.showArchived, showArchived = _b === void 0 ? false : _b, onShowArchivedChange = _a.onShowArchivedChange, _c = _a.compact, compact = _c === void 0 ? false : _c, mentionUsersProp = _a.mentionUsers;
+    var siteId = useActiveSiteId();
+    var _d = useState(''), commentDraft = _d[0], setCommentDraft = _d[1];
+    var _e = useState(mentionUsersProp !== null && mentionUsersProp !== void 0 ? mentionUsersProp : []), mentionUsers = _e[0], setMentionUsers = _e[1];
+    var _f = useState(false), mentionUsersLoading = _f[0], setMentionUsersLoading = _f[1];
+    useEffect(function () {
+        if (mentionUsersProp) {
+            setMentionUsers(mentionUsersProp);
+            return;
+        }
+        if (!onAddComment) {
+            return;
+        }
+        setMentionUsersLoading(true);
+        fetchAll({ limit: 500, offset: 0 }).subscribe({
+            next: function (users) {
+                var options = (users !== null && users !== void 0 ? users : [])
+                    .filter(function (user) { return user.enabled !== false; })
+                    .map(function (user) { return ({
+                    id: user.id,
+                    username: user.username,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    label: userDisplayName(user)
+                }); });
+                setMentionUsers(options);
+                setMentionUsersLoading(false);
+            },
+            error: function (e) {
+                console.error(e);
+                setMentionUsersLoading(false);
+            }
+        });
+    }, [mentionUsersProp, onAddComment]);
     var handleSubmitComment = function () {
         var body = commentDraft.trim();
         if (!body || !onAddComment) {
@@ -9921,7 +10094,6 @@ var CommentsSection = function (_a) {
         }
         onAddComment(body, extractMentionedUserIds(body, mentionUsers));
         setCommentDraft('');
-        setMentionOpen(false);
     };
     var visibleComments = comments;
     var showArchivedToggle = Boolean(onShowArchivedChange);
@@ -9948,73 +10120,7 @@ var CommentsSection = function (_a) {
                 onArchiveComment && (React.createElement(Button, { size: "small", sx: { px: 0, minWidth: 0 }, onClick: function () { return onArchiveComment(comment.id, true); } }, "Archive")))),
             onArchiveComment && comment.archived && (React.createElement(Button, { size: "small", sx: { mt: 0.75, px: 0, minWidth: 0 }, onClick: function () { return onArchiveComment(comment.id, false); } }, "Restore")))); }))),
         showArchivedToggle && (React.createElement(Button, { size: "small", sx: { alignSelf: 'flex-start', px: 0, minWidth: 0 }, onClick: function () { return onShowArchivedChange === null || onShowArchivedChange === void 0 ? void 0 : onShowArchivedChange(!showArchived); } }, showArchived ? 'Hide archived' : 'Show archived')),
-        onAddComment && (React.createElement(Box, { ref: mentionAnchorRef, sx: { position: 'relative', pt: 0.5 } },
-            React.createElement(TextField, { inputRef: inputRef, multiline: true, minRows: compact ? 2 : 2, maxRows: 6, size: "small", placeholder: "Add a comment\u2026 Use @ to mention someone", value: commentDraft, onChange: function (event) {
-                    var _a;
-                    var next = event.target.value;
-                    setCommentDraft(next);
-                    syncMentionState(next, (_a = event.target.selectionStart) !== null && _a !== void 0 ? _a : next.length);
-                }, onClick: function () {
-                    var _a;
-                    var target = inputRef.current;
-                    if (target) {
-                        syncMentionState(commentDraft, (_a = target.selectionStart) !== null && _a !== void 0 ? _a : 0);
-                    }
-                }, onKeyUp: function () {
-                    var _a;
-                    var target = inputRef.current;
-                    if (target) {
-                        syncMentionState(commentDraft, (_a = target.selectionStart) !== null && _a !== void 0 ? _a : 0);
-                    }
-                }, onKeyDown: function (event) {
-                    if (mentionOpen && filteredMentionUsers.length > 0) {
-                        if (event.key === 'Tab') {
-                            event.preventDefault();
-                            insertMention(filteredMentionUsers[0].username);
-                            return;
-                        }
-                        if (event.key === 'Enter' && !event.shiftKey && getMentionQuery(commentDraft, cursorPosition) != null) {
-                            event.preventDefault();
-                            insertMention(filteredMentionUsers[0].username);
-                            return;
-                        }
-                    }
-                    if (event.key === 'Enter' && !event.shiftKey) {
-                        event.preventDefault();
-                        handleSubmitComment();
-                    }
-                    if (event.key === 'Escape' && mentionOpen) {
-                        event.preventDefault();
-                        setMentionOpen(false);
-                    }
-                }, fullWidth: true, sx: {
-                    '& .MuiInputBase-root': {
-                        alignItems: 'flex-end',
-                        pr: 0.5,
-                        pb: 0.5
-                    },
-                    '& .MuiInputBase-inputMultiline': {
-                        pr: 4
-                    }
-                } }),
-            React.createElement(Popper, { open: mentionOpen && filteredMentionUsers.length > 0, anchorEl: mentionAnchorRef.current, placement: "top-start", sx: { zIndex: function (theme) { return theme.zIndex.modal + 2; } } },
-                React.createElement(Paper, { elevation: 4, sx: { maxHeight: 200, overflow: 'auto', minWidth: 220 } },
-                    React.createElement(List, { dense: true, disablePadding: true }, filteredMentionUsers.map(function (user) { return (React.createElement(ListItemButton, { key: user.id, onMouseDown: function (event) {
-                            event.preventDefault();
-                            insertMention(user.username);
-                        } },
-                        React.createElement(Stack, { direction: "row", alignItems: "center", spacing: 1, sx: { width: '100%', minWidth: 0 } },
-                            React.createElement(Box, { sx: { flex: 1, minWidth: 0 } },
-                                React.createElement(UserAvatarLabel, { user: user, label: user.label, size: 22, typographyVariant: "body2" })),
-                            React.createElement(Typography, { variant: "caption", color: "text.secondary", noWrap: true },
-                                "@",
-                                user.username)))); })))),
-            React.createElement(IconButton, { size: "small", color: "primary", disabled: !commentDraft.trim(), onClick: handleSubmitComment, "aria-label": "Send comment", sx: {
-                    position: 'absolute',
-                    right: 6,
-                    bottom: 6
-                } },
-                React.createElement(SendRoundedIcon, { fontSize: "small" }))))));
+        onAddComment && (React.createElement(CommentMentionInput, { value: commentDraft, onChange: setCommentDraft, onSubmit: handleSubmitComment, mentionUsers: mentionUsers, mentionUsersLoading: mentionUsersLoading, minRows: compact ? 2 : 2 }))));
 };
 
 /** Read-only plugin REST endpoints (GET). */
@@ -13461,6 +13567,18 @@ function archiveNotification(siteId, notificationId, archived) {
         "&archived=".concat(archived ? 'true' : 'false');
     return pluginPost(url);
 }
+function getNotificationPreferences(siteId) {
+    var url = "".concat(PLUGIN_SERVICE_BASE, "/notification/preferences/get.json?siteId=").concat(encodeURIComponent(siteId));
+    return pluginGet(url);
+}
+function saveNotificationPreferences(siteId, preferences) {
+    var _a;
+    var url = "".concat(PLUGIN_SERVICE_BASE, "/notification/preferences/save.json?siteId=").concat(encodeURIComponent(siteId)) +
+        "&deliveryMode=".concat(encodeURIComponent(preferences.deliveryMode)) +
+        "&summaryTime=".concat(encodeURIComponent((_a = preferences.summaryTime) !== null && _a !== void 0 ? _a : '')) +
+        "&emailEnabled=".concat(preferences.emailEnabled ? 'true' : 'false');
+    return pluginPost(url);
+}
 
 var TASKS_PANEL_WIDGET_ID$1 = 'org.rd.plugin.crafterwf.tasksPanel';
 var NOTIFICATION_TARGET = {
@@ -13563,13 +13681,39 @@ function formatDate$1(value) {
     return date.toLocaleString();
 }
 var NotificationsPanel = function () {
+    var _a;
     var siteId = useActiveSiteId();
     var dispatch = useDispatch();
-    var _a = useStudioItemPreview(), previewPath = _a.previewPath, inspectPath = _a.inspectPath;
-    var _b = useState([]), notifications = _b[0], setNotifications = _b[1];
-    var _c = useState(false), loading = _c[0], setLoading = _c[1];
-    var _d = useState(null), error = _d[0], setError = _d[1];
-    var _e = useState(false), showArchived = _e[0], setShowArchived = _e[1];
+    var _b = useStudioItemPreview(), previewPath = _b.previewPath, inspectPath = _b.inspectPath;
+    var _c = useState([]), notifications = _c[0], setNotifications = _c[1];
+    var _d = useState(false), loading = _d[0], setLoading = _d[1];
+    var _e = useState(null), error = _e[0], setError = _e[1];
+    var _f = useState(false), showArchived = _f[0], setShowArchived = _f[1];
+    var _g = useState(null), preferences = _g[0], setPreferences = _g[1];
+    var _h = useState(false), preferencesLoading = _h[0], setPreferencesLoading = _h[1];
+    var _j = useState(false), preferencesSaving = _j[0], setPreferencesSaving = _j[1];
+    var _k = useState(null), preferencesError = _k[0], setPreferencesError = _k[1];
+    var loadPreferences = useCallback$1(function () {
+        if (!siteId) {
+            setPreferences(null);
+            return;
+        }
+        setPreferencesLoading(true);
+        setPreferencesError(null);
+        getNotificationPreferences(siteId).subscribe({
+            next: function (response) {
+                var _a, _b;
+                setPreferences((_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) !== null && _b !== void 0 ? _b : null);
+                setPreferencesLoading(false);
+            },
+            error: function (e) {
+                console.error(e);
+                setPreferences(null);
+                setPreferencesLoading(false);
+                setPreferencesError('Unable to load email settings.');
+            }
+        });
+    }, [siteId]);
     var loadNotifications = useCallback$1(function () {
         if (!siteId) {
             setNotifications([]);
@@ -13595,6 +13739,32 @@ var NotificationsPanel = function () {
     useEffect(function () {
         loadNotifications();
     }, [loadNotifications]);
+    useEffect(function () {
+        loadPreferences();
+    }, [loadPreferences]);
+    var handleSavePreferences = function () {
+        if (!siteId || !preferences) {
+            return;
+        }
+        setPreferencesSaving(true);
+        setPreferencesError(null);
+        saveNotificationPreferences(siteId, {
+            deliveryMode: preferences.deliveryMode,
+            summaryTime: preferences.summaryTime,
+            emailEnabled: preferences.emailEnabled
+        }).subscribe({
+            next: function (response) {
+                var _a, _b;
+                setPreferences((_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) !== null && _b !== void 0 ? _b : preferences);
+                setPreferencesSaving(false);
+            },
+            error: function (e) {
+                console.error(e);
+                setPreferencesSaving(false);
+                setPreferencesError('Unable to save email settings.');
+            }
+        });
+    };
     var handleOpenTarget = function (notification) {
         if (!canOpenNotificationTarget(notification)) {
             return;
@@ -13621,17 +13791,38 @@ var NotificationsPanel = function () {
             }
         });
     };
-    if (loading && notifications.length === 0) {
-        return (React.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', py: 4 } },
-            React.createElement(CircularProgress, { size: 28 })));
-    }
-    if (error) {
-        return (React.createElement(Box, { sx: { p: 2 } },
-            React.createElement(Typography, { variant: "body2", color: "error" }, error)));
-    }
     return (React.createElement(Stack, { spacing: 1.25, sx: { px: 1, pb: 2, minWidth: 0 } },
         React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { fontWeight: 600, letterSpacing: 0.06, textTransform: 'uppercase', px: 0.5 } }, "Notifications"),
-        notifications.length === 0 ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 0.5, py: 1 } }, "No notifications.")) : (React.createElement(Stack, { spacing: 0.75 }, notifications.map(function (notification) {
+        React.createElement(Box, { sx: {
+                p: 1.25,
+                borderRadius: 1,
+                bgcolor: 'background.paper',
+                border: '1px solid',
+                borderColor: 'divider'
+            } },
+            React.createElement(Typography, { variant: "body2", fontWeight: 600, sx: { mb: 0.75 } }, "Email delivery"),
+            React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { display: 'block', mb: 1 } }, "Uses the same Crafter Studio SMTP settings as publish/review emails. Custom HTML messages for workflow tasks, mentions, and bypass alerts."),
+            preferencesLoading && !preferences ? (React.createElement(CircularProgress, { size: 20 })) : preferences ? (React.createElement(Stack, { spacing: 1 },
+                React.createElement(FormControlLabel, { control: React.createElement(Switch, { size: "small", checked: preferences.emailEnabled, onChange: function (_, checked) {
+                            return setPreferences(function (prev) { return (prev ? __assign(__assign({}, prev), { emailEnabled: checked }) : prev); });
+                        } }), label: "Send email for workflow notifications" }),
+                React.createElement(TextField, { select: true, size: "small", fullWidth: true, label: "Delivery", value: preferences.deliveryMode, disabled: !preferences.emailEnabled, onChange: function (event) {
+                        return setPreferences(function (prev) {
+                            return prev
+                                ? __assign(__assign({}, prev), { deliveryMode: event.target.value }) : prev;
+                        });
+                    } },
+                    React.createElement(MenuItem, { value: "immediate" }, "Immediate"),
+                    React.createElement(MenuItem, { value: "daily_summary" }, "Daily summary (coming soon)")),
+                preferences.deliveryMode === 'daily_summary' && (React.createElement(TextField, { size: "small", fullWidth: true, label: "Summary time", placeholder: "09:00", value: (_a = preferences.summaryTime) !== null && _a !== void 0 ? _a : '', disabled: !preferences.emailEnabled, onChange: function (event) {
+                        return setPreferences(function (prev) {
+                            return prev ? __assign(__assign({}, prev), { summaryTime: event.target.value }) : prev;
+                        });
+                    }, helperText: "Daily digest is not sent yet; immediate email is used until digest is implemented." })),
+                React.createElement(Button, { size: "small", variant: "outlined", disabled: preferencesSaving, onClick: handleSavePreferences, sx: { alignSelf: 'flex-start' } }, preferencesSaving ? 'Saving…' : 'Save email settings'))) : null,
+            preferencesError && (React.createElement(Typography, { variant: "caption", color: "error", sx: { display: 'block', mt: 0.75 } }, preferencesError))),
+        loading && notifications.length === 0 ? (React.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', py: 2 } },
+            React.createElement(CircularProgress, { size: 24 }))) : error ? (React.createElement(Typography, { variant: "body2", color: "error", sx: { px: 0.5 } }, error)) : notifications.length === 0 ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 0.5, py: 1 } }, "No notifications.")) : (React.createElement(Stack, { spacing: 0.75 }, notifications.map(function (notification) {
             var typeLabel = notificationTargetTypeLabel(notification.targetType);
             var linkLabel = notificationTargetLinkLabel(notification);
             var canOpen = canOpenNotificationTarget(notification);

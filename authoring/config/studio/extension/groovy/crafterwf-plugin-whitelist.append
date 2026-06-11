@@ -48,7 +48,16 @@ method org.craftercms.studio.api.v2.service.security.UserService getUserByIdOrUs
 method org.craftercms.studio.api.v2.service.security.UserService getUserGroups long java.lang.String
 method org.craftercms.studio.api.v2.dal.Group getName
 method org.craftercms.studio.api.v2.dal.User getId
-method javax.servlet.http.HttpServletRequest getRemoteUser
+method org.craftercms.studio.api.v2.dal.User getEmail
+method org.craftercms.studio.api.v2.dal.User getUsername
+
+# Workflow notification email (direct SMTP via Studio mailSender + EmailFactoryImpl)
+new org.craftercms.commons.mail.impl.EmailFactoryImpl java.lang.Object
+method org.craftercms.commons.mail.EmailFactory getEmail java.lang.String java.lang.String[] java.lang.String[] java.lang.String[] java.lang.String java.lang.String boolean
+method org.craftercms.commons.mail.Email send
+method org.craftercms.studio.api.v2.utils.StudioConfiguration getProperty java.lang.String
+method org.craftercms.studio.api.v1.service.configuration.ServicesConfig getAuthoringUrl java.lang.String
+method org.craftercms.commons.mail.EmailUtils validateEmail java.lang.String
 
 # Publishing / workflow step actions (bean: studio.workflowService)
 method org.craftercms.studio.api.v2.service.workflow.WorkflowService requestPublish java.lang.String java.util.List java.util.List java.lang.String java.time.ZonedDateTime java.lang.String boolean

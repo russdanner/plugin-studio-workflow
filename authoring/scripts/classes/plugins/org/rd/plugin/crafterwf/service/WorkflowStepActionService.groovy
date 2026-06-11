@@ -77,7 +77,7 @@ class WorkflowStepActionService {
             )
         }
 
-        def actionResult = executeAction(siteId, actionType, paths, environments)
+        def actionResult = executeAction(siteId, actionType, paths, environments, workflowPackageId)
         if (!actionResult.success) {
             logger.warn(
                 'Step action {} did not complete for package {} on step {}: {}',
@@ -94,9 +94,22 @@ class WorkflowStepActionService {
             actionLabel, paths.size(), true, null
         )
 
+        if (actionResult.triggersOotbStudioEmail) {
+            logger.info(
+                '[crafterwf] Step action {} completed for package {} — Crafter Studio OOTB may queue publish/review emails ' +
+                'via org.craftercms.studio.impl.v1.job.EmailMessageSender (NOT the workflow plugin). ' +
+                'Errors like "Error sending email to \'\'" without [crafterwf] prefix come from Studio site notification ' +
+                'config (reviewer/approver emails). site={} paths={}',
+                actionType, workflowPackageId, siteId, paths.size()
+            )
+        }
+
         def successStepId = step.actionSuccessStepId as String
         if (!successStepId?.trim()) {
-            logger.info('Step action {} succeeded for package {} but no success step is configured', actionType, workflowPackageId)
+            logger.info(
+                '[crafterwf] Step action {} succeeded for package {} but no success step is configured',
+                actionType, workflowPackageId
+            )
             return [stepActionFailed: false, stepActionSucceeded: true]
         }
 
@@ -178,7 +191,8 @@ class WorkflowStepActionService {
             .findAll { path -> path?.startsWith('/site/') }
     }
 
-    private Map executeAction(String siteId, String actionType, List<String> paths, Map environments) {
+    private Map executeAction(String siteId, String actionType, List<String> paths, Map environments,
+                              String workflowPackageId) {
         def workflowService = PublishingEnvironmentSupport.resolveWorkflowService(applicationContext)
         if (!workflowService) {
             logger.error(
@@ -201,26 +215,41 @@ class WorkflowStepActionService {
         try {
             switch (actionType) {
                 case StepActionType.REQUEST_PUBLISH_STAGING:
-                    logger.info('Requesting publish to {} for {} item(s) on site {}', stagingTarget, paths.size(), siteId)
+                    logger.info(
+                        '[crafterwf] Invoking Studio workflowService.requestPublish → {} for {} item(s) site={} package={}',
+                        stagingTarget, paths.size(), siteId, workflowPackageId
+                    )
                     workflowService.requestPublish(siteId, paths, deps, stagingTarget, schedule, AUTO_COMMENT, false)
-                    return [success: true]
+                    return [success: true, triggersOotbStudioEmail: true]
                 case StepActionType.REQUEST_PUBLISH_LIVE:
-                    logger.info('Requesting publish to {} for {} item(s) on site {}', liveTarget, paths.size(), siteId)
+                    logger.info(
+                        '[crafterwf] Invoking Studio workflowService.requestPublish → {} for {} item(s) site={} package={}',
+                        liveTarget, paths.size(), siteId, workflowPackageId
+                    )
                     workflowService.requestPublish(siteId, paths, deps, liveTarget, schedule, AUTO_COMMENT, false)
-                    return [success: true]
+                    return [success: true, triggersOotbStudioEmail: true]
                 case StepActionType.PUBLISH_STAGING:
-                    logger.info('Publishing to {} for {} item(s) on site {}', stagingTarget, paths.size(), siteId)
+                    logger.info(
+                        '[crafterwf] Invoking Studio workflowService.publish → {} for {} item(s) site={} package={}',
+                        stagingTarget, paths.size(), siteId, workflowPackageId
+                    )
                     workflowService.publish(siteId, paths, deps, stagingTarget, schedule, AUTO_COMMENT)
-                    return [success: true]
+                    return [success: true, triggersOotbStudioEmail: true]
                 case StepActionType.PUBLISH_LIVE:
-                    logger.info('Publishing to {} for {} item(s) on site {}', liveTarget, paths.size(), siteId)
+                    logger.info(
+                        '[crafterwf] Invoking Studio workflowService.publish → {} for {} item(s) site={} package={}',
+                        liveTarget, paths.size(), siteId, workflowPackageId
+                    )
                     workflowService.publish(siteId, paths, deps, liveTarget, schedule, AUTO_COMMENT)
-                    return [success: true]
+                    return [success: true, triggersOotbStudioEmail: true]
                 default:
                     return [success: false, errorMessage: "Unsupported step action: ${actionType}"]
             }
         } catch (Exception e) {
-            logger.warn('Step action {} failed for site {}: {}', actionType, siteId, e.message, e)
+            logger.warn(
+                '[crafterwf] Step action {} failed for site={} package={}: {}',
+                actionType, siteId, workflowPackageId, e.message, e
+            )
             return [success: false, errorMessage: e.message ?: 'Step action failed unexpectedly.']
         }
     }

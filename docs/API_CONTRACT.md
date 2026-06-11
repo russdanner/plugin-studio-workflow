@@ -290,17 +290,22 @@ Badge count for current user (unread, non-archived).
 
 ### `notification/preferences/get.json`
 
-**Not implemented.** Returns current user's delivery preference for the site (planned).
+Returns current user's delivery preference for the site.
 
-### `notification/preferences/save.json`
+Response: `{ siteId, userId, deliveryMode, summaryTime, emailEnabled, modifiedOn }`.
 
-**Not implemented.** Planned params:
+### `notification/preferences/save.json` (POST)
 
-| Param | Description |
+Body JSON:
+
+| Field | Description |
 |-------|-------------|
+| `siteId` | Site ID |
 | `deliveryMode` | `immediate` \| `daily_summary` |
 | `summaryTime` | Optional digest time |
 | `emailEnabled` | `true` \| `false` |
+
+Returns saved preference object (same shape as get).
 
 ## Tasks
 
