@@ -25,6 +25,7 @@ Load full kanban view: one **Workflow**, ordered **WorkflowSteps**, and active *
 | Param | Required | Description |
 |-------|----------|-------------|
 | `workflowId` | No | Workflow definition ID (slug); default workflow from JSON (`isDefault` or lowest `position`) |
+| `boardId` | No | Legacy alias for `workflowId` |
 | `since` | No | Optional ISO timestamp for conditional refresh |
 
 **Response:**
@@ -123,6 +124,22 @@ Load full kanban view: one **Workflow**, ordered **WorkflowSteps**, and active *
 | `index` | Target position (0-based) |
 
 **Requires:** site member
+
+On success, returns the moved package DTO. When the target step defines a publish **`actionType`** (not `none`), `WorkflowStepActionService` runs **after** the move against all content attachments (see [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md#step-publish-actions)).
+
+**Optional response fields (step action / rules):**
+
+| Field | When set | Meaning |
+|-------|----------|---------|
+| `stepActionFailed` | Step `actionType` ran and failed | `true` — publish/request failed; package may be reverted |
+| `stepActionSucceeded` | Step action completed | `true` when action ran successfully |
+| `message` / `userMessage` | Step action or rule failure | Human-readable error (Studio publish message or rule text) |
+| `reverted` | Step action failed after move | `true` if package was moved back to the previous step |
+| `workflowStepId` | After move or revert | Resulting step id |
+| `moveBlocked` | Step `roleRule` / `contentRule` blocked move | `true` — move did not occur |
+| `moveBlockedReason` | With `moveBlocked` | Why the move was rejected |
+
+**Logging:** successful/failed step actions write audit `package_step_action`. Server logs use `[crafterwf]` prefix when invoking Studio `workflowService` (OOTB `EmailMessageSender` errors without `[crafterwf]` are separate — see [NOTIFICATIONS.md](./NOTIFICATIONS.md#email-delivery)).
 
 ### `workflow-package/archive.json`
 
@@ -294,16 +311,18 @@ Returns current user's delivery preference for the site.
 
 Response: `{ siteId, userId, deliveryMode, summaryTime, emailEnabled, modifiedOn }`.
 
-### `notification/preferences/save.json` (POST)
+### `notification/preferences/save.json`
 
-Body JSON:
+**Primary (UI):** GET query parameters via `save.get.groovy` (same convention as other plugin mutations).
 
-| Field | Description |
-|-------|-------------|
-| `siteId` | Site ID |
-| `deliveryMode` | `immediate` \| `daily_summary` |
-| `summaryTime` | Optional digest time |
-| `emailEnabled` | `true` \| `false` |
+| Param | Required | Description |
+|-------|----------|-------------|
+| `siteId` | Yes | Site ID |
+| `deliveryMode` | No | `immediate` \| `daily_summary` (default: `immediate`) |
+| `summaryTime` | No | Optional digest time |
+| `emailEnabled` | Yes | `true` \| `false` |
+
+**Alternate:** POST JSON body via `save.post.groovy` with the same fields.
 
 Returns saved preference object (same shape as get).
 
@@ -418,7 +437,17 @@ List workflows for site with step/package counts.
 
 ### `admin/workflow/save.post.json`
 
-POST body: workflow metadata + ordered `steps` array (`id`, `name`, `color`, `isTerminal`).
+POST body: `{ siteId, workflowId, workflow, steps }`.
+
+**`workflow` fields (root):** `id`, `name`, `description`, `backgroundUrl`, `position`, `isDefault`, `allowUiBypass`, `bypassWarningMessage`, `createListeners`, `editListeners`.
+
+**Each `steps[]` entry:** `id`, `name`, `position`, `color`, `isTerminal`, `allowAddPackage`, **`actionType`** (`none` \| `request_publish_staging` \| `request_publish_live` \| `publish_staging` \| `publish_live`), **`actionSuccessStepId`**, `roleRule`, `contentRule`.
+
+See [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) for field semantics and [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md) for `allowUiBypass`.
+
+### `admin/publishing/targets.json`
+
+Returns `{ stagingEnabled, staging, live }` environment names for the site (used by the workflow editor and step action service).
 
 ### `admin/workflow/delete.json`
 
@@ -478,7 +507,6 @@ See [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) for the full implementa
 
 These may be added later:
 
-- `notification/preferences/*` — email preference UI/API
 - `admin/roles/*` — per-workflow WorkflowRole
 
 ## Superseded by this spec

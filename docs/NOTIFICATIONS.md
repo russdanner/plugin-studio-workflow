@@ -37,7 +37,7 @@ List API enriches notifications with navigation context where possible: `targetT
 | `summary_time` | Optional digest time (for future daily summary) |
 | `email_enabled` | Master email toggle — when true and mode is `immediate`, sends on each notification |
 
-**API:** `notification/preferences/get.json`, `notification/preferences/save.json` (POST JSON body).
+**API:** `notification/preferences/get.json`, `notification/preferences/save.json` (query params via `save.get.groovy`; `save.post.groovy` also accepts JSON body).
 
 ## Implemented event triggers
 
@@ -71,18 +71,26 @@ See [API_CONTRACT.md](./API_CONTRACT.md):
 
 ## Email delivery
 
-Workflow notification emails use the **same Crafter Studio mail pipeline** as OOTB publish/review notifications:
+Workflow notification emails use Studio **SMTP config** (`studio.mail.*`) but send **directly** via `mailSender` + `EmailFactoryImpl` — they do **not** use Studio's `EmailMessageSender` background queue (OOTB publish/review mail does).
 
 1. `NotificationService.createNotification` inserts the in-app row.
 2. `NotificationEmailService` reads `wf_user_notification_preference` for the recipient.
-3. When `email_enabled` and `delivery_mode=immediate`, it sends **directly** via Studio's `mailSender` + `EmailFactoryImpl` (same SMTP config as OOTB mail).
-4. Log lines are prefixed with `[crafterwf]` — e.g. `Sent workflow notification email to …`.
+3. When `email_enabled` and `delivery_mode=immediate`, it sends via direct SMTP.
+4. Server logs are prefixed with `[crafterwf]` — evaluate, send, skip, and failure lines all use this prefix.
 
-Emails are **custom HTML** (plugin-branded) with title, message, target context, and an **Open in Crafter Studio** link (site authoring URL from `cstudioServicesConfig.getAuthoringUrl`).
+Emails are **custom HTML** (plugin-branded) with title, message, target context, and an **Open in Crafter Studio** link:
 
-Recipients must have a valid email on their Studio user profile (Users → profile **email** field). Missing email or SMTP misconfiguration is skipped with a server warning; in-app notification is still created.
+```
+{authoringUrl}/studio/preview#/?page={encodedPage}&site={siteId}
+```
+
+Default `page` is `/` (`%2F`). Content notifications map `/site/website/...` paths to the preview page param (same rules as the app preview handler).
+
+Recipients must have a valid email on their Studio user profile (Users → profile **email** field). Missing email or SMTP misconfiguration is skipped with a `[crafterwf]` warning; in-app notification is still created.
 
 Configure SMTP in Studio global config, e.g. `studio.mail.host`, `studio.mail.port`, `studio.mail.from.default`.
+
+**Not workflow plugin mail:** `org.craftercms.studio.impl.v1.job.EmailMessageSender` errors (e.g. `Error sending email to ''`) without `[crafterwf]` in the same window come from OOTB publish/review notifications — often after workflow step actions call `workflowService.requestPublish`.
 
 ## Planned email flow
 

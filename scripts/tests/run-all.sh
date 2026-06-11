@@ -47,6 +47,7 @@ Environment:
   TEST_CONTENT_PATH       Default: /site/website/index.xml
   CRAFTER_STUDIO_TOKEN    Bearer token (or scripts/.studio-token)
   RUN_SCHEMA_INSTALL=1    Run admin/schema/install (destructive/idempotent)
+  RUN_STEP_ACTION_TEST=1  Move package into action step (invokes Studio publish)
 
 Examples:
   ./scripts/tests/run-all.sh --smoke
@@ -102,7 +103,7 @@ _suite_type_from_file() {
   case "${base}" in
     00-auth) printf 'auth' ;;
     10-read-*|11-read-*|12-read-*) printf 'read' ;;
-    20-mutations-*|21-mutations-*|22-mutations-*|23-mutations-*|24-mutations-*) printf 'mutation' ;;
+    20-mutations-*|21-mutations-*|22-mutations-*|23-mutations-*|24-mutations-*|25-mutations-*) printf 'mutation' ;;
     30-cleanup) printf 'cleanup' ;;
     90-negative) printf 'negative' ;;
     *) printf 'general' ;;
@@ -121,6 +122,7 @@ _suite_name_from_file() {
     22-mutations-tasks) printf 'Mutations — tasks' ;;
     23-mutations-notifications) printf 'Mutations — notifications' ;;
     24-mutations-admin) printf 'Mutations — admin workflows' ;;
+    25-mutations-workflow-publishing) printf 'Mutations — publishing & step actions' ;;
     30-cleanup) printf 'Cleanup' ;;
     90-negative) printf 'Negative — validation' ;;
     *) printf '%s' "${base}" ;;
@@ -156,6 +158,7 @@ run_mutations() {
   _run_suite_file "${TESTS_ROOT}/suites/22-mutations-tasks.sh"
   _run_suite_file "${TESTS_ROOT}/suites/23-mutations-notifications.sh"
   _run_suite_file "${TESTS_ROOT}/suites/24-mutations-admin.sh"
+  _run_suite_file "${TESTS_ROOT}/suites/25-mutations-workflow-publishing.sh"
 }
 run_negative() { _run_suite_file "${TESTS_ROOT}/suites/90-negative.sh"; }
 run_cleanup() {

@@ -27,3 +27,14 @@ api_post notification/archive \
   "notificationId=${FIX_NOTIFICATION_ID}" \
   "archived=true"
 assert_http_2xx "POST notification/archive"
+
+api_get notification/preferences/get
+assert_http_2xx "GET notification/preferences/get"
+assert_result_has "preferences has emailEnabled" 'has("emailEnabled")'
+
+api_post notification/preferences/save \
+  "deliveryMode=immediate" \
+  "summaryTime=" \
+  "emailEnabled=true"
+assert_http_2xx "POST notification/preferences/save"
+assert_result_has "saved preferences emailEnabled=true" '.emailEnabled == true'

@@ -72,10 +72,12 @@
       "path": "workflow/board",
       "method": "GET",
       "suite": "11-read-workflow",
-      "params": [
-        "workflowId"
+      "params": [],
+      "optionalParams": [
+        "workflowId",
+        "boardId"
       ],
-      "description": "Kanban board payload"
+      "description": "Kanban board payload (default workflow when workflowId/boardId omitted)"
     },
     {
       "path": "workflow-package/calendar-list",
@@ -380,6 +382,50 @@
         "pageSize"
       ],
       "description": "Paginated audit log"
+    },
+    {
+      "path": "notification/preferences/get",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "description": "Current user notification email/delivery preferences"
+    },
+    {
+      "path": "notification/preferences/save",
+      "method": "GET",
+      "suite": "23-mutations-notifications",
+      "params": [
+        "deliveryMode",
+        "emailEnabled"
+      ],
+      "optionalParams": [
+        "summaryTime"
+      ],
+      "description": "Save notification preferences (query params via save.get.groovy)",
+      "httpNote": "save.post.groovy also accepts JSON body for programmatic callers"
+    },
+    {
+      "path": "workflow-bypass/check",
+      "method": "GET",
+      "suite": "20-mutations-workflow-package",
+      "params": [
+        "contentPaths",
+        "action"
+      ],
+      "description": "Check whether Studio publish/reject requires bypass acknowledgement"
+    },
+    {
+      "path": "workflow-bypass/acknowledge",
+      "method": "POST",
+      "suite": null,
+      "body": "json",
+      "description": "Record bypass acknowledgement audit entries (UI guard)"
+    },
+    {
+      "path": "workflow-bypass/record-action",
+      "method": "POST",
+      "suite": null,
+      "body": "json",
+      "description": "Record completed bypass action audit + notifications (UI guard)"
     }
   ],
   "documentedNotImplemented": [
@@ -387,8 +433,6 @@
     "workflow-step/update",
     "workflow-step/delete",
     "workflow-step/reorder",
-    "workflow-package/attach-link",
-    "notification/preferences/get",
-    "notification/preferences/save"
+    "workflow-package/attach-link"
   ]
 }

@@ -8,6 +8,10 @@ assert_http_2xx "GET workflow/board"
 assert_result_has "board has workflow" '.workflow.id != null'
 assert_result_has "board has workflowSteps" '(.workflowSteps | type) == "array"'
 
+api_get workflow/board
+assert_http_2xx "GET workflow/board (default workflow, no workflowId)"
+assert_result_has "default board has workflow" '.workflow.id != null'
+
 api_get workflow-package/calendar-list
 assert_http_2xx "GET workflow-package/calendar-list"
 assert_result_has "calendar-list has packages" '(.packages | type) == "array"'

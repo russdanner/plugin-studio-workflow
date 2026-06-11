@@ -50,6 +50,8 @@ Package detail responses may **embed** comments from `workflow-package/get.json`
 | Package validation | Create/list on `workflow_package` verifies package exists |
 | Content validation | No workflow or package check — path is the target |
 | Mentions | `@username` triggers in-app notification via `NotificationService` |
+| Compose UI | `CommentMentionInput` highlights `@mentions` while typing; picker inserts `@username` (stored in body) |
+| Display UI | Submitted comments render mentions as bold blue display names (`CommentBodyWithMentions`) |
 | Step name in DTO | Enriched from definition JSON when snapshot columns are set |
 
 ## UI

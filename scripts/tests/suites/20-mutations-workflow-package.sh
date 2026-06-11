@@ -27,6 +27,13 @@ api_post workflow-package/attach-content \
   "displayName=Curl test content"
 assert_http_2xx "POST workflow-package/attach-content"
 
+api_get workflow-bypass/check \
+  "contentPaths=${TEST_CONTENT_PATH}" \
+  "action=publish"
+assert_http_2xx "GET workflow-bypass/check (attached content)"
+assert_result_has "bypass check has requiresAcknowledgement" 'has("requiresAcknowledgement")'
+assert_result_has "bypass check has violations array" '(.violations | type) == "array"'
+
 api_get workflow-package/get "workflowPackageId=${FIX_PACKAGE_ID}"
 assert_http_2xx "GET workflow-package/get (after attach)"
 assert_result_has "package has content refs" '(.contentRefs | length) >= 1'

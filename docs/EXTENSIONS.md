@@ -48,7 +48,7 @@ flowchart TB
 
 | Feature | Description |
 |---------|-------------|
-| **Email notifications** | ✅ Immediate send via `cstudioEmailMessageQueue`; daily digest deferred |
+| **Daily email digest** | Scheduled `daily_summary` delivery job not yet implemented (`email_enabled` + immediate send ✅ via direct SMTP) |
 | **Groovy hooks** | Post-commit `package.moved` / `package.modified` scripts (not implemented) |
 | **WorkflowRole (DB)** | Per-workflow Studio role → capabilities tables (step `roleRule` in JSON is implemented) |
 | **Terminal step behavior** | `is_terminal` flag stored but not enforced in board logic |

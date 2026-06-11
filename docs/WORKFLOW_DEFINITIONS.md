@@ -139,6 +139,17 @@ Steps may set `actionType` and optional `actionSuccessStepId`. When a package is
 
 On failure (no attachments, staging disabled, publish error), the package may revert to the previous step and the user sees the Studio error message. An audit entry records `package_step_action`.
 
+**Server logs (`[crafterwf]`):**
+
+| Log | Meaning |
+|-----|---------|
+| `Invoking Studio workflowService.requestPublish` / `publish` | Step action started (lists target env, path count, package id) |
+| `Step action … completed … Crafter Studio OOTB may queue publish/review emails via EmailMessageSender` | Action succeeded; OOTB review mail is **not** plugin mail |
+| `Step action … succeeded … but no success step is configured` | `actionSuccessStepId` empty — package stays on the action step |
+| `Step action … failed` | Publish/request failed; package may revert |
+
+Configure step actions in **Project Tools → Workflows → Edit workflow →** per-step **Publish action** and optional **Success step** (workflow editor).
+
 ## Workflow bypass guard
 
 When a workflow has at least one action step (`actionType` ≠ `none`), Studio **publish**, **request publish**, and **reject** actions on attached content are intercepted if the package is **not** on one of those steps. See [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md).

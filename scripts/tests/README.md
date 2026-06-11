@@ -153,6 +153,8 @@ For full regression after deploy:
 
 ## Coverage notes
 
-- **39 endpoints** are implemented and covered by this suite (see manifest).
-- **Documented but not implemented** (skipped): `workflow-step/*`, `workflow-package/attach-link`, `notification/preferences/*`.
+- **44 endpoints** are implemented; **42** have automated curl coverage (see manifest).
+- **Documented but not implemented** (skipped): `workflow-step/*`, `workflow-package/attach-link`.
+- **Publishing / bypass:** `workflow-bypass/check` runs after package content attach; `admin/workflow/save` round-trips `actionType` + `allowUiBypass`. Full step-action move (real Studio publish) is opt-in: `RUN_STEP_ACTION_TEST=1`.
+- **UI-only:** `workflow-bypass/acknowledge` and `record-action` (POST JSON) are documented but not curl-tested (Studio dialog flow).
 - `admin/schema/install` runs only when `RUN_SCHEMA_INSTALL=1` (idempotent but intentionally opt-in).
