@@ -26,6 +26,37 @@ import { StepActionType } from '../stepActions';
 import { StepContentRule, StepRoleRule } from '../stepRules';
 import { WorkflowEventListener } from '../eventListeners';
 
+export interface WorkflowFlowNodePosition {
+  x: number;
+  y: number;
+}
+
+/** Canvas positions keyed by step id (persisted in workflow JSON). */
+export type WorkflowFlowLayout = Record<string, WorkflowFlowNodePosition>;
+
+/** React Flow pan/zoom state (persisted in workflow JSON). */
+export interface WorkflowFlowViewport {
+  x: number;
+  y: number;
+  zoom: number;
+}
+
+export const DEFAULT_FLOW_VIEWPORT: WorkflowFlowViewport = { x: 0, y: 0, zoom: 1 };
+
+export function normalizeFlowViewport(value: unknown): WorkflowFlowViewport | null {
+  if (!value || typeof value !== 'object') {
+    return null;
+  }
+  const record = value as Record<string, unknown>;
+  const x = typeof record.x === 'number' ? record.x : Number(record.x);
+  const y = typeof record.y === 'number' ? record.y : Number(record.y);
+  const zoom = typeof record.zoom === 'number' ? record.zoom : Number(record.zoom);
+  if (!Number.isFinite(x) || !Number.isFinite(y) || !Number.isFinite(zoom) || zoom <= 0) {
+    return null;
+  }
+  return { x, y, zoom: Math.min(1.75, Math.max(0.5, zoom)) };
+}
+
 export interface WorkflowStepDto {
   id?: string;
   name: string;
@@ -38,6 +69,10 @@ export interface WorkflowStepDto {
   actionType?: StepActionType;
   actionSuccessStepId?: string;
   actionSuccessStepClientKey?: string;
+  /** Step ids packages may be manually dragged to from this step (empty = any step). */
+  transitionStepIds?: string[];
+  /** Editor-only client keys for transitionStepIds. */
+  transitionStepClientKeys?: string[];
   /** @deprecated legacy boolean flags — use actionType */
   actionRequestPublishStaging?: boolean;
   actionRequestPublishLive?: boolean;
@@ -67,6 +102,10 @@ export interface WorkflowDetail {
     bypassWarningMessage?: string;
     /** When true, authors may acknowledge and continue Studio publish/reject off-step. Default false. */
     allowUiBypass?: boolean;
+    /** React Flow node positions keyed by step id. */
+    flowLayout?: WorkflowFlowLayout;
+    /** Saved canvas pan/zoom for the workflow flow editor. */
+    flowViewport?: WorkflowFlowViewport | null;
   };
   steps: WorkflowStepDto[];
   createListeners?: WorkflowEventListener[];

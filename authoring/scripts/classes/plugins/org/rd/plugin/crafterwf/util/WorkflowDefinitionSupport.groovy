@@ -39,7 +39,13 @@ class WorkflowDefinitionSupport {
             createListeners       : EventListenerJson.toListenerDtos(definition.createListeners),
             editListeners         : EventListenerJson.toListenerDtos(definition.editListeners),
             bypassWarningMessage  : definition.bypassWarningMessage?.toString() ?: '',
-            allowUiBypass         : allowsUiBypass(definition)
+            allowUiBypass         : allowsUiBypass(definition),
+            flowLayout            : definition.flowLayout instanceof Map
+                ? new LinkedHashMap(definition.flowLayout)
+                : (definition.flowLayout ?: [:]),
+            flowViewport          : definition.flowViewport instanceof Map
+                ? new LinkedHashMap(definition.flowViewport)
+                : (definition.flowViewport ?: null)
         ]
     }
 
@@ -79,6 +85,9 @@ class WorkflowDefinitionSupport {
             allowAddPackage    : allowsAddPackage(step),
             actionType         : actionType ?: StepActionType.NONE,
             actionSuccessStepId: step.actionSuccessStepId,
+            transitionStepIds  : step.transitionStepIds instanceof List
+                ? step.transitionStepIds.collect { it?.toString()?.trim() }.findAll { it }
+                : [],
             roleRule           : StepRuleJson.toRoleRuleDto(step),
             contentRule        : StepRuleJson.toContentRuleDto(step)
         ]

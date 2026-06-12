@@ -1,5 +1,6 @@
+const path = require('path');
 const typescript = require('rollup-plugin-typescript2');
-// const commonjs = require('@rollup/plugin-commonjs');
+const commonjs = require('@rollup/plugin-commonjs');
 const resolve = require('@rollup/plugin-node-resolve');
 const replaceImportsWithVars = require('rollup-plugin-replace-imports-with-vars');
 const json = require('@rollup/plugin-json');
@@ -13,6 +14,7 @@ const extensions = ['.js', '.jsx', '.ts', '.tsx'];
 
 const globals = {
   react: 'craftercms.libs.React',
+  'react/jsx-runtime': 'craftercms.libs.reactJsxRuntime',
   rxjs: 'craftercms.libs.rxjs',
   'rxjs/operators': 'craftercms.libs.rxjs',
   '@emotion/css/create-instance': 'craftercms.libs.createEmotion',
@@ -60,14 +62,23 @@ module.exports = {
     // !!: If used, terser should be after `replaceImportsWithVars`
     //terser(),
     resolve({ extensions }),
-    // commonjs(),
-    ...(getPluginCopyTargets().length
-      ? [
-          copy({
-            hook: 'closeBundle',
-            targets: getPluginCopyTargets()
-          })
-        ]
-      : [])
+    commonjs(),
+    // Zustand (via @xyflow/react) uses import.meta.env — invalid in Studio's plugin script loader.
+    replace({
+      preventAssignment: true,
+      'import.meta.env.MODE': JSON.stringify('production'),
+      'import.meta.env': JSON.stringify({ MODE: 'production', DEV: false, PROD: true })
+    }),
+    copy({
+      hook: 'closeBundle',
+      targets: [
+        {
+          src: path.resolve(__dirname, '../../node_modules/@xyflow/react/dist/style.css'),
+          dest: path.resolve(__dirname, 'dist'),
+          rename: 'react-flow.css'
+        },
+        ...getPluginCopyTargets()
+      ]
+    })
   ]
 };

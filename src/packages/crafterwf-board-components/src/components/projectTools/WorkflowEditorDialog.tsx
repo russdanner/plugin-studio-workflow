@@ -1,16 +1,19 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
   Alert,
+  AppBar,
   Box,
   Button,
   Checkbox,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -22,26 +25,23 @@ import {
   Select,
   Stack,
   TextField,
+  Toolbar,
   Typography
 } from '@mui/material';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
-import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
-import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded';
-import RuleRoundedIcon from '@mui/icons-material/RuleRounded';
+import ExpandMoreRoundedIcon from '@mui/icons-material/ExpandMoreRounded';
 
 import { ApiResponse, ApiResponseErrorState } from '@craftercms/studio-ui';
 import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
-import { saveWorkflowDefinition, getPublishingTargets, WorkflowDetail, WorkflowStepDto } from '../../api/adminApi';
+import { saveWorkflowDefinition, getPublishingTargets, WorkflowDetail, WorkflowFlowLayout, WorkflowFlowViewport, WorkflowStepDto, DEFAULT_FLOW_VIEWPORT, normalizeFlowViewport } from '../../api/adminApi';
 import {
   BOARD_BACKGROUND_SWATCHES,
   normalizeBoardBackgroundId,
   normalizeStepColorId,
-  resolveStepColor,
+  resolveBoardBackgroundColor,
   STEP_COLOR_SWATCHES
 } from '../../colors';
 import ColorSwatchPicker from '../ColorSwatchPicker';
 import { STEP_NAME_MAX_LENGTH, WORKFLOW_NAME_MAX_LENGTH } from '../../consts';
-import { resolveBoardBackgroundColor } from '../../colors';
 import {
   normalizeStepActionType,
   PUBLISH_ACTION_OPTIONS,
@@ -54,8 +54,9 @@ import { defaultContentRule, defaultRoleRule } from '../../stepRules';
 import { EditorEventListener, mapDetailListeners } from '../../eventListeners';
 import WorkflowEventListenersSection from './WorkflowEventListenersSection';
 import WorkflowStepRulesDialog from './WorkflowStepRulesDialog';
+import WorkflowStepsFlowView, { buildDefaultRowLayout, FlowEditorStep } from './WorkflowStepsFlowView';
 
-type EditorStep = WorkflowStepDto & { clientKey: string };
+type EditorStep = FlowEditorStep;
 
 export interface WorkflowEditorDialogProps {
   open: boolean;
@@ -64,11 +65,32 @@ export interface WorkflowEditorDialogProps {
   onSaved(): void;
 }
 
-function reorderSteps(steps: EditorStep[], from: number, to: number): EditorStep[] {
-  const next = steps.slice();
-  const [removed] = next.splice(from, 1);
-  next.splice(to, 0, removed);
-  return next;
+function mapFlowLayoutToClientKeys(
+  layout: WorkflowFlowLayout | undefined,
+  steps: EditorStep[]
+): WorkflowFlowLayout {
+  if (!layout) {
+    return {};
+  }
+  const idToClientKey = new Map(steps.filter((step) => step.id).map((step) => [step.id as string, step.clientKey]));
+  const mapped: WorkflowFlowLayout = {};
+  Object.entries(layout).forEach(([key, position]) => {
+    const clientKey = idToClientKey.get(key) ?? key;
+    if (steps.some((step) => step.clientKey === clientKey)) {
+      mapped[clientKey] = position;
+    }
+  });
+  return mapped;
+}
+
+function mapFlowLayoutToStepIds(flowLayout: WorkflowFlowLayout, steps: EditorStep[]): WorkflowFlowLayout {
+  const clientKeyToId = new Map(steps.filter((step) => step.id).map((step) => [step.clientKey, step.id as string]));
+  const mapped: WorkflowFlowLayout = {};
+  Object.entries(flowLayout).forEach(([clientKey, position]) => {
+    const stepId = clientKeyToId.get(clientKey) ?? clientKey;
+    mapped[stepId] = position;
+  });
+  return mapped;
 }
 
 function mapDetailSteps(steps: WorkflowStepDto[]): EditorStep[] {
@@ -93,6 +115,12 @@ function mapDetailSteps(steps: WorkflowStepDto[]): EditorStep[] {
         step.actionSuccessStepClientKey = target.clientKey;
       }
     }
+    const transitionIds = step.transitionStepIds ?? [];
+    if (transitionIds.length) {
+      step.transitionStepClientKeys = transitionIds
+        .map((stepId) => mapped.find((candidate) => candidate.id === stepId)?.clientKey)
+        .filter((clientKey): clientKey is string => !!clientKey);
+    }
   });
 
   return mapped;
@@ -106,6 +134,10 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
   const [allowUiBypass, setAllowUiBypass] = useState(false);
   const [boardBackground, setBoardBackground] = useState(BOARD_BACKGROUND_SWATCHES[0].id);
   const [steps, setSteps] = useState<EditorStep[]>([]);
+  const [flowLayout, setFlowLayout] = useState<WorkflowFlowLayout>({});
+  const [flowViewport, setFlowViewport] = useState<WorkflowFlowViewport>(DEFAULT_FLOW_VIEWPORT);
+  const [initialFlowViewport, setInitialFlowViewport] = useState<WorkflowFlowViewport | null>(null);
+  const [selectedClientKey, setSelectedClientKey] = useState<string | null>(null);
   const [stagingEnabled, setStagingEnabled] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<ApiResponse>();
@@ -113,6 +145,12 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
   const [rulesStepIndex, setRulesStepIndex] = useState<number | null>(null);
   const [createListeners, setCreateListeners] = useState<EditorEventListener[]>([]);
   const [editListeners, setEditListeners] = useState<EditorEventListener[]>([]);
+  const stepSettingsRef = useRef<HTMLDivElement>(null);
+
+  const selectedStepIndex = useMemo(
+    () => (selectedClientKey ? steps.findIndex((step) => step.clientKey === selectedClientKey) : -1),
+    [selectedClientKey, steps]
+  );
 
   useEffect(() => {
     if (open && detail) {
@@ -125,6 +163,12 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
       );
       const mappedSteps = mapDetailSteps(detail.steps || []);
       setSteps(mappedSteps);
+      const loadedLayout = mapFlowLayoutToClientKeys(detail.workflow.flowLayout, mappedSteps);
+      setFlowLayout({ ...buildDefaultRowLayout(mappedSteps), ...loadedLayout });
+      const loadedViewport = normalizeFlowViewport(detail.workflow.flowViewport) ?? DEFAULT_FLOW_VIEWPORT;
+      setFlowViewport(loadedViewport);
+      setInitialFlowViewport(loadedViewport);
+      setSelectedClientKey(mappedSteps[0]?.clientKey ?? null);
       const defaultStepId = mappedSteps[0]?.id || '';
       setCreateListeners(
         mapDetailListeners(detail.createListeners ?? detail.workflow.createListeners, defaultStepId)
@@ -149,18 +193,41 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
     });
   }, [open, siteId]);
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) {
-      return;
-    }
-    setSteps(reorderSteps(steps, result.source.index, result.destination.index));
+  const handleSelectStep = (clientKey: string) => {
+    setSelectedClientKey(clientKey);
+    window.requestAnimationFrame(() => {
+      stepSettingsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  };
+
+  const handleFlowLayoutChange = (layout: WorkflowFlowLayout) => {
+    setFlowLayout(layout);
+  };
+
+  const handleFlowViewportChange = (viewport: WorkflowFlowViewport) => {
+    setFlowViewport(viewport);
+  };
+
+  const handleTransitionChange = (sourceClientKey: string, targetClientKeys: string[]) => {
+    setSteps((current) =>
+      current.map((step) =>
+        step.clientKey === sourceClientKey ? { ...step, transitionStepClientKeys: targetClientKeys } : step
+      )
+    );
   };
 
   const handleAddStep = () => {
+    const clientKey = `new-${Date.now()}-${Math.random()}`;
+    const nextIndex = steps.length;
+    const nextLayout = buildDefaultRowLayout([
+      ...steps,
+      { clientKey, name: 'New Step' } as EditorStep
+    ]);
+    setFlowLayout(nextLayout);
     setSteps([
       ...steps,
       {
-        clientKey: `new-${Date.now()}-${Math.random()}`,
+        clientKey,
         name: 'New Step',
         color: STEP_COLOR_SWATCHES[0].id,
         isTerminal: false,
@@ -168,6 +235,7 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
         actionType: STEP_ACTION_NONE
       }
     ]);
+    handleSelectStep(clientKey);
   };
 
   const handleRemoveStep = (index: number) => {
@@ -177,15 +245,24 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
     }
     setValidationError(null);
     const removedKey = steps[index].clientKey;
-    setSteps(
-      steps
-        .filter((_, i) => i !== index)
-        .map((step) =>
-          step.actionSuccessStepClientKey === removedKey
-            ? { ...step, actionSuccessStepClientKey: undefined, actionSuccessStepId: undefined }
-            : step
-        )
-    );
+    const nextSteps = steps
+      .filter((_, i) => i !== index)
+      .map((step) => ({
+        ...step,
+        ...(step.actionSuccessStepClientKey === removedKey
+          ? { actionSuccessStepClientKey: undefined, actionSuccessStepId: undefined }
+          : {}),
+        transitionStepClientKeys: (step.transitionStepClientKeys ?? []).filter((key) => key !== removedKey)
+      }));
+    setFlowLayout((current) => {
+      const next = { ...current };
+      delete next[removedKey];
+      return next;
+    });
+    setSteps(nextSteps);
+    if (selectedClientKey === removedKey) {
+      setSelectedClientKey(nextSteps[Math.min(index, nextSteps.length - 1)]?.clientKey ?? null);
+    }
   };
 
   const updateStep = (index: number, patch: Partial<WorkflowStepDto>) => {
@@ -244,7 +321,9 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
         description: description.trim(),
         backgroundColor: boardBackground,
         bypassWarningMessage: bypassWarningMessage.trim(),
-        allowUiBypass
+        allowUiBypass,
+        flowLayout: mapFlowLayoutToStepIds(flowLayout, steps),
+        flowViewport
       },
       createListeners: createListeners.map((listener) => ({
         id: listener.id,
@@ -271,6 +350,7 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
           !step.actionType || step.actionType === STEP_ACTION_NONE ? STEP_ACTION_NONE : step.actionType,
         actionSuccessStepId: step.actionSuccessStepId,
         actionSuccessStepClientKey: step.actionSuccessStepClientKey,
+        transitionStepClientKeys: step.transitionStepClientKeys ?? [],
         roleRule: step.roleRule,
         contentRule: step.contentRule,
         position: (index + 1) * 1000
@@ -290,284 +370,317 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
     });
   };
 
+  const selectedStep = selectedStepIndex >= 0 ? steps[selectedStepIndex] : null;
+
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      maxWidth={false}
-      fullWidth
-      scroll="paper"
-      PaperProps={{
-        sx: {
-          width: { xs: '100%', sm: 'min(96vw, 1200px)' },
-          height: { xs: '100%', sm: 'calc(100vh - 48px)' },
-          maxHeight: { xs: '100%', sm: 'calc(100vh - 24px)' },
-          m: { xs: 0, sm: 2 },
-          display: 'flex',
-          flexDirection: 'column'
-        }
-      }}
-    >
-      <DialogTitle sx={{ flexShrink: 0 }}>Edit workflow</DialogTitle>
-      <DialogContent dividers sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-        <Stack spacing={2}>
-          {validationError && (
-            <Alert severity="warning" onClose={() => setValidationError(null)}>
-              {validationError}
-            </Alert>
-          )}
-          {error && <ApiResponseErrorState error={error} />}
-
-          <TextField
-            label="Workflow name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-            required
-            inputProps={{ maxLength: WORKFLOW_NAME_MAX_LENGTH }}
-          />
-          <TextField
-            label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            fullWidth
-            multiline
-            minRows={2}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={allowUiBypass}
-                onChange={(e) => setAllowUiBypass(e.target.checked)}
-              />
-            }
-            label="Allow publish/reject bypass with acknowledgement"
-          />
-          <Typography variant="caption" color="text.secondary" display="block" sx={{ mt: -1, mb: 1 }}>
-            When off (default), Studio publish and reject are blocked until the package is on the correct
-            workflow step. When on, authors must acknowledge a warning before continuing.
+    <Dialog fullScreen open={open} onClose={onClose} scroll="paper">
+      <AppBar sx={{ position: 'relative' }} color="default" elevation={1}>
+        <Toolbar>
+          <IconButton edge="start" aria-label="Close workflow editor" onClick={onClose} disabled={saving}>
+            <CloseRoundedIcon />
+          </IconButton>
+          <Typography sx={{ flex: 1, ml: 1 }} variant="h6" component="div" noWrap>
+            Edit workflow — {name.trim() || 'Untitled'}
           </Typography>
-          <TextField
-            label="Workflow guard message"
-            value={bypassWarningMessage}
-            onChange={(e) => setBypassWarningMessage(e.target.value)}
-            fullWidth
-            multiline
-            minRows={2}
-            helperText="Optional message shown when publish/reject is blocked or when bypass acknowledgement is required. Leave blank for the default text."
-          />
-          <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
-            <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
-              Board background
-            </Typography>
-            <ColorSwatchPicker
-              swatches={BOARD_BACKGROUND_SWATCHES}
-              value={boardBackground}
-              onChange={setBoardBackground}
-              resolveColor={resolveBoardBackgroundColor}
-              size={24}
-            />
-          </Stack>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="subtitle1" fontWeight={600}>
-            Steps
-          </Typography>
-          <Button size="small" startIcon={<AddRoundedIcon />} onClick={handleAddStep}>
-            Add step
+          <Button onClick={onClose} disabled={saving} sx={{ mr: 1 }}>
+            Cancel
           </Button>
-          </Box>
+          <Button variant="contained" onClick={handleSave} disabled={saving}>
+            {saving ? 'Saving…' : 'Save workflow'}
+          </Button>
+        </Toolbar>
+      </AppBar>
 
-          <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="workflow-steps">
-            {(provided) => (
-              <Stack spacing={1} ref={provided.innerRef} {...provided.droppableProps} sx={{ pr: 0.5 }}>
-                {steps.map((step, index) => {
-                  const hasAction = !!step.actionType && step.actionType !== STEP_ACTION_NONE;
-                  const successValue =
-                    step.actionSuccessStepClientKey || step.actionSuccessStepId || SUCCESS_STEP_NONE;
-                  const successOptions = steps.filter((candidate) => candidate.clientKey !== step.clientKey);
+      <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+        <Box
+          sx={{
+            flexShrink: 0,
+            px: 3,
+            py: 1.5,
+            borderBottom: 1,
+            borderColor: 'divider'
+          }}
+        >
+          <Stack direction={{ xs: 'column', md: 'row' }} spacing={2} alignItems={{ md: 'center' }}>
+            <TextField
+              label="Workflow name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+              size="small"
+              inputProps={{ maxLength: WORKFLOW_NAME_MAX_LENGTH }}
+              sx={{ width: { xs: '100%', md: 280 } }}
+            />
+            <Stack direction="row" alignItems="center" spacing={1.5} flexWrap="wrap">
+              <Typography variant="body2" color="text.secondary" sx={{ flexShrink: 0 }}>
+                Board background
+              </Typography>
+              <ColorSwatchPicker
+                swatches={BOARD_BACKGROUND_SWATCHES}
+                value={boardBackground}
+                onChange={setBoardBackground}
+                resolveColor={resolveBoardBackgroundColor}
+                size={24}
+              />
+            </Stack>
+          </Stack>
+        </Box>
 
-                  return (
-                    <Draggable key={step.clientKey} draggableId={step.clientKey} index={index}>
-                      {(dragProvided) => (
-                        <Box
-                          ref={dragProvided.innerRef}
-                          {...dragProvided.draggableProps}
-                          sx={(theme) => ({
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 1,
-                            p: 1.25,
-                            pl: 1,
-                            borderRadius: 1,
-                            border: `1px solid ${theme.palette.divider}`,
-                            borderLeft: `4px solid ${resolveStepColor(step.color)}`,
-                            bgcolor: 'background.paper'
-                          })}
+        <Box
+          sx={{
+            flexShrink: 0,
+            px: 3,
+            py: 2,
+            borderBottom: 1,
+            borderColor: 'divider',
+            bgcolor: 'background.paper'
+          }}
+        >
+          <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+            Workflow flow
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+            Drag steps to move them. Use the toolbar to zoom. Connect steps with the blue dots on each card.
+          </Typography>
+          <WorkflowStepsFlowView
+            steps={steps}
+            flowLayout={flowLayout}
+            initialFlowViewport={initialFlowViewport}
+            selectedClientKey={selectedClientKey}
+            onSelectStep={handleSelectStep}
+            onFlowLayoutChange={handleFlowLayoutChange}
+            onFlowViewportChange={handleFlowViewportChange}
+            onTransitionChange={handleTransitionChange}
+            onAddStep={handleAddStep}
+          />
+        </Box>
+
+        <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+          <Box sx={{ px: 3, py: 2 }}>
+            <Stack spacing={2}>
+              {validationError && (
+                <Alert severity="warning" onClose={() => setValidationError(null)}>
+                  {validationError}
+                </Alert>
+              )}
+              {error && <ApiResponseErrorState error={error} />}
+
+              <Accordion disableGutters elevation={0} sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Workflow details &amp; guard settings
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Stack spacing={2}>
+                    <TextField
+                      label="Description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      fullWidth
+                      multiline
+                      minRows={2}
+                      size="small"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox checked={allowUiBypass} onChange={(e) => setAllowUiBypass(e.target.checked)} />
+                      }
+                      label="Allow publish/reject bypass with acknowledgement"
+                    />
+                    <TextField
+                      label="Workflow guard message"
+                      value={bypassWarningMessage}
+                      onChange={(e) => setBypassWarningMessage(e.target.value)}
+                      fullWidth
+                      multiline
+                      minRows={2}
+                      size="small"
+                      helperText="Optional message when publish/reject is blocked or bypass acknowledgement is required."
+                    />
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
+
+              {selectedStep && selectedStepIndex >= 0 ? (
+                <Box
+                  ref={stepSettingsRef}
+                  sx={{
+                    border: 2,
+                    borderColor: 'primary.main',
+                    borderRadius: 1.5,
+                    bgcolor: 'background.paper',
+                    px: 2.5,
+                    py: 2
+                  }}
+                >
+                  <Stack spacing={2}>
+                    <Stack direction="row" alignItems="center" justifyContent="space-between" flexWrap="wrap" gap={1}>
+                      <Typography variant="subtitle1" fontWeight={600}>
+                        Step settings — {selectedStep.name?.trim() || 'Untitled step'}
+                      </Typography>
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          startIcon={<RuleRoundedIcon />}
+                          onClick={() => setRulesStepIndex(selectedStepIndex)}
                         >
-                          <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                            <Box {...dragProvided.dragHandleProps} sx={{ color: 'text.secondary', flexShrink: 0 }}>
-                              <DragIndicatorRoundedIcon />
-                            </Box>
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                flex: 1,
-                                minWidth: 0,
-                                alignItems: 'center',
-                                gap: 1.5,
-                                flexWrap: { xs: 'wrap', md: 'nowrap' }
-                              }}
-                            >
-                              <TextField
-                                label="Step name"
-                                value={step.name}
-                                onChange={(e) => updateStep(index, { name: e.target.value })}
-                                size="small"
-                                inputProps={{ maxLength: STEP_NAME_MAX_LENGTH }}
-                                sx={{ width: { xs: '100%', sm: 200, md: 220 }, flexShrink: 0 }}
-                              />
-                              <ColorSwatchPicker
-                                label="Color"
-                                swatches={STEP_COLOR_SWATCHES}
-                                value={normalizeStepColorId(step.color)}
-                                onChange={(color) => updateStep(index, { color })}
-                                size={22}
-                              />
-                              <FormControlLabel
-                                sx={{ m: 0, flexShrink: 0 }}
-                                control={
-                                  <Checkbox
-                                    size="small"
-                                    checked={!!step.isTerminal}
-                                    onChange={(e) => updateStep(index, { isTerminal: e.target.checked })}
-                                  />
-                                }
-                                label="Terminal"
-                              />
-                              <FormControlLabel
-                                sx={{ m: 0, flexShrink: 0 }}
-                                control={
-                                  <Checkbox
-                                    size="small"
-                                    checked={!!step.allowAddPackage}
-                                    onChange={(e) => updateStep(index, { allowAddPackage: e.target.checked })}
-                                  />
-                                }
-                                label="Allow add package"
-                              />
-                            </Box>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              startIcon={<RuleRoundedIcon />}
-                              onClick={() => setRulesStepIndex(index)}
-                              sx={{ flexShrink: 0 }}
-                            >
-                              Rules
-                            </Button>
-                            <IconButton
-                              aria-label="Remove step"
-                              onClick={() => handleRemoveStep(index)}
-                              sx={{ alignSelf: 'center' }}
-                            >
-                              <DeleteOutlineRoundedIcon />
-                            </IconButton>
-                          </Box>
+                          Rules
+                        </Button>
+                        <Button
+                          size="small"
+                          color="error"
+                          variant="outlined"
+                          startIcon={<DeleteOutlineRoundedIcon />}
+                          onClick={() => handleRemoveStep(selectedStepIndex)}
+                        >
+                          Remove step
+                        </Button>
+                      </Stack>
+                    </Stack>
 
-                          <Box sx={{ pl: 4.5, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                            <RadioGroup
-                              value={step.actionType || STEP_ACTION_NONE}
-                              onChange={(event) =>
-                                handleActionTypeChange(index, event.target.value as StepActionType)
-                              }
-                            >
-                              <FormControlLabel
-                                value={STEP_ACTION_NONE}
-                                control={<Radio size="small" />}
-                                label="None"
-                                sx={{ mb: 0.5 }}
-                              />
-                              <FormControl component="fieldset" variant="standard" sx={{ mt: 0.5 }}>
-                                <FormLabel component="legend" sx={{ typography: 'caption', color: 'text.secondary' }}>
-                                  Publish Actions
-                                </FormLabel>
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 0.5, pt: 0.25 }}>
-                                  {PUBLISH_ACTION_OPTIONS.map((option) => (
-                                    <FormControlLabel
-                                      key={option.value}
-                                      value={option.value}
-                                      control={<Radio size="small" />}
-                                      label={option.label}
-                                      disabled={option.requiresStaging && !stagingEnabled}
-                                      sx={{ mr: 1.5 }}
-                                    />
-                                  ))}
-                                </Box>
-                              </FormControl>
-                            </RadioGroup>
+                    <Stack
+                      direction={{ xs: 'column', sm: 'row' }}
+                      spacing={2}
+                      alignItems={{ sm: 'flex-start' }}
+                      flexWrap="wrap"
+                    >
+                      <TextField
+                        label="Step name"
+                        value={selectedStep.name}
+                        onChange={(e) => updateStep(selectedStepIndex, { name: e.target.value })}
+                        size="small"
+                        inputProps={{ maxLength: STEP_NAME_MAX_LENGTH }}
+                        sx={{ width: { xs: '100%', sm: 260 } }}
+                      />
+                      <ColorSwatchPicker
+                        label="Color"
+                        swatches={STEP_COLOR_SWATCHES}
+                        value={normalizeStepColorId(selectedStep.color)}
+                        onChange={(color) => updateStep(selectedStepIndex, { color })}
+                        size={22}
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={!!selectedStep.isTerminal}
+                            onChange={(e) => updateStep(selectedStepIndex, { isTerminal: e.target.checked })}
+                          />
+                        }
+                        label="Terminal"
+                      />
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            size="small"
+                            checked={!!selectedStep.allowAddPackage}
+                            onChange={(e) => updateStep(selectedStepIndex, { allowAddPackage: e.target.checked })}
+                          />
+                        }
+                        label="Allow add package"
+                      />
+                    </Stack>
 
-                            <FormControl size="small" sx={{ maxWidth: 320 }} disabled={!hasAction}>
-                              <InputLabel id={`success-step-label-${step.clientKey}`}>Step on success</InputLabel>
-                              <Select
-                                labelId={`success-step-label-${step.clientKey}`}
-                                label="Step on success"
-                                value={successValue}
-                                renderValue={(selected) => {
-                                  if (selected === SUCCESS_STEP_NONE) {
-                                    return 'None — stay on current step';
-                                  }
-                                  const target = successOptions.find(
-                                    (candidate) =>
-                                      candidate.clientKey === selected || candidate.id === selected
-                                  );
-                                  return target?.name?.trim() || 'Untitled step';
-                                }}
-                                onChange={(event) => {
-                                  const value = event.target.value as string;
-                                  if (value === SUCCESS_STEP_NONE) {
-                                    updateStep(index, {
-                                      actionSuccessStepClientKey: undefined,
-                                      actionSuccessStepId: undefined
-                                    });
-                                  } else {
-                                    updateStep(index, {
-                                      actionSuccessStepClientKey: value,
-                                      actionSuccessStepId: undefined
-                                    });
-                                  }
-                                }}
-                              >
-                                <MenuItem value={SUCCESS_STEP_NONE}>None — stay on current step</MenuItem>
-                                {successOptions.map((candidate) => (
-                                  <MenuItem key={candidate.clientKey} value={candidate.clientKey}>
-                                    {candidate.name?.trim() || 'Untitled step'}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Box>
+                    <RadioGroup
+                      value={selectedStep.actionType || STEP_ACTION_NONE}
+                      onChange={(event) =>
+                        handleActionTypeChange(selectedStepIndex, event.target.value as StepActionType)
+                      }
+                    >
+                      <FormControlLabel
+                        value={STEP_ACTION_NONE}
+                        control={<Radio size="small" />}
+                        label="No publish action"
+                      />
+                      <FormControl component="fieldset" variant="standard" sx={{ mt: 0.5 }}>
+                        <FormLabel component="legend" sx={{ typography: 'caption', color: 'text.secondary' }}>
+                          Publish action (arrow to next step on success)
+                        </FormLabel>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 0.5, pt: 0.25 }}>
+                          {PUBLISH_ACTION_OPTIONS.map((option) => (
+                            <FormControlLabel
+                              key={option.value}
+                              value={option.value}
+                              control={<Radio size="small" />}
+                              label={option.label}
+                              disabled={option.requiresStaging && !stagingEnabled}
+                              sx={{ mr: 1.5 }}
+                            />
+                          ))}
                         </Box>
-                      )}
-                    </Draggable>
-                  );
-                })}
-                {provided.placeholder}
-              </Stack>
-            )}
-          </Droppable>
-        </DragDropContext>
+                      </FormControl>
+                    </RadioGroup>
 
-        <WorkflowEventListenersSection
-          steps={steps}
-          createListeners={createListeners}
-          editListeners={editListeners}
-          onCreateListenersChange={setCreateListeners}
-          onEditListenersChange={setEditListeners}
-        />
-        </Stack>
-      </DialogContent>
+                    <FormControl
+                      size="small"
+                      sx={{ maxWidth: 360 }}
+                      disabled={!selectedStep.actionType || selectedStep.actionType === STEP_ACTION_NONE}
+                    >
+                      <InputLabel id={`success-step-label-${selectedStep.clientKey}`}>Step on success</InputLabel>
+                      <Select
+                        labelId={`success-step-label-${selectedStep.clientKey}`}
+                        label="Step on success"
+                        value={
+                          selectedStep.actionSuccessStepClientKey ||
+                          selectedStep.actionSuccessStepId ||
+                          SUCCESS_STEP_NONE
+                        }
+                        onChange={(event) => {
+                          const value = event.target.value as string;
+                          if (value === SUCCESS_STEP_NONE) {
+                            updateStep(selectedStepIndex, {
+                              actionSuccessStepClientKey: undefined,
+                              actionSuccessStepId: undefined
+                            });
+                          } else {
+                            updateStep(selectedStepIndex, {
+                              actionSuccessStepClientKey: value,
+                              actionSuccessStepId: undefined
+                            });
+                          }
+                        }}
+                      >
+                        <MenuItem value={SUCCESS_STEP_NONE}>None — stay on current step</MenuItem>
+                        {steps
+                          .filter((candidate) => candidate.clientKey !== selectedStep.clientKey)
+                          .map((candidate) => (
+                            <MenuItem key={candidate.clientKey} value={candidate.clientKey}>
+                              {candidate.name?.trim() || 'Untitled step'}
+                            </MenuItem>
+                          ))}
+                      </Select>
+                    </FormControl>
+                  </Stack>
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  Click a step in the flow canvas above to edit its settings.
+                </Typography>
+              )}
+
+              <Accordion disableGutters elevation={0} sx={{ border: 1, borderColor: 'divider', borderRadius: 1 }}>
+                <AccordionSummary expandIcon={<ExpandMoreRoundedIcon />}>
+                  <Typography variant="subtitle2" fontWeight={600}>
+                    Content event listeners
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails sx={{ px: 0 }}>
+                  <WorkflowEventListenersSection
+                    steps={steps}
+                    createListeners={createListeners}
+                    editListeners={editListeners}
+                    onCreateListenersChange={setCreateListeners}
+                    onEditListenersChange={setEditListeners}
+                  />
+                </AccordionDetails>
+              </Accordion>
+            </Stack>
+          </Box>
+        </Box>
+      </Box>
+
       {rulesStepIndex != null && steps[rulesStepIndex] && (
         <WorkflowStepRulesDialog
           open
@@ -581,14 +694,6 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
           }}
         />
       )}
-      <DialogActions sx={{ flexShrink: 0, px: 2, py: 1.5 }}>
-        <Button onClick={onClose} disabled={saving}>
-          Cancel
-        </Button>
-        <Button variant="contained" onClick={handleSave} disabled={saving}>
-          {saving ? 'Saving…' : 'Save workflow'}
-        </Button>
-      </DialogActions>
     </Dialog>
   );
 };

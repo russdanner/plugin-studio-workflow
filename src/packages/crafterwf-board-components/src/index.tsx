@@ -22,7 +22,7 @@ const plugin: PluginDescriptor = {
     }
   },
   scripts: undefined,
-  stylesheets: undefined,
+  stylesheets: ['react-flow.css'],
   id: 'org.rd.plugin.crafterwf',
   widgets: {
     'org.rd.plugin.crafterwf.openBoardButton': OpenBoardDialogPanelButton,

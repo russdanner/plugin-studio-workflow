@@ -49,6 +49,8 @@ Root object:
 | `steps` | array | yes | Ordered workflow steps |
 | `createListeners` | array | no | Content **create** event listeners (see below) |
 | `editListeners` | array | no | Content **edit** event listeners (see below) |
+| `flowLayout` | object | no | React Flow node positions keyed by step id (see [Workflow flow editor](#workflow-flow-editor)) |
+| `flowViewport` | object | no | Saved canvas pan/zoom for the flow editor (`x`, `y`, `zoom`) |
 
 Each step object:
 
@@ -64,6 +66,7 @@ Each step object:
 | `actionSuccessStepId` | string | no | Step to move package to after a successful action |
 | `roleRule` | object | no | Who may move packages into this step (`mode`: `all` \| `include` \| `exclude`, `roles`: string[]) |
 | `contentRule` | object | no | Content constraints (`mode`: `all` \| `any`, `pathPatterns`, `contentTypes`) |
+| `transitionStepIds` | string[] | no | Step ids a package may be **manually dragged to** from this step on the board (see [Manual move transitions](#manual-move-transitions)) |
 
 ### Content event listeners
 
@@ -149,6 +152,76 @@ On failure (no attachments, staging disabled, publish error), the package may re
 | `Step action … failed` | Publish/request failed; package may revert |
 
 Configure step actions in **Project Tools → Workflows → Edit workflow →** per-step **Publish action** and optional **Success step** (workflow editor).
+
+## Workflow flow editor
+
+![Workflow flow diagram editor](./images/workflow-flow-editor.png)
+
+**Project Tools → Workflows → Edit workflow** includes a visual **flow diagram** (React Flow) for arranging steps and defining how packages may move between columns on the kanban board.
+
+The kanban board authors use day-to-day is separate from this admin diagram — see [FUNCTIONAL_SPEC.md § C1](./FUNCTIONAL_SPEC.md#c1--workflow-board-presentation).
+
+### Canvas controls
+
+| Control | Purpose |
+|---------|---------|
+| **Drag steps** | Reposition nodes on the canvas; positions are saved in `flowLayout` when you click **Save workflow** |
+| **Blue connection handles** | Draw **Move** arrows between steps; saved as `transitionStepIds` on the source step |
+| **Zoom (+ / − / 100%)** | Adjust canvas zoom; pan by dragging the background |
+| **Align row** | Snap all steps to a single horizontal row (useful after adding steps) |
+| **Backward arrows** | Toggle (default **off**): when on, shows dashed amber **Move (back)** edges for transitions where the target step appears earlier in the workflow; display-only — does not change saved data |
+| **+ Add step** | Append a new step; select a node to edit name, color, terminal flag, and rules in the panel below |
+
+Dashed edges labeled **Publish to Live** (or similar) represent **step publish actions** (`actionType`), not manual Move transitions. They are configured per step in the settings panel, not by connecting handles.
+
+### Manual move transitions
+
+Each step may list `transitionStepIds`: the step ids packages are allowed to reach when an author **drags a card** on the board from that column.
+
+| `transitionStepIds` | Board behavior |
+|---------------------|----------------|
+| **Omitted or empty** | Legacy behavior — packages may be dragged to any step (subject to role/content rules) |
+| **Non-empty array** | Only listed target steps accept drops from this source; other columns are disabled while dragging |
+
+The server enforces the same rules in `WorkflowPackageService` when a move is submitted via REST. **Save workflow** after editing arrows so the board picks up changes.
+
+Example step with explicit transitions:
+
+```json
+{
+  "id": "in-progress",
+  "name": "In Progress",
+  "transitionStepIds": ["review", "publish"]
+}
+```
+
+### Persisted layout and viewport
+
+When you save a workflow from the editor, optional root-level fields store the diagram state:
+
+```json
+{
+  "flowLayout": {
+    "backlog": { "x": 0, "y": 120 },
+    "in-progress": { "x": 280, "y": 120 },
+    "review": { "x": 560, "y": 40 },
+    "publish": { "x": 840, "y": 120 },
+    "done": { "x": 1120, "y": 120 }
+  },
+  "flowViewport": {
+    "x": 12,
+    "y": 8,
+    "zoom": 1
+  }
+}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `flowLayout` | `{ [stepId]: { x, y } }` | Node positions in flow-editor coordinates |
+| `flowViewport` | `{ x, y, zoom }` | Last canvas pan and zoom (zoom clamped 0.5–1.75 on load) |
+
+On open, saved positions merge with defaults for any new steps that lack entries. Step **order on the board** still follows each step’s `position` field; `flowLayout` affects the admin diagram only.
 
 ## Workflow bypass guard
 

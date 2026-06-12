@@ -4,6 +4,11 @@ Design and implementation reference for the first-party **`crafter-workflow`** d
 
 These documents describe **what** the system does and **how** it is structured. **All diagrams use [Mermaid](https://mermaid.js.org/).**
 
+| UI | Screenshot |
+|----|------------|
+| Kanban board (authors) | [workflow-kanban-board.png](./images/workflow-kanban-board.png) |
+| Flow editor (admins) | [workflow-flow-editor.png](./images/workflow-flow-editor.png) |
+
 ## Documents
 
 | Document | Description |
@@ -95,6 +100,7 @@ See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) and [ARCHITECTURE_DIAGRAM.md](./A
 | Tasks panel + package tasks | ✅ |
 | Audit log + Project Tools tab | ✅ |
 | Project Tools workflow admin | ✅ |
+| Visual workflow flow editor (React Flow, transitions, layout) | ✅ |
 | Step role/content rules (JSON) | ✅ |
 | Step publish actions on package move | ✅ |
 | Package due dates / site calendar | ✅ |

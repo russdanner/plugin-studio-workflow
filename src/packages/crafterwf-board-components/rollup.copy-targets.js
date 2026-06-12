@@ -12,7 +12,8 @@ function getPluginCopyTargets() {
   }
   return [
     {
-      src: './dist/*',
+      // Explicit paths — glob is resolved before react-flow.css is written in the same bundle hook.
+      src: ['./dist/index.js', './dist/react-flow.css', './dist/packages/**/*'],
       dest: path.resolve(deployPath)
     }
   ];

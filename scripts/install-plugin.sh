@@ -254,6 +254,7 @@ if [[ -f "${SANDBOX_PLUGIN}/index.js" ]]; then
   mkdir -p "${PUBLISHED_PLUGIN}"
   cp -f "${SANDBOX_PLUGIN}/index.js" "${PUBLISHED_PLUGIN}/index.js"
   [[ -f "${SANDBOX_PLUGIN}/app.js" ]] && cp -f "${SANDBOX_PLUGIN}/app.js" "${PUBLISHED_PLUGIN}/app.js"
+  [[ -f "${SANDBOX_PLUGIN}/react-flow.css" ]] && cp -f "${SANDBOX_PLUGIN}/react-flow.css" "${PUBLISHED_PLUGIN}/react-flow.css"
   echo "Synced plugin UI bundle to published layer."
 fi
 

@@ -89,6 +89,8 @@ Crafter workflow state (`availableActionsMap`) is read at action time from linke
 
 ### C1 — Workflow board presentation
 
+![Editorial Workflow kanban board](./images/workflow-kanban-board.png)
+
 - Tools panel button opens kanban dialog
 - Multiple workflows per site via widget `workflowId` or default workflow
 - Drag-and-drop **WorkflowPackages** between **WorkflowSteps**
@@ -186,7 +188,7 @@ Bell widget with unread count; panel with navigation to package, task, or conten
 | Tab | Purpose |
 |-----|---------|
 | **General** | Schema status and install |
-| **Workflows** | Create, edit, delete workflows; edit steps (name, color, terminal flag) |
+| **Workflows** | Create, edit, delete workflows; visual flow editor (React Flow) for step layout, manual **Move** transitions, publish actions, role/content rules, and content event listeners |
 | **Audit Log** | Search audit history |
 
 ### C11 — Content comments panel
@@ -227,8 +229,9 @@ This is separate from Crafter’s built-in **asset workflow** (publish states on
 ### Move package between WorkflowSteps
 
 1. Drag-and-drop or API move
-2. **Step rules** validated (`roleRule`, `contentRule` from definition JSON); blocked moves return user-visible message
-3. On step change: optional **publish action** runs; audit entry and DB update
+2. **Manual transitions** — if the source step defines `transitionStepIds`, only those target steps accept the drop (UI disables other columns while dragging; server rejects invalid targets)
+3. **Step rules** validated (`roleRule`, `contentRule` from definition JSON); blocked moves return user-visible message
+4. On step change: optional **publish action** runs; audit entry and DB update
 
 ## Configuration
 

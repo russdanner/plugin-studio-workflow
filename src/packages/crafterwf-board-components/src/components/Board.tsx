@@ -35,7 +35,10 @@ import {
   BoardApiResponse,
   BoardView,
   getPackageActionFailureMessage,
-  isListMoveBlockedForPackage
+  isListDropAllowedForDraggedPackage,
+  isListMoveBlockedForPackage,
+  isTransitionMoveAllowed,
+  TRANSITION_BLOCKED_MESSAGE
 } from '../api/workflowApi';
 import { CONTENT_RULE_BLOCKED_MESSAGE } from '../stepRules';
 import { resolveBoardBackgroundColor, resolveStepColor } from '../colors';
@@ -110,6 +113,7 @@ const Board = ({ boardId, workflowId: workflowIdProp, openPackageId: initialOpen
   const pendingStepActionMoveRef = React.useRef<PendingStepActionMove | null>(null);
   const [movingCard, setMovingCard] = React.useState(false);
   const [draggingCardId, setDraggingCardId] = React.useState<string | null>(null);
+  const [draggingSourceListId, setDraggingSourceListId] = React.useState<string | null>(null);
 
   const [state, setState] = useState<{
     board: BoardView['board'] | null;
@@ -167,7 +171,12 @@ const Board = ({ boardId, workflowId: workflowIdProp, openPackageId: initialOpen
     const targetList = state.lists?.find((list) => list.id === targetListId);
     const card = sourceList?.cards.find((item) => item.id === cardId);
 
-    if (sourceListId !== targetListId && targetList && card) {
+    if (sourceListId !== targetListId && sourceList && targetList && card) {
+      const transitionBlocked = isTransitionMoveAllowed(sourceList, targetListId);
+      if (!transitionBlocked.allowed) {
+        notifyUserError(transitionBlocked.message || TRANSITION_BLOCKED_MESSAGE);
+        return;
+      }
       const blocked = isListMoveBlockedForPackage(
         targetList,
         { contentPaths: card.contentPaths, contentTypes: card.contentTypes },
@@ -433,9 +442,13 @@ const Board = ({ boardId, workflowId: workflowIdProp, openPackageId: initialOpen
       })}
     >
       <DragDropContext
-        onDragStart={(start) => setDraggingCardId(start.draggableId)}
+        onDragStart={(start) => {
+          setDraggingCardId(start.draggableId);
+          setDraggingSourceListId(start.source.droppableId);
+        }}
         onDragEnd={(result) => {
           setDraggingCardId(null);
+          setDraggingSourceListId(null);
           onDragEnd(result);
         }}
       >
@@ -492,17 +505,23 @@ const Board = ({ boardId, workflowId: workflowIdProp, openPackageId: initialOpen
                       ?.flatMap((entry) => entry.cards)
                       .find((card) => card.id === draggingCardId)
                   : undefined;
-                const moveBlocked =
-                  draggingCard &&
-                  isListMoveBlockedForPackage(
-                    list,
-                    {
-                      contentPaths: draggingCard.contentPaths,
-                      contentTypes: draggingCard.contentTypes
-                    },
-                    state.currentUserGroups
-                  );
-                const isDropDisabled = !!moveBlocked?.blocked;
+                const draggingSourceList = draggingSourceListId
+                  ? state.lists?.find((entry) => entry.id === draggingSourceListId)
+                  : undefined;
+                const dropCheck = draggingCard
+                  ? isListDropAllowedForDraggedPackage(
+                      draggingSourceList,
+                      list,
+                      {
+                        contentPaths: draggingCard.contentPaths,
+                        contentTypes: draggingCard.contentTypes
+                      },
+                      state.currentUserGroups
+                    )
+                  : { allowed: true as const };
+                const isDropDisabled = !dropCheck.allowed;
+                const dropBlockedMessage =
+                  dropCheck.message || TRANSITION_BLOCKED_MESSAGE || CONTENT_RULE_BLOCKED_MESSAGE;
 
                 return (
                 <Paper
@@ -594,7 +613,7 @@ const Board = ({ boardId, workflowId: workflowIdProp, openPackageId: initialOpen
                   </Stack>
                   {isDropDisabled && (
                     <Typography variant="caption" color="text.secondary" sx={{ mb: 0.75, px: 0.25, lineHeight: 1.3 }}>
-                      {moveBlocked?.message || CONTENT_RULE_BLOCKED_MESSAGE}
+                      {dropBlockedMessage}
                     </Typography>
                   )}
 

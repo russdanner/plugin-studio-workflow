@@ -28,6 +28,8 @@ export interface BoardView {
     allowAddPackage?: boolean;
     roleRule?: StepRoleRule;
     contentRule?: StepContentRule;
+    /** Empty = packages may move to any step. Non-empty = only these target step ids. */
+    transitionStepIds?: string[];
     moveBlocked?: boolean;
     moveBlockedMessage?: string;
     cards: CardRecord[];
@@ -71,6 +73,7 @@ export interface BoardApiResponse {
     allowAddPackage?: boolean;
     roleRule?: StepRoleRule;
     contentRule?: StepContentRule;
+    transitionStepIds?: string[];
     workflowPackages: BoardStepPackageApi[];
   }>;
 }
@@ -94,6 +97,41 @@ function normalizeContentRule(rule?: StepContentRule): StepContentRule {
     pathPatterns: rule.pathPatterns ?? [],
     contentTypes: rule.contentTypes ?? []
   };
+}
+
+export const TRANSITION_BLOCKED_MESSAGE = 'Packages cannot be moved directly to that step';
+
+export function isTransitionMoveAllowed(
+  sourceList: Pick<BoardView['lists'][number], 'transitionStepIds'>,
+  targetStepId: string
+): { allowed: boolean; message?: string } {
+  const allowedTargets = sourceList.transitionStepIds ?? [];
+  if (!allowedTargets.length) {
+    return { allowed: true };
+  }
+  return allowedTargets.includes(targetStepId)
+    ? { allowed: true }
+    : { allowed: false, message: TRANSITION_BLOCKED_MESSAGE };
+}
+
+export function isListDropAllowedForDraggedPackage(
+  sourceList: BoardView['lists'][number] | undefined,
+  targetList: BoardView['lists'][number],
+  packageSummary: { contentPaths?: string[]; contentTypes?: string[] },
+  userGroups: string[]
+): { allowed: boolean; message?: string } {
+  if (!sourceList || sourceList.id === targetList.id) {
+    return { allowed: true };
+  }
+  const transition = isTransitionMoveAllowed(sourceList, targetList.id);
+  if (!transition.allowed) {
+    return transition;
+  }
+  const blocked = isListMoveBlockedForPackage(targetList, packageSummary, userGroups);
+  if (blocked.blocked) {
+    return { allowed: false, message: blocked.message };
+  }
+  return { allowed: true };
 }
 
 export function isListMoveBlockedForPackage(
@@ -140,6 +178,7 @@ export function mapBoardResponse(result: BoardApiResponse): BoardView {
         allowAddPackage: step.allowAddPackage === true,
         roleRule,
         contentRule,
+        transitionStepIds: step.transitionStepIds ?? [],
         cards: step.workflowPackages.map((pkg) => ({
           id: pkg.id,
           name: pkg.title,

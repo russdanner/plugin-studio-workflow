@@ -95,6 +95,9 @@ class WorkflowBoardService {
             allowAddPackage   : WorkflowDefinitionSupport.allowsAddPackage(step),
             roleRule          : StepRuleJson.toRoleRuleDto(step),
             contentRule       : StepRuleJson.toContentRuleDto(step),
+            transitionStepIds : step.transitionStepIds instanceof List
+                ? step.transitionStepIds.collect { it?.toString()?.trim() }.findAll { it }
+                : [],
             workflowPackages  : packages
         ]
     }

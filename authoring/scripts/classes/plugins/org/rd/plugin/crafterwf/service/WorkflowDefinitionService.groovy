@@ -184,7 +184,12 @@ class WorkflowDefinitionService {
         normalizedSteps.eachWithIndex { step, idx ->
             def stepActions = extractStepActions(step, true)
             step.actionSuccessStepId = resolveSuccessStepId(step, stepActions, keptIds, clientKeyToStepId, savedStepIds)
+            step.transitionStepIds = resolveTransitionStepIds(step, keptIds, clientKeyToStepId)
+            step.remove('transitionStepClientKeys')
         }
+
+        def flowLayout = resolveFlowLayout(workflowFields?.flowLayout, existing.flowLayout, clientKeyToStepId, savedStepIds)
+        def flowViewport = resolveFlowViewport(workflowFields?.flowViewport, existing.flowViewport)
 
         def removedIds = existingIds - keptIds
         removedIds.each { removedId ->
@@ -215,7 +220,9 @@ class WorkflowDefinitionService {
                 existing.bypassWarningMessage?.toString() ?: '',
             allowUiBypass       : workflowFields?.allowUiBypass != null
                 ? WorkflowDefinitionSupport.allowsUiBypass([allowUiBypass: workflowFields.allowUiBypass])
-                : WorkflowDefinitionSupport.allowsUiBypass(existing)
+                : WorkflowDefinitionSupport.allowsUiBypass(existing),
+            flowLayout          : flowLayout,
+            flowViewport        : flowViewport
         ]
         writeDefinition(siteId, workflowId, definition, 'Update workflow definition')
         return definition
@@ -527,5 +534,72 @@ class WorkflowDefinitionService {
             }
         }
         return null
+    }
+
+    static List<String> resolveTransitionStepIds(Map step, Set keptIds, Map clientKeyToStepId) {
+        def resolved = [] as LinkedHashSet
+        def rawIds = step.transitionStepIds instanceof List ? step.transitionStepIds : []
+        rawIds.each { rawId ->
+            def id = rawId?.toString()?.trim()
+            if (id && keptIds.contains(id)) {
+                resolved << id
+            }
+        }
+        def clientKeys = step.transitionStepClientKeys instanceof List ? step.transitionStepClientKeys : []
+        clientKeys.each { rawKey ->
+            def key = rawKey?.toString()?.trim()
+            if (key && clientKeyToStepId[key]) {
+                def id = String.valueOf(clientKeyToStepId[key])
+                if (keptIds.contains(id)) {
+                    resolved << id
+                }
+            }
+        }
+        return resolved.toList()
+    }
+
+    static Map resolveFlowLayout(def incomingLayout, def existingLayout, Map clientKeyToStepId, List savedStepIds) {
+        def source = incomingLayout instanceof Map ? incomingLayout : (existingLayout instanceof Map ? existingLayout : [:])
+        def layout = [:]
+        source.each { key, value ->
+            def stepId = key?.toString()?.trim()
+            if (!stepId) {
+                return
+            }
+            if (clientKeyToStepId[stepId]) {
+                stepId = String.valueOf(clientKeyToStepId[stepId])
+            }
+            if (!savedStepIds.contains(stepId)) {
+                return
+            }
+            if (!(value instanceof Map)) {
+                return
+            }
+            def x = value.x instanceof Number ? (value.x as Number).doubleValue() : null
+            def y = value.y instanceof Number ? (value.y as Number).doubleValue() : null
+            if (x != null && y != null) {
+                layout[stepId] = [x: x, y: y]
+            }
+        }
+        return layout
+    }
+
+    static Map resolveFlowViewport(def incomingViewport, def existingViewport) {
+        def source = incomingViewport instanceof Map ? incomingViewport
+            : (existingViewport instanceof Map ? existingViewport : null)
+        if (!source) {
+            return null
+        }
+        def x = source.x instanceof Number ? (source.x as Number).doubleValue() : null
+        def y = source.y instanceof Number ? (source.y as Number).doubleValue() : null
+        def zoom = source.zoom instanceof Number ? (source.zoom as Number).doubleValue() : null
+        if (x == null || y == null || zoom == null || zoom <= 0) {
+            return null
+        }
+        return [
+            x    : x,
+            y    : y,
+            zoom : Math.max(0.5d, Math.min(1.75d, zoom))
+        ]
     }
 }

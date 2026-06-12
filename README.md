@@ -2,6 +2,16 @@
 
 Kanban workflow board inside CrafterCMS Studio, backed by MariaDB.
 
+## Screenshots
+
+**Kanban board** — authors open a workflow from the Tools panel and drag packages between steps:
+
+![Editorial Workflow kanban board in CrafterCMS Studio](./docs/images/workflow-kanban-board.png)
+
+**Flow editor** — admins configure steps, transitions, and publish actions in Project Tools:
+
+![Workflow flow diagram editor](./docs/images/workflow-flow-editor.png)
+
 ## CrafterCMS 4.x Compatibility
 
 This plugin is modernized for CrafterCMS 4.x and uses the `@craftercms/studio-ui` 4.x SDK.
@@ -12,6 +22,17 @@ It is intended for CrafterCMS `4.0` through `4.4`.
 The **`crafter-workflow`** plugin (MariaDB schema, Groovy services, Studio UI) is documented in [docs/README.md](./docs/README.md).
 
 Implemented features include kanban workflows, comments, in-app notifications, tasks, audit log, and Project Tools administration. See [docs/FUNCTIONAL_SPEC.md](./docs/FUNCTIONAL_SPEC.md) for the full capability list.
+
+### Workflow flow editor
+
+In **Project Tools → Crafter Workflow → Workflows → Edit workflow**, admins use a **React Flow** diagram to:
+
+- Drag steps into a custom layout (saved as `flowLayout` in the workflow JSON)
+- Connect steps with **Move** arrows that define which columns accept package drags on the board (`transitionStepIds`)
+- Configure step publish actions (dashed action edges) separately from manual moves
+- Zoom and pan the canvas (saved as `flowViewport`)
+
+The kanban board enforces `transitionStepIds` when authors drag packages between columns. See [docs/WORKFLOW_DEFINITIONS.md](./docs/WORKFLOW_DEFINITIONS.md#workflow-flow-editor) for JSON fields and behavior.
 
 ## Build
 
