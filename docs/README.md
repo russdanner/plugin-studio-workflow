@@ -8,6 +8,10 @@ These documents describe **what** the system does and **how** it is structured. 
 |----|------------|
 | Kanban board (authors) | [workflow-kanban-board.png](./images/workflow-kanban-board.png) |
 | Flow editor (admins) | [workflow-flow-editor.png](./images/workflow-flow-editor.png) |
+| Content comments (preview) | [content-comments-panel.png](./images/content-comments-panel.png) |
+| Notifications (bell widget) | [notifications-panel.png](./images/notifications-panel.png) |
+| Tasks panel | [tasks-panel.png](./images/tasks-panel.png) |
+| Site calendar | [site-calendar.png](./images/site-calendar.png) |
 
 ## Documents
 

@@ -160,6 +160,8 @@ What the plugin adds: visibility (board, audit, comments, tasks), step rules, op
 
 ### C7 — Notifications (in-app)
 
+![Notifications panel](./images/notifications-panel.png)
+
 | Trigger | Recipient |
 |---------|-----------|
 | Task assigned / updated / completed / archived | Assignee (not actor) |
@@ -170,6 +172,10 @@ Bell widget with unread count; panel with navigation to package, task, or conten
 **Email:** immediate delivery via Studio SMTP — see [NOTIFICATIONS.md](./NOTIFICATIONS.md). Daily digest deferred.
 
 ### C8 — Tasks
+
+![Tasks panel](./images/tasks-panel.png)
+
+![Site calendar](./images/site-calendar.png)
 
 - Create from Tasks panel or package detail
 - Assignee picker, priority, due date, inline edit
@@ -192,6 +198,8 @@ Bell widget with unread count; panel with navigation to package, task, or conten
 | **Audit Log** | Search audit history |
 
 ### C11 — Content comments panel
+
+![Content comments on preview content](./images/content-comments-panel.png)
 
 Separate Tools panel widget for commenting on the currently selected content item in Studio.
 

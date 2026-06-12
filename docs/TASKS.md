@@ -62,6 +62,10 @@ Each audit-worthy task event also writes to **`wf_audit_log`** (see [AUDIT_LOG.m
 
 ## UI
 
+![Tasks panel with assignee, priority, and due dates](./images/tasks-panel.png)
+
+![Site calendar month view with tasks and package due dates](./images/site-calendar.png)
+
 | Widget | Purpose |
 |--------|---------|
 | `tasksToolbarButton` / `tasksPanel` | Tasks list (assignee-scoped) with optional calendar tab |

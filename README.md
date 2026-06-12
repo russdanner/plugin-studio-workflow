@@ -4,6 +4,8 @@ Kanban workflow board inside CrafterCMS Studio, backed by MariaDB.
 
 ## Screenshots
 
+### Workflow
+
 **Kanban board** — authors open a workflow from the Tools panel and drag packages between steps:
 
 ![Editorial Workflow kanban board in CrafterCMS Studio](./docs/images/workflow-kanban-board.png)
@@ -11,6 +13,24 @@ Kanban workflow board inside CrafterCMS Studio, backed by MariaDB.
 **Flow editor** — admins configure steps, transitions, and publish actions in Project Tools:
 
 ![Workflow flow diagram editor](./docs/images/workflow-flow-editor.png)
+
+### Collaboration widgets
+
+**Content comments** — discuss the page or component open in preview; supports `@mentions`:
+
+![Content comments panel in CrafterCMS Studio](./docs/images/content-comments-panel.png)
+
+**Notifications** — in-app inbox for mentions, tasks, and bypass alerts; optional immediate email:
+
+![Notifications panel in CrafterCMS Studio](./docs/images/notifications-panel.png)
+
+**Tasks** — assignable work items with priority, dates, and optional package/content links:
+
+![Tasks panel in CrafterCMS Studio](./docs/images/tasks-panel.png)
+
+**Site calendar** — month/week/day view of tasks and package due dates across the site:
+
+![Site calendar in CrafterCMS Studio](./docs/images/site-calendar.png)
 
 ## CrafterCMS 4.x Compatibility
 

@@ -51,6 +51,8 @@ Package move and generic comment-added notifications are **not** yet implemented
 
 ## UI widgets
 
+![Notifications panel with email preferences and mention alerts](./images/notifications-panel.png)
+
 | Widget ID | Purpose |
 |-----------|---------|
 | `org.rd.plugin.crafterwf.notificationsToolbarButton` | Bell with unread count; polls every 30s |

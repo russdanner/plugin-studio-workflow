@@ -56,6 +56,8 @@ Package detail responses may **embed** comments from `workflow-package/get.json`
 
 ## UI
 
+![Content comments panel on a preview page](./images/content-comments-panel.png)
+
 | Widget | Target | Coupling |
 |--------|--------|----------|
 | `contentCommentsToolbarButton` / `contentCommentsPanel` | Current preview content path | **No workflow** |
