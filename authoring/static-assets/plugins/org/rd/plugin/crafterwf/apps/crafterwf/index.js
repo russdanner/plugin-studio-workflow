@@ -3,7 +3,7 @@ const { useState, useRef, useEffect, useContext, useLayoutEffect, useCallback: u
 const React__default = craftercms.libs.React && Object.prototype.hasOwnProperty.call(craftercms.libs.React, 'default') ? craftercms.libs.React['default'] : craftercms.libs.React;
 const RefreshRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded');
 const SettingsRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded');
-const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogContent, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, DialogTitle, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, Popover, Tabs, Tab, Autocomplete, RadioGroup, Radio, FormLabel } = craftercms.libs.MaterialUI;
+const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogTitle, DialogContent, Tabs, Tab, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, Popover, Autocomplete, RadioGroup, Radio, FormLabel } = craftercms.libs.MaterialUI;
 const { connect, Provider, useSelector, useDispatch } = craftercms.libs.ReactRedux;
 const ReactDOM = craftercms.libs.ReactDOM && Object.prototype.hasOwnProperty.call(craftercms.libs.ReactDOM, 'default') ? craftercms.libs.ReactDOM['default'] : craftercms.libs.ReactDOM;
 const { ApiResponseErrorState } = craftercms.components;
@@ -36,6 +36,9 @@ const MoreVertRoundedIcon = craftercms.utils.constants.components.get('@mui/icon
 const IconButton$1 = craftercms.libs.MaterialUI.IconButton && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.IconButton, 'default') ? craftercms.libs.MaterialUI.IconButton['default'] : craftercms.libs.MaterialUI.IconButton;
 const { createCustomDocumentEventListener } = craftercms.utils.dom;
 const Search = craftercms.components.Search && Object.prototype.hasOwnProperty.call(craftercms.components.Search, 'default') ? craftercms.components.Search['default'] : craftercms.components.Search;
+const { fetchMyActivity, fetchUnpublished } = craftercms.services.dashboard;
+const { of, forkJoin } = craftercms.libs.rxjs;
+const { map, catchError } = craftercms.libs.rxjs;
 const ChevronRightRounded = craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded');
 const Collapse = craftercms.libs.MaterialUI.Collapse && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Collapse, 'default') ? craftercms.libs.MaterialUI.Collapse['default'] : craftercms.libs.MaterialUI.Collapse;
 const ListItemButton$1 = craftercms.libs.MaterialUI.ListItemButton && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.ListItemButton, 'default') ? craftercms.libs.MaterialUI.ListItemButton['default'] : craftercms.libs.MaterialUI.ListItemButton;
@@ -44,8 +47,6 @@ const CommentRoundedIcon = craftercms.utils.constants.components.get('@mui/icons
 const NotificationsNoneRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded');
 const InventoryRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded');
 const ChevronLeftRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded');
-const { map, catchError } = craftercms.libs.rxjs;
-const { forkJoin, of } = craftercms.libs.rxjs;
 const TaskAltRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded');
 const CalendarMonthRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded');
 const BlockRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded');
@@ -11940,6 +11941,70 @@ function resolveContentLabel(siteId, contentPath) {
     });
 }
 
+var ContentAttachFeedPanel = function (_a) {
+    var title = _a.title, description = _a.description, entries = _a.entries, loading = _a.loading, error = _a.error, selectedPaths = _a.selectedPaths, onToggle = _a.onToggle, onRefresh = _a.onRefresh;
+    var siteId = useActiveSiteId();
+    var _b = useState({}), itemsByPath = _b[0], setItemsByPath = _b[1];
+    var pathsKey = useMemo$1(function () { return entries.map(function (entry) { return entry.path; }).join('\0'); }, [entries]);
+    useEffect(function () {
+        if (!siteId || entries.length === 0) {
+            setItemsByPath({});
+            return;
+        }
+        var paths = entries.map(function (entry) { return entry.path; });
+        fetchItemsByPath(siteId, paths, { castAsDetailedItem: true }).subscribe({
+            next: function (items) {
+                var nextMap = {};
+                items.forEach(function (item) {
+                    if (item === null || item === void 0 ? void 0 : item.path) {
+                        nextMap[item.path] = item;
+                    }
+                });
+                entries.forEach(function (entry) {
+                    var _a;
+                    if (!nextMap[entry.path]) {
+                        nextMap[entry.path] = { path: entry.path, label: (_a = entry.label) !== null && _a !== void 0 ? _a : undefined };
+                    }
+                });
+                setItemsByPath(nextMap);
+            },
+            error: function () {
+                var fallback = {};
+                entries.forEach(function (entry) {
+                    var _a;
+                    fallback[entry.path] = { path: entry.path, label: (_a = entry.label) !== null && _a !== void 0 ? _a : undefined };
+                });
+                setItemsByPath(fallback);
+            }
+        });
+    }, [pathsKey, siteId]);
+    return (React.createElement(Box, { sx: {
+            flex: 1,
+            minHeight: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden'
+        } },
+        React.createElement(Stack, { direction: "row", alignItems: "flex-start", justifyContent: "space-between", sx: { px: 2, py: 1.25, borderBottom: function (theme) { return "1px solid ".concat(theme.palette.divider); } } },
+            React.createElement(Box, { sx: { minWidth: 0, pr: 1 } },
+                React.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, title),
+                React.createElement(Typography, { variant: "caption", color: "text.secondary" }, description)),
+            onRefresh ? (React.createElement(Tooltip, { title: "Refresh" },
+                React.createElement("span", null,
+                    React.createElement(IconButton, { size: "small", "aria-label": "Refresh feed", onClick: onRefresh, disabled: loading },
+                        React.createElement(RefreshRoundedIcon, { fontSize: "small" }))))) : null),
+        React.createElement(Box, { sx: { flex: 1, minHeight: 0, overflowY: 'auto' } }, loading ? (React.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', py: 4 } },
+            React.createElement(CircularProgress, { size: 28 }))) : error ? (React.createElement(Typography, { variant: "body2", color: "error", sx: { px: 2, py: 2 } }, error)) : entries.length === 0 ? (React.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { px: 2, py: 2 } }, "Nothing to show in this feed right now.")) : (entries.map(function (entry, index) {
+            var _a;
+            var selected = selectedPaths.includes(entry.path);
+            return (React.createElement(React.Fragment, { key: entry.path },
+                index > 0 ? React.createElement(Divider, null) : null,
+                React.createElement(Box, { sx: { px: 0.5 } },
+                    React.createElement(AttachedContentItemRow, { item: (_a = itemsByPath[entry.path]) !== null && _a !== void 0 ? _a : { path: entry.path }, showSelectionCheckbox: true, selectionChecked: selected, onSelectionChange: function (checked) { return onToggle(entry.path, checked); }, showPath: false }),
+                    entry.subtitle ? (React.createElement(Typography, { variant: "caption", color: "text.secondary", sx: { display: 'block', pl: 5.5, pb: 0.75 } }, entry.subtitle)) : null)));
+        })))));
+};
+
 var SelectedContentSourcePanel = function (_a) {
     var selectedPaths = _a.selectedPaths, onRemove = _a.onRemove;
     var siteId = useActiveSiteId();
@@ -12006,11 +12071,92 @@ var SelectedContentSourcePanel = function (_a) {
         })))));
 };
 
+var FEED_LIMIT = 50;
+var RECENT_ACTIVITY_ACTIONS = ['CREATE', 'UPDATE', 'MOVE'];
+function activityActionLabel(actionType) {
+    switch (actionType) {
+        case 'CREATE':
+            return 'Created';
+        case 'UPDATE':
+            return 'Updated';
+        case 'MOVE':
+            return 'Moved';
+        default:
+            return actionType.replace(/_/g, ' ').toLowerCase();
+    }
+}
+function dedupeRecentActivity(activities) {
+    var seen = new Set();
+    var entries = [];
+    activities.forEach(function (activity) {
+        var _a, _b, _c, _d;
+        var path = (_b = (_a = activity.item) === null || _a === void 0 ? void 0 : _a.path) === null || _b === void 0 ? void 0 : _b.trim();
+        if (!path || seen.has(path)) {
+            return;
+        }
+        seen.add(path);
+        var action = activityActionLabel(activity.actionType);
+        var when = activity.actionTimestamp ? formatDateTime(activity.actionTimestamp) : '';
+        entries.push({
+            path: path,
+            label: (_c = activity.item) === null || _c === void 0 ? void 0 : _c.label,
+            systemType: (_d = activity.item) === null || _d === void 0 ? void 0 : _d.systemType,
+            subtitle: when ? "".concat(action, " \u00B7 ").concat(when) : action
+        });
+    });
+    return entries;
+}
+function loadMyRecentActivityFeed(siteId) {
+    return fetchMyActivity(siteId, {
+        limit: FEED_LIMIT,
+        offset: 0,
+        actions: __spreadArray([], RECENT_ACTIVITY_ACTIONS, true)
+    }).pipe(map(function (activities) { return dedupeRecentActivity(activities); }), catchError(function () { return of([]); }));
+}
+function loadUnpublishedWorkFeed(siteId) {
+    return fetchUnpublished(siteId, {
+        limit: FEED_LIMIT,
+        offset: 0,
+        sortBy: 'dateModified',
+        sortOrder: 'desc'
+    }).pipe(map(function (items) {
+        return items.map(function (item) { return ({
+            path: item.path,
+            label: item.label,
+            systemType: item.systemType,
+            subtitle: item.dateModified ? "Modified \u00B7 ".concat(formatDateTime(item.dateModified)) : 'Unpublished'
+        }); });
+    }), catchError(function () { return of([]); }));
+}
+function excludeAttachedPaths(entries, attachedPaths) {
+    if (!attachedPaths.length) {
+        return entries;
+    }
+    var attached = new Set(attachedPaths);
+    return entries.filter(function (entry) { return !attached.has(entry.path); });
+}
+
+var EMPTY_ATTACHED_PATHS = [];
+function attachedPathsKey(paths) {
+    return paths.slice().sort().join('\0');
+}
 var ContentSearchAttachDialog = function (_a) {
-    var open = _a.open, onClose = _a.onClose, onAttach = _a.onAttach;
-    var _b = useState([]), selectedPaths = _b[0], setSelectedPaths = _b[1];
+    var open = _a.open, onClose = _a.onClose, onAttach = _a.onAttach, _b = _a.attachedPaths, attachedPaths = _b === void 0 ? EMPTY_ATTACHED_PATHS : _b;
+    var siteId = useActiveSiteId();
+    var attachedPathsRef = useRef(attachedPaths);
+    attachedPathsRef.current = attachedPaths;
+    var stableAttachedPathsKey = attachedPathsKey(attachedPaths);
+    var _c = useState([]), selectedPaths = _c[0], setSelectedPaths = _c[1];
+    var _d = useState('recent'), activeTab = _d[0], setActiveTab = _d[1];
+    var _e = useState([]), recentEntries = _e[0], setRecentEntries = _e[1];
+    var _f = useState(false), recentLoading = _f[0], setRecentLoading = _f[1];
+    var _g = useState(null), recentError = _g[0], setRecentError = _g[1];
+    var _h = useState([]), unpublishedEntries = _h[0], setUnpublishedEntries = _h[1];
+    var _j = useState(false), unpublishedLoading = _j[0], setUnpublishedLoading = _j[1];
+    var _k = useState(null), unpublishedError = _k[0], setUnpublishedError = _k[1];
     var handleClose = useCallback$1(function () {
         setSelectedPaths([]);
+        setActiveTab('recent');
         onClose();
     }, [onClose]);
     var handleSelect = useCallback$1(function (path, isSelected) {
@@ -12021,6 +12167,9 @@ var ContentSearchAttachDialog = function (_a) {
             return current.filter(function (entry) { return entry !== path; });
         });
     }, []);
+    var handleToggleFeed = useCallback$1(function (path, selected) {
+        handleSelect(path, selected);
+    }, [handleSelect]);
     var handleRemove = useCallback$1(function (path) {
         setSelectedPaths(function (current) { return current.filter(function (entry) { return entry !== path; }); });
     }, []);
@@ -12031,7 +12180,76 @@ var ContentSearchAttachDialog = function (_a) {
         onAttach(selectedPaths);
         setSelectedPaths([]);
     }, [onAttach, selectedPaths]);
-    return (React.createElement(Dialog, { open: open, onClose: handleClose, fullWidth: true, maxWidth: "lg", scroll: "paper", disableRestoreFocus: true, "aria-labelledby": "crafterwf-content-search-title", PaperProps: { sx: { height: 'min(85vh, 720px)', maxHeight: '85vh' } } },
+    var loadRecentFeed = useCallback$1(function () {
+        if (!siteId) {
+            setRecentEntries([]);
+            return undefined;
+        }
+        setRecentLoading(true);
+        setRecentError(null);
+        return loadMyRecentActivityFeed(siteId).subscribe({
+            next: function (entries) {
+                setRecentEntries(excludeAttachedPaths(entries, attachedPathsRef.current));
+                setRecentLoading(false);
+            },
+            error: function () {
+                setRecentError('Unable to load your recent activity.');
+                setRecentEntries([]);
+                setRecentLoading(false);
+            }
+        });
+    }, [siteId]);
+    var loadUnpublishedFeed = useCallback$1(function () {
+        if (!siteId) {
+            setUnpublishedEntries([]);
+            return undefined;
+        }
+        setUnpublishedLoading(true);
+        setUnpublishedError(null);
+        return loadUnpublishedWorkFeed(siteId).subscribe({
+            next: function (entries) {
+                setUnpublishedEntries(excludeAttachedPaths(entries, attachedPathsRef.current));
+                setUnpublishedLoading(false);
+            },
+            error: function () {
+                setUnpublishedError('Unable to load unpublished work.');
+                setUnpublishedEntries([]);
+                setUnpublishedLoading(false);
+            }
+        });
+    }, [siteId]);
+    useEffect(function () {
+        if (!open) {
+            return;
+        }
+        if (activeTab === 'recent') {
+            var subscription_1 = loadRecentFeed();
+            return function () { return subscription_1 === null || subscription_1 === void 0 ? void 0 : subscription_1.unsubscribe(); };
+        }
+        if (activeTab === 'unpublished') {
+            var subscription_2 = loadUnpublishedFeed();
+            return function () { return subscription_2 === null || subscription_2 === void 0 ? void 0 : subscription_2.unsubscribe(); };
+        }
+    }, [activeTab, loadRecentFeed, loadUnpublishedFeed, open]);
+    useEffect(function () {
+        if (!open) {
+            return;
+        }
+        setRecentEntries(function (current) { return excludeAttachedPaths(current, attachedPathsRef.current); });
+        setUnpublishedEntries(function (current) { return excludeAttachedPaths(current, attachedPathsRef.current); });
+    }, [stableAttachedPathsKey, open]);
+    var isSearchTab = activeTab === 'search';
+    return (React.createElement(Dialog, { open: open, onClose: handleClose, fullWidth: true, maxWidth: false, scroll: "paper", disableRestoreFocus: true, "aria-labelledby": "crafterwf-content-search-title", PaperProps: {
+            sx: {
+                width: 'min(96vw, 1600px)',
+                maxWidth: '96vw',
+                height: 'min(92vh, 960px)',
+                maxHeight: '92vh',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        } },
+        React.createElement(DialogTitle, { id: "crafterwf-content-search-title", sx: { pb: 0 } }, "Add existing content"),
         React.createElement(DialogContent, { sx: {
                 p: 0,
                 display: 'flex',
@@ -12046,12 +12264,41 @@ var ContentSearchAttachDialog = function (_a) {
                     minHeight: 0,
                     display: 'flex',
                     flexDirection: 'column',
-                    overflow: 'hidden',
-                    '& > section:last-of-type': { display: 'none' }
+                    overflow: 'hidden'
                 } },
-                React.createElement(Search, { embedded: true, mode: "select", onClose: handleClose, onSelect: handleSelect })),
-            React.createElement(SelectedContentSourcePanel, { selectedPaths: selectedPaths, onRemove: handleRemove })),
-        React.createElement(DialogActions, { sx: { px: 2, py: 1.5 } },
+                React.createElement(Tabs, { value: activeTab, onChange: function (_, value) { return setActiveTab(value); }, variant: "scrollable", scrollButtons: "auto", sx: { px: 2, borderBottom: function (theme) { return "1px solid ".concat(theme.palette.divider); }, flexShrink: 0 } },
+                    React.createElement(Tab, { value: "recent", label: "My recent activity" }),
+                    React.createElement(Tab, { value: "unpublished", label: "Unpublished work" }),
+                    React.createElement(Tab, { value: "search", label: "Search" })),
+                React.createElement(Box, { sx: { flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' } },
+                    open ? (React.createElement(Box, { hidden: activeTab !== 'search', sx: {
+                            flex: 1,
+                            minHeight: 0,
+                            minWidth: 0,
+                            width: '100%',
+                            display: activeTab === 'search' ? 'block' : 'none',
+                            overflow: 'hidden',
+                            '& > section': {
+                                width: '100%',
+                                height: '100%',
+                                minHeight: 0,
+                                minWidth: 0
+                            },
+                            // Hide Studio select-mode Cancel/Accept footer; this dialog's Actions bar handles attach.
+                            '& > section > section:last-of-type': {
+                                display: 'none'
+                            }
+                        } },
+                        React.createElement(Search, { embedded: true, mode: "select", onClose: handleClose, onSelect: handleSelect }))) : null,
+                    activeTab === 'recent' ? (React.createElement(ContentAttachFeedPanel, { title: "My recent activity", description: "Pages and components you created or edited recently \u2014 select items to attach", entries: recentEntries, loading: recentLoading, error: recentError, selectedPaths: selectedPaths, onToggle: handleToggleFeed, onRefresh: loadRecentFeed })) : null,
+                    activeTab === 'unpublished' ? (React.createElement(ContentAttachFeedPanel, { title: "Unpublished work", description: "Sandbox items not yet published \u2014 batch your finished work into this package", entries: unpublishedEntries, loading: unpublishedLoading, error: unpublishedError, selectedPaths: selectedPaths, onToggle: handleToggleFeed, onRefresh: loadUnpublishedFeed })) : null)),
+            !isSearchTab ? (React.createElement(SelectedContentSourcePanel, { selectedPaths: selectedPaths, onRemove: handleRemove })) : null),
+        React.createElement(DialogActions, { sx: { px: 2, py: 1.5, flexWrap: 'wrap', gap: 1 } },
+            isSearchTab && selectedPaths.length > 0 ? (React.createElement(Box, { sx: { flex: 1, minWidth: 200, typography: 'body2', color: 'text.secondary' } },
+                selectedPaths.length,
+                " item",
+                selectedPaths.length === 1 ? '' : 's',
+                " selected \u2014 use Attach to add to package")) : (React.createElement(Box, { sx: { flex: 1 } })),
             React.createElement(Button, { onClick: handleClose }, "Cancel"),
             React.createElement(Button, { variant: "contained", disabled: selectedPaths.length === 0, onClick: handleAttach },
                 "Attach",
@@ -12059,12 +12306,19 @@ var ContentSearchAttachDialog = function (_a) {
 };
 
 var CardActions = function (_a) {
-    var card = _a.card, cardDetails = _a.cardDetails, onMenuOpen = _a.onMenuOpen, onDetailsChanged = _a.onDetailsChanged, onPackageChanged = _a.onPackageChanged, onNestedDialogChange = _a.onNestedDialogChange, _b = _a.variant, variant = _b === void 0 ? 'icon' : _b;
+    var _b;
+    var card = _a.card, cardDetails = _a.cardDetails, onMenuOpen = _a.onMenuOpen, onDetailsChanged = _a.onDetailsChanged, onPackageChanged = _a.onPackageChanged, onNestedDialogChange = _a.onNestedDialogChange, _c = _a.variant, variant = _c === void 0 ? 'icon' : _c;
     var siteId = useActiveSiteId();
     var dispatch = useDispatch();
-    var _c = React.useState(null), anchorEl = _c[0], setAnchorEl = _c[1];
-    var _d = React.useState(false), contentSearchOpen = _d[0], setContentSearchOpen = _d[1];
+    var _d = React.useState(null), anchorEl = _d[0], setAnchorEl = _d[1];
+    var _e = React.useState(false), contentSearchOpen = _e[0], setContentSearchOpen = _e[1];
     var open = Boolean(anchorEl);
+    var attachedContentPathsKey = ((_b = cardDetails === null || cardDetails === void 0 ? void 0 : cardDetails.attachedContentItems) !== null && _b !== void 0 ? _b : [])
+        .map(function (item) { var _a, _b; return (_b = (_a = item.path) === null || _a === void 0 ? void 0 : _a.trim()) !== null && _b !== void 0 ? _b : ''; })
+        .filter(Boolean)
+        .sort()
+        .join('\0');
+    var attachedPaths = React.useMemo(function () { return (attachedContentPathsKey ? attachedContentPathsKey.split('\0') : []); }, [attachedContentPathsKey]);
     var serverAddress = typeof window !== 'undefined'
         ? "".concat(window.location.protocol, "//").concat(window.location.hostname, ":").concat(window.location.port)
         : '';
@@ -12236,7 +12490,7 @@ var CardActions = function (_a) {
             React.createElement(Divider$1, { style: { display: hasItems ? 'block' : 'none' } }),
             React.createElement(MenuItem$1, { key: "archivePackage", onClick: handleArchivePackage },
                 React.createElement(Typography, null, "Archive Package"))),
-        React.createElement(ContentSearchAttachDialog, { open: contentSearchOpen, onClose: closeContentSearch, onAttach: handleContentSearchAccept })));
+        React.createElement(ContentSearchAttachDialog, { open: contentSearchOpen, onClose: closeContentSearch, onAttach: handleContentSearchAccept, attachedPaths: attachedPaths })));
 };
 
 var COMMENTS_UPDATED_EVENT = 'crafterwf:comments-updated';

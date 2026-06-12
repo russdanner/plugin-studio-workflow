@@ -64,6 +64,16 @@ const CardActions = ({
   const [contentSearchOpen, setContentSearchOpen] = React.useState(false);
   const open = Boolean(anchorEl);
 
+  const attachedContentPathsKey = (cardDetails?.attachedContentItems ?? [])
+    .map((item) => item.path?.trim() ?? '')
+    .filter(Boolean)
+    .sort()
+    .join('\0');
+  const attachedPaths = React.useMemo(
+    () => (attachedContentPathsKey ? attachedContentPathsKey.split('\0') : []),
+    [attachedContentPathsKey]
+  );
+
   const serverAddress =
     typeof window !== 'undefined'
       ? `${window.location.protocol}//${window.location.hostname}:${window.location.port}`
@@ -352,6 +362,7 @@ const CardActions = ({
         open={contentSearchOpen}
         onClose={closeContentSearch}
         onAttach={handleContentSearchAccept}
+        attachedPaths={attachedPaths}
       />
     </>
   );
