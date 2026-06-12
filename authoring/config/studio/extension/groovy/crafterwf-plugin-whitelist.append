@@ -42,6 +42,8 @@ method org.craftercms.studio.api.v1.service.security.SecurityService getCurrentU
 method org.craftercms.studio.api.v2.service.security.SecurityService getCurrentUser
 method org.craftercms.studio.api.v1.service.security.SecurityService getAuthentication
 method org.craftercms.studio.api.v1.service.security.SecurityService getUserProfile java.lang.String
+method org.craftercms.studio.api.v1.service.security.SecurityService getUserPermissions java.lang.String java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.security.SecurityService hasPermission java.lang.String java.lang.String java.lang.String java.lang.String
 
 # User lookup for @mentions and notification recipients (getUserProfile has no numeric id)
 method org.craftercms.studio.api.v2.service.security.UserService getUserByIdOrUsername long java.lang.String
@@ -82,6 +84,17 @@ method org.springframework.core.io.Resource getInputStream
 method org.craftercms.studio.api.v1.service.content.ContentService getContentAsString java.lang.String java.lang.String
 method org.craftercms.studio.api.v1.service.content.ContentService writeContent java.lang.String java.lang.String java.io.InputStream
 method org.craftercms.studio.api.v1.service.content.ContentService createFolder java.lang.String java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.content.ContentService moveContent java.lang.String java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.content.ContentService getContent java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.content.ContentService contentExists java.lang.String java.lang.String
+
+# Recycle bin permissions (optional beans — checked via respondsTo)
+method org.craftercms.studio.api.v2.service.security.SecurityService isSystemAdmin java.lang.String
+method org.craftercms.studio.api.v2.service.security.SecurityService isSiteAdmin java.lang.String java.lang.String
+method org.craftercms.studio.api.v2.service.security.SecurityService getUserPermissions java.lang.String java.lang.String java.lang.String
+method org.craftercms.studio.api.v2.service.security.SecurityService hasPermission java.lang.String java.lang.String java.lang.String java.lang.String
+method org.craftercms.studio.api.v1.service.permissions.PermissionsService getPermissions java.lang.String java.util.List java.util.List java.lang.String
+method org.craftercms.studio.api.v1.service.permissions.PermissionsService hasPermission java.lang.String java.lang.String java.lang.String java.lang.String
 method java.util.Optional isPresent
 method java.util.Optional get
 method org.craftercms.core.util.Resource getInputStream

@@ -10,6 +10,8 @@ import TasksToolbarButton from './components/tasks/TasksToolbarButton';
 import CalendarDialog from './calendar/CalendarDialog';
 import CalendarToolbarButton from './calendar/CalendarToolbarButton';
 import ActiveWorkflowsToolbarButton from './components/activeWorkflows/ActiveWorkflowsToolbarButton';
+import RecycleBinDialog from './components/recycleBin/RecycleBinDialog';
+import RecycleBinToolbarButton from './components/recycleBin/RecycleBinToolbarButton';
 import WorkflowBypassGuard from './components/workflowBypass/WorkflowBypassGuard';
 import ProjectToolsConfiguration from './components/projectTools/ProjectToolsConfiguration';
 import { projectToolsConfigurationWidgetId } from './consts';
@@ -36,6 +38,8 @@ const plugin: PluginDescriptor = {
     'org.rd.plugin.crafterwf.calendarToolbarButton': CalendarToolbarButton,
     'org.rd.plugin.crafterwf.calendarDialog': CalendarDialog,
     'org.rd.plugin.crafterwf.activeWorkflowsToolbarButton': ActiveWorkflowsToolbarButton,
+    'org.rd.plugin.crafterwf.recycleBinToolbarButton': RecycleBinToolbarButton,
+    'org.rd.plugin.crafterwf.recycleBinDialog': RecycleBinDialog,
     'org.rd.plugin.crafterwf.workflowBypassGuard': WorkflowBypassGuard,
     [projectToolsConfigurationWidgetId]: ProjectToolsConfiguration
   }
@@ -53,6 +57,8 @@ export {
   CalendarDialog,
   CalendarToolbarButton,
   ActiveWorkflowsToolbarButton,
+  RecycleBinDialog,
+  RecycleBinToolbarButton,
   WorkflowBypassGuard,
   ProjectToolsConfiguration,
   projectToolsConfigurationWidgetId

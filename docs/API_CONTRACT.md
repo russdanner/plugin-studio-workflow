@@ -503,6 +503,58 @@ flowchart TB
 
 See [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) for the full implementation stack.
 
+## Recycle bin
+
+See [RECYCLE_BIN.md](./RECYCLE_BIN.md). Requires **Write** on `/recyclebin` (site admins always allowed).
+
+### `recycle-bin/can-access.json`
+
+**Response:** `{ allowed: boolean }`
+
+### `recycle-bin/list.json`
+
+| Param | Description |
+|-------|-------------|
+| `state` | Default `binned`; also `restored` or `purged` |
+| `page` | 1-based page number (default `1`) |
+| `pageSize` | Rows per page (default `10`) |
+| `sortBy` | `binnedOn`, `internalName`, `originalPath`, `originalModifiedOn`, `originalCreatedOn`, `originalLastModifier`, `binnedByUsername` |
+| `sortOrder` | `asc` or `desc` (default `desc`) |
+| `q` | Optional keyword; matches name, paths, users, sandbox state, and date strings |
+
+**Response:** `{ items: RecycleBinItem[], total, page, pageSize, totalPages }`
+
+### `recycle-bin/bin.json`
+
+| Param | Description |
+|-------|-------------|
+| `paths` | Comma-separated sandbox paths to move |
+
+**Response:** `{ items: RecycleBinItem[], errors?: [{ path, message }] }`
+
+### `recycle-bin/check-restore.json`
+
+| Param | `id` — recycle bin row id |
+
+**Response:** `{ collision: boolean, originalPath: string, existingPath?: string }`
+
+### `recycle-bin/restore.json`
+
+| Param | Description |
+|-------|-------------|
+| `id` | Recycle bin row id |
+| `confirmCollision` | `true` when original path already exists |
+
+**Response:** `{ item: RecycleBinItem }`
+
+### `recycle-bin/purge.json`
+
+| Param | `id` — recycle bin row id |
+
+**Response:** `{ item: RecycleBinItem }` with `state: 'purged'`
+
+Permanently deletes sandbox content at `bin_path` and records `purged_on` / `purged_by_*`.
+
 ## Deferred endpoints
 
 These may be added later:

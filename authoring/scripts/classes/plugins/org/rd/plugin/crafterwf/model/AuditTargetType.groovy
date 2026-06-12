@@ -5,6 +5,7 @@ class AuditTargetType {
     static final String WORKFLOW = 'workflow'
     static final String PACKAGE = 'package'
     static final String TASK = 'task'
+    static final String CONTENT = 'content'
 
     static String normalize(String value) {
         def trimmed = value?.trim()
@@ -15,6 +16,7 @@ class AuditTargetType {
             case WORKFLOW:
             case PACKAGE:
             case TASK:
+            case CONTENT:
                 return trimmed.toLowerCase()
             default:
                 throw new IllegalArgumentException("Invalid audit target type: ${value}")

@@ -12,6 +12,7 @@ These documents describe **what** the system does and **how** it is structured. 
 | Notifications (bell widget) | [notifications-panel.png](./images/notifications-panel.png) |
 | Tasks panel | [tasks-panel.png](./images/tasks-panel.png) |
 | Site calendar | [site-calendar.png](./images/site-calendar.png) |
+| Recycle bin (preview toolbar) | [recycle-bin-dialog.png](./images/recycle-bin-dialog.png) |
 
 ## Documents
 
@@ -19,7 +20,7 @@ These documents describe **what** the system does and **how** it is structured. 
 |----------|-------------|
 | [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) | **Authoritative glossary** — core entities and deferred features |
 | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | Workflow/step definitions in site repo JSON vs runtime DB state |
-| [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md) | Soft guard when Studio publish/reject bypasses workflow steps |
+| [RECYCLE_BIN.md](./RECYCLE_BIN.md) | Soft-delete recycle bin — `/recyclebin`, restore, permissions |
 | [FUNCTIONAL_SPEC.md](./FUNCTIONAL_SPEC.md) | Behavior, Studio UI widgets, and CrafterCMS integration |
 | [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) | MariaDB schema `crafter-workflow`, ER diagrams, migrations |
 | [ARCHITECTURE_DIAGRAM.md](./ARCHITECTURE_DIAGRAM.md) | Stack, domain, services, widgets, migrations |
@@ -108,9 +109,9 @@ See [CANONICAL_MODEL.md](./CANONICAL_MODEL.md) and [ARCHITECTURE_DIAGRAM.md](./A
 | Step role/content rules (JSON) | ✅ |
 | Step publish actions on package move | ✅ |
 | Package due dates / site calendar | ✅ |
-| Email notifications / preferences UI | ✅ immediate email + preferences panel |
+| Recycle bin (soft-delete, restore) | ✅ |
 | Per-workflow RBAC tables, Groovy hooks | ❌ deferred |
 
 ## Schema version
 
-Current migration target: **V012**. Check status via **Project Tools → General → Schema status**, or `admin/schema/status.json` (returns `{ installed, schemaName, version }`).
+Current migration target: **V013**. Check status via **Project Tools → General → Schema status**, or `admin/schema/status.json` (returns `{ installed, schemaName, version }`).

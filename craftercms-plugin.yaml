@@ -206,6 +206,31 @@ plugin:
               - name: title
                 value: Calendar
     - type: preview-app
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.recycleBinToolbarButton']
+      parentXpath: //widget[@id='craftercms.components.PreviewToolbar']/configuration/rightSection/widgets
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.recycleBinToolbarButton
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+          - name: configuration
+            children:
+              - name: title
+                value: Recycle bin
+    - type: preview-app
       parentXpath: /siteUi
       elementXpath: //widget[@id='org.rd.plugin.crafterwf.tasksPanel']
       element:
@@ -234,6 +259,27 @@ plugin:
         attributes:
           - name: id
             value: org.rd.plugin.crafterwf.notificationsPanel
+        children:
+          - name: plugin
+            attributes:
+              - name: id
+                value: org.rd.plugin.crafterwf
+              - name: site
+                value: "{site}"
+              - name: type
+                value: apps
+              - name: name
+                value: crafterwf
+              - name: file
+                value: index.js
+    - type: preview-app
+      parentXpath: /siteUi
+      elementXpath: //widget[@id='org.rd.plugin.crafterwf.recycleBinDialog']
+      element:
+        name: widget
+        attributes:
+          - name: id
+            value: org.rd.plugin.crafterwf.recycleBinDialog
         children:
           - name: plugin
             attributes:

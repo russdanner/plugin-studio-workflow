@@ -23,7 +23,7 @@ Crafter Studio plugin REST scripts and classes under `config/studio/scripts/clas
 If **bean restriction** is enabled, add at least:
 
 ```yaml
-studio.scripting.allowedBeans: dataSource,securityService,userService,contentService,cstudioContentService,studio.workflowService,publishService,cstudioServicesConfig,mailSender,mailSenderNoAuth,studioConfiguration
+studio.scripting.allowedBeans: dataSource,securityService,cstudioSecurityService,userService,contentService,cstudioContentService,studio.workflowService,publishService,cstudioServicesConfig,cstudioPermissionsService,permissionService,mailSender,mailSenderNoAuth,studioConfiguration
 ```
 
 If **whitelist** is enabled (`studio.scripting.sandbox.whitelist.enable: true`), append the plugin fragment to the site whitelist file (same path as your Studio extension, often `config/studio/extension/groovy/whitelist`):

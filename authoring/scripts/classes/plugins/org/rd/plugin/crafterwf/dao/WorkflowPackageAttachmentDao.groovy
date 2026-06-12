@@ -130,6 +130,19 @@ class WorkflowPackageAttachmentDao {
         }
     }
 
+    void deleteContentRefsByPath(String siteId, String contentPath) {
+        if (!siteId?.trim() || !contentPath?.trim()) {
+            return
+        }
+        db.withSql { sql ->
+            sql.executeUpdate(
+                'DELETE FROM ' + db.table('wf_workflow_package_content_ref') +
+                ' WHERE site_id = ? AND content_path = ?',
+                [siteId, contentPath.trim()]
+            )
+        }
+    }
+
     void deleteLink(String siteId, String linkId) {
         db.withSql { sql ->
             sql.executeUpdate(

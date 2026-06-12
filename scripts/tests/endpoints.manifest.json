@@ -427,6 +427,53 @@
       "body": "json",
       "description": "Record completed bypass action audit + notifications (UI guard)"
     }
+    {
+      "path": "recycle-bin/can-access",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "description": "Whether user may access recycle bin (write on /recyclebin)"
+    },
+    {
+      "path": "recycle-bin/list",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "optionalParams": ["state", "page", "pageSize", "sortBy", "sortOrder", "q"],
+      "description": "List recycle bin items (paginated, sortable, keyword filter)"
+    },
+    {
+      "path": "recycle-bin/check-restore",
+      "method": "GET",
+      "suite": "10-read-admin",
+      "params": ["id"],
+      "description": "Check restore path collision"
+    },
+    {
+      "path": "recycle-bin/bin",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "optional": true,
+      "params": ["paths"],
+      "description": "Move content paths to recycle bin",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "recycle-bin/restore",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "optional": true,
+      "params": ["id", "confirmCollision"],
+      "description": "Restore binned item to original path",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    },
+    {
+      "path": "recycle-bin/purge",
+      "method": "GET",
+      "suite": "24-mutations-admin",
+      "optional": true,
+      "params": ["id"],
+      "description": "Permanently delete binned sandbox content and mark row purged",
+      "httpNote": "Served by *.get.groovy (Crafter plugin REST convention)"
+    }
   ],
   "documentedNotImplemented": [
     "workflow-step/create",

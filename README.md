@@ -102,7 +102,11 @@ Optional widget configuration — pin a specific workflow by id (legacy config k
 </widget>
 ```
 
-See [docs/DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) and [docs/WORKFLOW_DEFINITIONS.md](./docs/WORKFLOW_DEFINITIONS.md) for database (schema **V012**) and workflow setup.
+See [docs/DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) and [docs/WORKFLOW_DEFINITIONS.md](./docs/WORKFLOW_DEFINITIONS.md) for database (schema **V013**) and workflow setup.
+
+### Recycle bin
+
+Soft-delete sandbox content to `/recyclebin/{uuid}/…` with restore and collision confirmation. Requires **Write** permission on `/recyclebin`. See [docs/RECYCLE_BIN.md](./docs/RECYCLE_BIN.md).
 
 ## API testing
 

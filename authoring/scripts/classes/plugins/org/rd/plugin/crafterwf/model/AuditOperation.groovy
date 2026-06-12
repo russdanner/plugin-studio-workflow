@@ -10,4 +10,7 @@ class AuditOperation {
     static final String PACKAGE_MODIFIED = 'package_modified'
     static final String WORKFLOW_BYPASS_ACKNOWLEDGED = 'workflow_bypass_acknowledged'
     static final String WORKFLOW_BYPASS_ACTION = 'workflow_bypass_action'
+    static final String RECYCLE_BIN_ITEM_BINNED = 'recycle_bin_item_binned'
+    static final String RECYCLE_BIN_ITEM_RESTORED = 'recycle_bin_item_restored'
+    static final String RECYCLE_BIN_ITEM_PURGED = 'recycle_bin_item_purged'
 }

@@ -5,6 +5,7 @@ import plugins.org.rd.plugin.crafterwf.dao.AuditLogDao
 import plugins.org.rd.plugin.crafterwf.dao.CommentDao
 import plugins.org.rd.plugin.crafterwf.dao.NotificationDao
 import plugins.org.rd.plugin.crafterwf.dao.NotificationPreferenceDao
+import plugins.org.rd.plugin.crafterwf.dao.RecycleBinDao
 import plugins.org.rd.plugin.crafterwf.dao.TaskDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageAttachmentDao
 import plugins.org.rd.plugin.crafterwf.dao.WorkflowPackageDao
@@ -13,6 +14,7 @@ import plugins.org.rd.plugin.crafterwf.service.AuditLogService
 import plugins.org.rd.plugin.crafterwf.service.CommentService
 import plugins.org.rd.plugin.crafterwf.service.NotificationEmailService
 import plugins.org.rd.plugin.crafterwf.service.NotificationService
+import plugins.org.rd.plugin.crafterwf.service.RecycleBinService
 import plugins.org.rd.plugin.crafterwf.service.TaskNotificationSupport
 import plugins.org.rd.plugin.crafterwf.service.TaskService
 import plugins.org.rd.plugin.crafterwf.service.WorkflowAdminService
@@ -41,6 +43,7 @@ class WorkflowContext {
     final StepRuleService stepRuleService
     final WorkflowContentEventService contentEventService
     final WorkflowBypassService bypassService
+    final RecycleBinService recycleBinService
 
     private WorkflowContext(WorkflowDb db, def applicationContext) {
         this.db = db
@@ -82,6 +85,12 @@ class WorkflowContext {
             commentDao,
             auditLogService,
             notificationService,
+            applicationContext
+        )
+        this.recycleBinService = new RecycleBinService(
+            new RecycleBinDao(db),
+            attachmentDao,
+            auditLogService,
             applicationContext
         )
     }

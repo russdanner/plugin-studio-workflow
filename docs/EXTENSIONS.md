@@ -14,6 +14,7 @@ Cross-cutting features beyond the core workflow aggregate.
 | **Step publish actions** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ `actionType` on steps; runs on package move |
 | **Content event listeners** | [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md) | ✅ `createListeners` / `editListeners` in workflow JSON; server enrollment on content save |
 | **Workflow bypass guard** | [WORKFLOW_BYPASS_GUARD.md](./WORKFLOW_BYPASS_GUARD.md) | ✅ Warn + audit + notify on Studio publish/reject outside action steps |
+| **Recycle bin** | [RECYCLE_BIN.md](./RECYCLE_BIN.md) | ✅ Soft-delete to `/recyclebin/{uuid}/…`; toolbar + restore |
 
 ```mermaid
 flowchart TB

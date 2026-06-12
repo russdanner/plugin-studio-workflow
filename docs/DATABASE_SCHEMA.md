@@ -312,6 +312,18 @@ Plugin migration version tracking.
 | 10 | V010 | `due_on` on `wf_workflow_package` + calendar index |
 | 11 | V011 | `start_on` on `wf_task` |
 | 12 | V012 | `content_type` on content refs; legacy step rule columns on `wf_workflow_step` |
+| 13 | V013 | `wf_recycle_bin_item` — recycle bin metadata |
+
+### `wf_recycle_bin_item`
+
+See [RECYCLE_BIN.md](./RECYCLE_BIN.md).
+
+| Column | Description |
+|--------|-------------|
+| `bin_path` | Sandbox path under `/recyclebin/{uuid}/…` |
+| `original_path` | Path before binning |
+| `state` | `binned`, `restored`, or `purged` |
+| `binned_by_user_id` / `binned_by_username` | Who binned the item |
 
 Migrations are applied in `SchemaMigrator.groovy` (embedded SQL, not separate `.sql` files).
 

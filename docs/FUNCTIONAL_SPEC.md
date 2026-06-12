@@ -203,6 +203,18 @@ Bell widget with unread count; panel with navigation to package, task, or conten
 
 Separate Tools panel widget for commenting on the currently selected content item in Studio.
 
+### C12 — Recycle bin
+
+![Recycle bin dialog](./images/recycle-bin-dialog.png)
+
+Preview toolbar **Recycle bin** menu (visible only with **Write** on `/recyclebin`):
+
+- Put current preview page in recycle bin (confirm)
+- Select items via search / recent activity (confirm)
+- Open recycle bin dialog — filter, sort, paginate; preview, restore (with collision confirm), or permanently delete
+
+See [RECYCLE_BIN.md](./RECYCLE_BIN.md).
+
 ## Studio widgets
 
 | Widget ID | Purpose |
@@ -212,6 +224,7 @@ Separate Tools panel widget for commenting on the currently selected content ite
 | `notificationsToolbarButton` / `notificationsPanel` | Notification bell and inbox |
 | `tasksToolbarButton` / `tasksPanel` | Tasks list |
 | `contentCommentsToolbarButton` / `contentCommentsPanel` | Content-scoped comments |
+| `recycleBinToolbarButton` / `recycleBinDialog` | Recycle bin — [RECYCLE_BIN.md](./RECYCLE_BIN.md) |
 | `projectToolsConfiguration` | Project Tools admin (General, Workflows, Audit Log) |
 
 ## User workflows

@@ -3,7 +3,7 @@ const { useState: useState$1, useRef: useRef$1, useEffect: useEffect$2, useConte
 const React__default = craftercms.libs.React && Object.prototype.hasOwnProperty.call(craftercms.libs.React, 'default') ? craftercms.libs.React['default'] : craftercms.libs.React;
 const RefreshRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded');
 const SettingsRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded');
-const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogTitle, DialogContent, Tabs, Tab, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, Popover, Autocomplete, RadioGroup, Radio, useTheme, AppBar, Toolbar, FormLabel } = craftercms.libs.MaterialUI;
+const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogTitle, DialogContent, Tabs, Tab, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, InputAdornment, DialogContentText, Popover, Autocomplete, RadioGroup, Radio, useTheme, AppBar, Toolbar, FormLabel } = craftercms.libs.MaterialUI;
 const { connect, Provider: Provider$2, useSelector, useDispatch } = craftercms.libs.ReactRedux;
 const ReactDOM = craftercms.libs.ReactDOM && Object.prototype.hasOwnProperty.call(craftercms.libs.ReactDOM, 'default') ? craftercms.libs.ReactDOM['default'] : craftercms.libs.ReactDOM;
 const { ApiResponseErrorState } = craftercms.components;
@@ -51,6 +51,10 @@ const TaskAltRoundedIcon = craftercms.utils.constants.components.get('@mui/icons
 const CalendarMonthRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded');
 const BlockRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded');
 const WarningAmberRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded');
+const DeleteForeverRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded');
+const PreviewRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded');
+const RestoreFromTrashRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded');
+const SearchRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded');
 const CheckCircleRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded');
 const ErrorOutlineRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded');
 const AddRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/AddRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/AddRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/AddRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/AddRounded');
@@ -10187,12 +10191,12 @@ function createCrafterwfWidgetDescriptor(widgetId, siteId) {
 
 var WORKFLOW_BOARD_WIDGET_ID = 'org.rd.plugin.crafterwf.board';
 /** Resolve at runtime — avoids bundling studio-ui dialog actions into the plugin. */
-function showWidgetDialogAction$1() {
+function showWidgetDialogAction$2() {
     var craftercms = window.craftercms;
     return craftercms.libs.ReduxToolkit.createAction('SHOW_WIDGET_DIALOG');
 }
 function openWorkflowBoard(dispatch, workflowTitle, options, siteId) {
-    dispatch(showWidgetDialogAction$1()({
+    dispatch(showWidgetDialogAction$2()({
         title: workflowTitle,
         extraProps: __assign({ workflowId: options.workflowId }, (options.openPackageId ? { openPackageId: options.openPackageId } : {})),
         widget: createCrafterwfWidgetDescriptor(WORKFLOW_BOARD_WIDGET_ID, siteId)
@@ -16112,13 +16116,13 @@ var CalendarDialog = function () { return (React$2.createElement(Box, { sx: func
 
 var CALENDAR_DIALOG_WIDGET_ID = 'org.rd.plugin.crafterwf.calendarDialog';
 /** Resolve at runtime — avoids bundling studio-ui dialog actions into the plugin. */
-function showWidgetDialogAction() {
+function showWidgetDialogAction$1() {
     var craftercms = window.craftercms;
     return craftercms.libs.ReduxToolkit.createAction('SHOW_WIDGET_DIALOG');
 }
 function openCalendarDialog(dispatch, title, siteId) {
     if (title === void 0) { title = 'Calendar'; }
-    dispatch(showWidgetDialogAction()({
+    dispatch(showWidgetDialogAction$1()({
         title: title,
         fullHeight: false,
         maxWidth: 'lg',
@@ -16625,6 +16629,769 @@ function ActiveWorkflowsToolbarButton(props) {
                     React$2.createElement(ListItemText$1, { primary: workflow.name, secondary: workflow.description || undefined }))); }))),
             React$2.createElement(DialogActions, null,
                 React$2.createElement(Button, { onClick: function () { return setStartDialogOpen(false); }, disabled: starting }, "Cancel")))));
+}
+
+var RECYCLE_BIN_UPDATED_EVENT = 'crafterwf-recycle-bin-updated';
+function canAccessRecycleBin(siteId) {
+    return pluginGet("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/can-access.json?siteId=").concat(encodeURIComponent(siteId)));
+}
+function listRecycleBinItems(siteId, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.state, state = _a === void 0 ? 'binned' : _a, _b = options.page, page = _b === void 0 ? 1 : _b, _c = options.pageSize, pageSize = _c === void 0 ? 10 : _c, _d = options.sortBy, sortBy = _d === void 0 ? 'binnedOn' : _d, _e = options.sortOrder, sortOrder = _e === void 0 ? 'desc' : _e, _f = options.q, q = _f === void 0 ? '' : _f;
+    var query = "".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/list.json?siteId=").concat(encodeURIComponent(siteId)) +
+        "&state=".concat(encodeURIComponent(state)) +
+        "&page=".concat(page) +
+        "&pageSize=".concat(pageSize) +
+        "&sortBy=".concat(encodeURIComponent(sortBy)) +
+        "&sortOrder=".concat(encodeURIComponent(sortOrder));
+    var trimmedQ = q.trim();
+    return pluginGet(trimmedQ ? "".concat(query, "&q=").concat(encodeURIComponent(trimmedQ)) : query);
+}
+function binContentPaths(siteId, paths) {
+    var pathsParam = paths.map(function (path) { return encodeURIComponent(path); }).join(',');
+    return pluginPost("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/bin.json?siteId=").concat(encodeURIComponent(siteId), "&paths=").concat(pathsParam));
+}
+function checkRecycleBinRestore(siteId, id) {
+    return pluginGet("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/check-restore.json?siteId=").concat(encodeURIComponent(siteId), "&id=").concat(encodeURIComponent(id)));
+}
+function restoreRecycleBinItem(siteId, id, confirmCollision) {
+    if (confirmCollision === void 0) { confirmCollision = false; }
+    return pluginPost("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/restore.json?siteId=").concat(encodeURIComponent(siteId), "&id=").concat(encodeURIComponent(id), "&confirmCollision=").concat(confirmCollision ? 'true' : 'false'));
+}
+function purgeRecycleBinItem(siteId, id) {
+    return pluginPost("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/purge.json?siteId=").concat(encodeURIComponent(siteId), "&id=").concat(encodeURIComponent(id)));
+}
+function notifyRecycleBinUpdated() {
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent(RECYCLE_BIN_UPDATED_EVENT));
+    }
+}
+
+var SANDBOX_STATE_LABELS = {
+    new: 'New',
+    modified: 'Modified',
+    deleted: 'Deleted',
+    locked: 'Locked',
+    systemProcessing: 'System processing',
+    submitted: 'Submitted',
+    scheduled: 'Scheduled',
+    publishing: 'Publishing',
+    submittedToStaging: 'Submitted to staging',
+    submittedToLive: 'Submitted to live',
+    disabled: 'Disabled',
+    staged: 'Staged',
+    live: 'Live',
+    unpublished: 'Unpublished'
+};
+function formatRecycleBinDate(value) {
+    if (!value) {
+        return '—';
+    }
+    var date = new Date(value);
+    if (Number.isNaN(date.getTime())) {
+        return value;
+    }
+    return date.toLocaleString();
+}
+function formatRecycleBinUserDate(username, date) {
+    var who = (username === null || username === void 0 ? void 0 : username.trim()) || '—';
+    var when = formatRecycleBinDate(date);
+    return "".concat(who, " \u00B7 ").concat(when);
+}
+function formatSandboxStateLabel(state) {
+    var _a;
+    if (!(state === null || state === void 0 ? void 0 : state.trim())) {
+        return '—';
+    }
+    return (_a = SANDBOX_STATE_LABELS[state]) !== null && _a !== void 0 ? _a : state;
+}
+function displayRecycleBinName(item) {
+    var _a;
+    return ((_a = item.internalName) === null || _a === void 0 ? void 0 : _a.trim()) || item.originalPath.split('/').filter(Boolean).pop() || item.originalPath;
+}
+
+/** Tell Studio's path navigator a sandbox item moved (refreshes the sidebar tree). */
+function emitStudioMoveContentEvent(dispatch, siteId, sourcePath, targetPath) {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    var createAction = (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction;
+    if (!createAction) {
+        return;
+    }
+    var moveContentEvent = createAction('MOVE_CONTENT_EVENT');
+    dispatch(moveContentEvent({
+        siteId: siteId,
+        sourcePath: sourcePath,
+        targetPath: targetPath,
+        timestamp: Date.now(),
+        eventType: 'MOVE_CONTENT_EVENT',
+        user: null
+    }));
+}
+/** Tell Studio's path navigator content was deleted (refreshes the sidebar tree). */
+function emitStudioDeleteContentEvent(dispatch, siteId, targetPath) {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    var createAction = (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction;
+    if (!createAction) {
+        return;
+    }
+    var deleteContentEvent = createAction('DELETE_CONTENT_EVENT');
+    dispatch(deleteContentEvent({
+        siteId: siteId,
+        targetPath: targetPath,
+        timestamp: Date.now(),
+        eventType: 'DELETE_CONTENT_EVENT',
+        user: null
+    }));
+}
+
+var PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
+var FILTER_DEBOUNCE_MS = 300;
+var SORT_COLUMNS = [
+    { id: 'internalName', label: 'Name' },
+    { id: 'originalCreatedOn', label: 'Created' },
+    { id: 'originalModifiedOn', label: 'Last modified' },
+    { id: 'binnedOn', label: 'Binned' }
+];
+function MetadataCell(_a) {
+    var username = _a.username, date = _a.date;
+    return (React$2.createElement(Typography, { variant: "caption", component: "div", sx: { whiteSpace: 'nowrap' } }, formatRecycleBinUserDate(username, date)));
+}
+/** Content widget for Studio's SHOW_WIDGET_DIALOG shell. */
+var RecycleBinDialog = function () {
+    var dispatch = useDispatch();
+    var siteId = useActiveSiteId();
+    var previewPath = useStudioItemPreview().previewPath;
+    var _a = useState$1([]), items = _a[0], setItems = _a[1];
+    var _b = useState$1(0), total = _b[0], setTotal = _b[1];
+    var _c = useState$1(0), page = _c[0], setPage = _c[1];
+    var _d = useState$1(10), pageSize = _d[0], setPageSize = _d[1];
+    var _e = useState$1('binnedOn'), sortBy = _e[0], setSortBy = _e[1];
+    var _f = useState$1('desc'), sortOrder = _f[0], setSortOrder = _f[1];
+    var _g = useState$1(''), filterInput = _g[0], setFilterInput = _g[1];
+    var _h = useState$1(''), filterQuery = _h[0], setFilterQuery = _h[1];
+    var _j = useState$1(false), loading = _j[0], setLoading = _j[1];
+    var _k = useState$1(null), error = _k[0], setError = _k[1];
+    var _l = useState$1(null), busyId = _l[0], setBusyId = _l[1];
+    var _m = useState$1(null), busyAction = _m[0], setBusyAction = _m[1];
+    var _o = useState$1(null), collisionDialog = _o[0], setCollisionDialog = _o[1];
+    var _p = useState$1(null), purgeDialog = _p[0], setPurgeDialog = _p[1];
+    var refresh = useCallback$1(function () {
+        if (!siteId) {
+            setItems([]);
+            setTotal(0);
+            return;
+        }
+        setLoading(true);
+        setError(null);
+        listRecycleBinItems(siteId, {
+            page: page + 1,
+            pageSize: pageSize,
+            sortBy: sortBy,
+            sortOrder: sortOrder,
+            q: filterQuery
+        }).subscribe({
+            next: function (response) {
+                var _a, _b, _c;
+                var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                setItems((_b = result === null || result === void 0 ? void 0 : result.items) !== null && _b !== void 0 ? _b : []);
+                setTotal((_c = result === null || result === void 0 ? void 0 : result.total) !== null && _c !== void 0 ? _c : 0);
+                setLoading(false);
+            },
+            error: function (e) {
+                console.error(e);
+                setError('Unable to load recycle bin.');
+                setItems([]);
+                setTotal(0);
+                setLoading(false);
+            }
+        });
+    }, [filterQuery, page, pageSize, siteId, sortBy, sortOrder]);
+    useEffect$2(function () {
+        var handle = window.setTimeout(function () { return setFilterQuery(filterInput.trim()); }, FILTER_DEBOUNCE_MS);
+        return function () { return window.clearTimeout(handle); };
+    }, [filterInput]);
+    useEffect$2(function () {
+        refresh();
+        var handleUpdated = function () { return refresh(); };
+        window.addEventListener(RECYCLE_BIN_UPDATED_EVENT, handleUpdated);
+        return function () { return window.removeEventListener(RECYCLE_BIN_UPDATED_EVENT, handleUpdated); };
+    }, [refresh]);
+    var handleSort = function (field) {
+        if (sortBy === field) {
+            setSortOrder(function (current) { return (current === 'asc' ? 'desc' : 'asc'); });
+        }
+        else {
+            setSortBy(field);
+            setSortOrder('desc');
+        }
+        setPage(0);
+    };
+    var performRestore = function (item, confirmCollision) { return __awaiter(void 0, void 0, void 0, function () {
+        var e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!siteId) {
+                        return [2 /*return*/];
+                    }
+                    setBusyId(item.id);
+                    setBusyAction('restore');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            restoreRecycleBinItem(siteId, item.id, confirmCollision).subscribe({
+                                next: function (response) {
+                                    var _a, _b;
+                                    var restored = (_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.item;
+                                    if ((restored === null || restored === void 0 ? void 0 : restored.binPath) && (restored === null || restored === void 0 ? void 0 : restored.originalPath)) {
+                                        emitStudioMoveContentEvent(dispatch, siteId, restored.binPath, restored.originalPath);
+                                    }
+                                    else if (item.binPath && item.originalPath) {
+                                        emitStudioMoveContentEvent(dispatch, siteId, item.binPath, item.originalPath);
+                                    }
+                                    resolve();
+                                },
+                                error: function (err) {
+                                    reject(err);
+                                }
+                            });
+                        })];
+                case 2:
+                    _a.sent();
+                    notifyRecycleBinUpdated();
+                    return [3 /*break*/, 5];
+                case 3:
+                    e_1 = _a.sent();
+                    console.error(e_1);
+                    showStudioErrorSnack('Unable to restore item. Check permissions and try again.');
+                    return [3 /*break*/, 5];
+                case 4:
+                    setBusyId(null);
+                    setBusyAction(null);
+                    setCollisionDialog(null);
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    var performPurge = function (item) { return __awaiter(void 0, void 0, void 0, function () {
+        var e_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!siteId) {
+                        return [2 /*return*/];
+                    }
+                    setBusyId(item.id);
+                    setBusyAction('purge');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            purgeRecycleBinItem(siteId, item.id).subscribe({
+                                next: function () {
+                                    emitStudioDeleteContentEvent(dispatch, siteId, item.binPath);
+                                    resolve();
+                                },
+                                error: function (err) {
+                                    reject(err);
+                                }
+                            });
+                        })];
+                case 2:
+                    _a.sent();
+                    notifyRecycleBinUpdated();
+                    return [3 /*break*/, 5];
+                case 3:
+                    e_2 = _a.sent();
+                    console.error(e_2);
+                    showStudioErrorSnack('Unable to permanently delete item. Check permissions and try again.');
+                    return [3 /*break*/, 5];
+                case 4:
+                    setBusyId(null);
+                    setBusyAction(null);
+                    setPurgeDialog(null);
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleRestoreClick = function (item) {
+        if (!siteId) {
+            return;
+        }
+        checkRecycleBinRestore(siteId, item.id).subscribe({
+            next: function (response) {
+                var _a, _b;
+                var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                if (result === null || result === void 0 ? void 0 : result.collision) {
+                    setCollisionDialog({
+                        item: item,
+                        originalPath: (_b = result.originalPath) !== null && _b !== void 0 ? _b : item.originalPath
+                    });
+                    return;
+                }
+                void performRestore(item, false);
+            },
+            error: function (e) {
+                console.error(e);
+                showStudioErrorSnack('Unable to check restore path.');
+            }
+        });
+    };
+    var handlePreview = function (item) {
+        previewPath(item.binPath, displayRecycleBinName(item));
+    };
+    return (React$2.createElement(Box, { sx: function (theme) { return ({
+            width: '100%',
+            minWidth: 0,
+            minHeight: 0,
+            flex: 1,
+            boxSizing: 'border-box',
+            px: theme.spacing(2.5),
+            py: theme.spacing(2),
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        }); } },
+        React$2.createElement(Stack, { direction: "row", spacing: 1.5, alignItems: "center", sx: { mb: 2, flexShrink: 0 } },
+            React$2.createElement(Box, { sx: function (theme) { return ({
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: 'grid',
+                    placeItems: 'center',
+                    bgcolor: theme.palette.error.main,
+                    color: theme.palette.error.contrastText
+                }); } },
+                React$2.createElement(DeleteOutlineRoundedIcon, { fontSize: "small" })),
+            React$2.createElement(Box, { sx: { minWidth: 0, flex: 1 } },
+                React$2.createElement(Typography, { variant: "subtitle1", sx: { fontWeight: 600, lineHeight: 1.3 } }, "Recycle bin"),
+                React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "Review metadata, preview binned content, restore, or permanently delete.")),
+            !loading ? React$2.createElement(Chip, { size: "small", label: "".concat(total, " item").concat(total === 1 ? '' : 's') }) : null),
+        React$2.createElement(Stack, { direction: { xs: 'column', sm: 'row' }, spacing: 1.5, sx: { mb: 1.5, flexShrink: 0 }, alignItems: { sm: 'center' } },
+            React$2.createElement(TextField, { size: "small", placeholder: "Filter by name, path, user, state, or date\u2026", value: filterInput, onChange: function (event) {
+                    setFilterInput(event.target.value);
+                    setPage(0);
+                }, sx: { flex: 1, minWidth: 220 }, InputProps: {
+                    startAdornment: (React$2.createElement(InputAdornment, { position: "start" },
+                        React$2.createElement(SearchRoundedIcon, { fontSize: "small", color: "action" }))),
+                    endAdornment: filterInput ? (React$2.createElement(InputAdornment, { position: "end" },
+                        React$2.createElement(IconButton, { size: "small", "aria-label": "Clear filter", onClick: function () { return setFilterInput(''); }, edge: "end" },
+                            React$2.createElement(ClearRoundedIcon, { fontSize: "small" })))) : null
+                } }),
+            React$2.createElement(FormControl, { size: "small", sx: { minWidth: 180 } },
+                React$2.createElement(InputLabel, { id: "crafterwf-recycle-bin-sort-label" }, "Sort by"),
+                React$2.createElement(Select, { labelId: "crafterwf-recycle-bin-sort-label", label: "Sort by", value: sortBy, onChange: function (event) {
+                        setSortBy(event.target.value);
+                        setPage(0);
+                    } }, SORT_COLUMNS.map(function (column) { return (React$2.createElement(MenuItem, { key: column.id, value: column.id }, column.label)); }))),
+            React$2.createElement(FormControl, { size: "small", sx: { minWidth: 140 } },
+                React$2.createElement(InputLabel, { id: "crafterwf-recycle-bin-order-label" }, "Order"),
+                React$2.createElement(Select, { labelId: "crafterwf-recycle-bin-order-label", label: "Order", value: sortOrder, onChange: function (event) {
+                        setSortOrder(event.target.value);
+                        setPage(0);
+                    } },
+                    React$2.createElement(MenuItem, { value: "desc" }, "Newest first"),
+                    React$2.createElement(MenuItem, { value: "asc" }, "Oldest first")))),
+        React$2.createElement(Divider, { sx: { mb: 1.5, flexShrink: 0 } }),
+        React$2.createElement(TableContainer, { sx: { flex: 1, minHeight: 0 } },
+            loading ? (React$2.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 } },
+                React$2.createElement(CircularProgress, { size: 32 }))) : null,
+            error ? (React$2.createElement(Typography, { color: "error", variant: "body2", sx: { py: 2 } }, error)) : null,
+            !loading && !error && items.length === 0 ? (React$2.createElement(Stack, { spacing: 1, alignItems: "center", sx: { py: 6, px: 2, textAlign: 'center' } },
+                React$2.createElement(DeleteOutlineRoundedIcon, { sx: { fontSize: 48, color: 'text.disabled', opacity: 0.5 } }),
+                React$2.createElement(Typography, { variant: "subtitle1", color: "text.secondary" }, filterQuery ? 'No items match your filter' : 'The recycle bin is empty'),
+                filterQuery ? (React$2.createElement(Button, { size: "small", onClick: function () { return setFilterInput(''); } }, "Clear filter")) : null)) : null,
+            !loading && items.length > 0 ? (React$2.createElement(Table, { size: "small", stickyHeader: true },
+                React$2.createElement(TableHead, null,
+                    React$2.createElement(TableRow, null,
+                        SORT_COLUMNS.map(function (column) { return (React$2.createElement(TableCell, { key: column.id, sortDirection: sortBy === column.id ? sortOrder : false },
+                            React$2.createElement(TableSortLabel, { active: sortBy === column.id, direction: sortBy === column.id ? sortOrder : 'asc', onClick: function () { return handleSort(column.id); } }, column.label))); }),
+                        React$2.createElement(TableCell, null, "Last state"),
+                        React$2.createElement(TableCell, { align: "right" }, "Actions"))),
+                React$2.createElement(TableBody, null, items.map(function (item) {
+                    var isBusy = busyId === item.id;
+                    return (React$2.createElement(TableRow, { key: item.id, hover: true },
+                        React$2.createElement(TableCell, { sx: { minWidth: 160 } },
+                            React$2.createElement(Typography, { variant: "body2", sx: { fontWeight: 600 } }, displayRecycleBinName(item)),
+                            React$2.createElement(Typography, { variant: "caption", component: "div", sx: { fontFamily: 'monospace', wordBreak: 'break-all', color: 'text.secondary' } }, item.originalPath)),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.originalCreatedBy, date: item.originalCreatedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.originalLastModifier, date: item.originalModifiedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.binnedByUsername, date: item.binnedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(Chip, { size: "small", variant: "outlined", label: formatSandboxStateLabel(item.originalSandboxState) })),
+                        React$2.createElement(TableCell, { align: "right", sx: { whiteSpace: 'nowrap' } },
+                            React$2.createElement(Tooltip, { title: "Preview in Studio" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", "aria-label": "Preview ".concat(displayRecycleBinName(item)), onClick: function () { return handlePreview(item); }, disabled: isBusy },
+                                        React$2.createElement(PreviewRoundedIcon, { fontSize: "small" })))),
+                            React$2.createElement(Tooltip, { title: "Restore to original path" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", color: "primary", "aria-label": "Restore ".concat(displayRecycleBinName(item)), onClick: function () { return handleRestoreClick(item); }, disabled: isBusy }, isBusy && busyAction === 'restore' ? (React$2.createElement(CircularProgress, { size: 18, color: "inherit" })) : (React$2.createElement(RestoreFromTrashRoundedIcon, { fontSize: "small" }))))),
+                            React$2.createElement(Tooltip, { title: "Delete permanently" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", color: "error", "aria-label": "Delete permanently ".concat(displayRecycleBinName(item)), onClick: function () { return setPurgeDialog(item); }, disabled: isBusy }, isBusy && busyAction === 'purge' ? (React$2.createElement(CircularProgress, { size: 18, color: "inherit" })) : (React$2.createElement(DeleteForeverRoundedIcon, { fontSize: "small" }))))))));
+                })))) : null),
+        !loading && total > 0 ? (React$2.createElement(TablePagination, { component: "div", count: total, page: page, onPageChange: function (_, nextPage) { return setPage(nextPage); }, rowsPerPage: pageSize, onRowsPerPageChange: function (event) {
+                setPageSize(parseInt(event.target.value, 10));
+                setPage(0);
+            }, rowsPerPageOptions: PAGE_SIZE_OPTIONS, sx: { flexShrink: 0, borderTop: 1, borderColor: 'divider' } })) : null,
+        React$2.createElement(Dialog, { open: Boolean(collisionDialog), onClose: function () { return setCollisionDialog(null); }, maxWidth: "sm", fullWidth: true },
+            React$2.createElement(DialogTitle, null, "Path already exists"),
+            React$2.createElement(DialogContent, null,
+                React$2.createElement(DialogContentText, { component: "div" },
+                    React$2.createElement(Stack, { spacing: 1.5 },
+                        React$2.createElement(Typography, { variant: "body2" },
+                            "Restoring ",
+                            React$2.createElement("strong", null, collisionDialog ? displayRecycleBinName(collisionDialog.item) : ''),
+                            " will move content back to:"),
+                        React$2.createElement(Typography, { variant: "body2", sx: { fontFamily: 'monospace' } }, collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.originalPath),
+                        React$2.createElement(Typography, { variant: "body2", color: "warning.main" }, "That path already exists in the sandbox. Confirm only if you intend to overwrite or merge with the existing item.")))),
+            React$2.createElement(DialogActions, null,
+                React$2.createElement(Button, { onClick: function () { return setCollisionDialog(null); } }, "Cancel"),
+                React$2.createElement(Button, { variant: "contained", color: "warning", onClick: function () { return collisionDialog && void performRestore(collisionDialog.item, true); }, disabled: busyId === (collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.item.id) }, "Restore anyway"))),
+        React$2.createElement(Dialog, { open: Boolean(purgeDialog), onClose: function () { return setPurgeDialog(null); }, maxWidth: "sm", fullWidth: true },
+            React$2.createElement(DialogTitle, null, "Delete permanently?"),
+            React$2.createElement(DialogContent, null,
+                React$2.createElement(DialogContentText, { component: "div" },
+                    React$2.createElement(Stack, { spacing: 1.5 },
+                        React$2.createElement(Typography, { variant: "body2" },
+                            "Permanently delete ",
+                            React$2.createElement("strong", null, purgeDialog ? displayRecycleBinName(purgeDialog) : ''),
+                            "?"),
+                        React$2.createElement(Typography, { variant: "body2", sx: { fontFamily: 'monospace' } }, purgeDialog === null || purgeDialog === void 0 ? void 0 : purgeDialog.binPath),
+                        React$2.createElement(Typography, { variant: "body2", color: "error" }, "This cannot be undone. The sandbox content will be removed and the recycle bin record will be marked purged.")))),
+            React$2.createElement(DialogActions, null,
+                React$2.createElement(Button, { onClick: function () { return setPurgeDialog(null); } }, "Cancel"),
+                React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return purgeDialog && void performPurge(purgeDialog); }, disabled: busyId === (purgeDialog === null || purgeDialog === void 0 ? void 0 : purgeDialog.id) }, "Delete permanently")))));
+};
+
+var RECYCLE_BIN_DIALOG_WIDGET_ID = 'org.rd.plugin.crafterwf.recycleBinDialog';
+function showWidgetDialogAction() {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    return (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction('SHOW_WIDGET_DIALOG');
+}
+function openRecycleBinDialog(dispatch, title, siteId) {
+    if (title === void 0) { title = 'Recycle bin'; }
+    var showWidgetDialog = showWidgetDialogAction();
+    if (!showWidgetDialog) {
+        return;
+    }
+    dispatch(showWidgetDialog({
+        title: title,
+        fullHeight: false,
+        maxWidth: false,
+        PaperProps: {
+            sx: {
+                width: '70vw',
+                maxWidth: '70vw',
+                height: '70vh',
+                maxHeight: '70vh',
+                m: 2,
+                borderRadius: 2,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        },
+        widget: createCrafterwfWidgetDescriptor(RECYCLE_BIN_DIALOG_WIDGET_ID, siteId)
+    }));
+}
+
+var EMPTY_EXCLUDED = [];
+var RecycleBinSelectDialog = function (_a) {
+    var open = _a.open, onClose = _a.onClose, onConfirm = _a.onConfirm, _b = _a.excludedPaths, excludedPaths = _b === void 0 ? EMPTY_EXCLUDED : _b;
+    var siteId = useActiveSiteId();
+    var excludedRef = useRef$1(excludedPaths);
+    excludedRef.current = excludedPaths;
+    var _c = useState$1([]), selectedPaths = _c[0], setSelectedPaths = _c[1];
+    var _d = useState$1('recent'), activeTab = _d[0], setActiveTab = _d[1];
+    var _e = useState$1([]), recentEntries = _e[0], setRecentEntries = _e[1];
+    var _f = useState$1(false), recentLoading = _f[0], setRecentLoading = _f[1];
+    var _g = useState$1(null), recentError = _g[0], setRecentError = _g[1];
+    var _h = useState$1([]), unpublishedEntries = _h[0], setUnpublishedEntries = _h[1];
+    var _j = useState$1(false), unpublishedLoading = _j[0], setUnpublishedLoading = _j[1];
+    var _k = useState$1(null), unpublishedError = _k[0], setUnpublishedError = _k[1];
+    var handleClose = useCallback$1(function () {
+        setSelectedPaths([]);
+        setActiveTab('recent');
+        onClose();
+    }, [onClose]);
+    var handleSelect = useCallback$1(function (path, isSelected) {
+        setSelectedPaths(function (current) {
+            if (isSelected) {
+                return current.includes(path) ? current : __spreadArray(__spreadArray([], current, true), [path], false);
+            }
+            return current.filter(function (entry) { return entry !== path; });
+        });
+    }, []);
+    var handleToggleFeed = useCallback$1(function (path, selected) {
+        handleSelect(path, selected);
+    }, [handleSelect]);
+    var handleRemove = useCallback$1(function (path) {
+        setSelectedPaths(function (current) { return current.filter(function (entry) { return entry !== path; }); });
+    }, []);
+    var handleConfirm = useCallback$1(function () {
+        if (selectedPaths.length === 0) {
+            return;
+        }
+        onConfirm(selectedPaths);
+        setSelectedPaths([]);
+    }, [onConfirm, selectedPaths]);
+    var loadRecentFeed = useCallback$1(function () {
+        if (!siteId) {
+            setRecentEntries([]);
+            return undefined;
+        }
+        setRecentLoading(true);
+        setRecentError(null);
+        return loadMyRecentActivityFeed(siteId).subscribe({
+            next: function (entries) {
+                setRecentEntries(excludeAttachedPaths(entries, excludedRef.current));
+                setRecentLoading(false);
+            },
+            error: function () {
+                setRecentError('Unable to load your recent activity.');
+                setRecentEntries([]);
+                setRecentLoading(false);
+            }
+        });
+    }, [siteId]);
+    var loadUnpublishedFeed = useCallback$1(function () {
+        if (!siteId) {
+            setUnpublishedEntries([]);
+            return undefined;
+        }
+        setUnpublishedLoading(true);
+        setUnpublishedError(null);
+        return loadUnpublishedWorkFeed(siteId).subscribe({
+            next: function (entries) {
+                setUnpublishedEntries(excludeAttachedPaths(entries, excludedRef.current));
+                setUnpublishedLoading(false);
+            },
+            error: function () {
+                setUnpublishedError('Unable to load unpublished work.');
+                setUnpublishedEntries([]);
+                setUnpublishedLoading(false);
+            }
+        });
+    }, [siteId]);
+    useEffect$2(function () {
+        if (!open) {
+            return;
+        }
+        if (activeTab === 'recent') {
+            var subscription_1 = loadRecentFeed();
+            return function () { return subscription_1 === null || subscription_1 === void 0 ? void 0 : subscription_1.unsubscribe(); };
+        }
+        if (activeTab === 'unpublished') {
+            var subscription_2 = loadUnpublishedFeed();
+            return function () { return subscription_2 === null || subscription_2 === void 0 ? void 0 : subscription_2.unsubscribe(); };
+        }
+        return undefined;
+    }, [activeTab, loadRecentFeed, loadUnpublishedFeed, open]);
+    var isSearchTab = activeTab === 'search';
+    return (React$2.createElement(Dialog, { open: open, onClose: handleClose, fullWidth: true, maxWidth: "lg", scroll: "paper" },
+        React$2.createElement(DialogTitle, null, "Select items to put in recycle bin"),
+        React$2.createElement(DialogContent, { dividers: true, sx: { p: 0, display: 'flex', flexDirection: 'column', minHeight: 420 } },
+            React$2.createElement(Box, { sx: { display: 'flex', flex: 1, minHeight: 0, flexDirection: { xs: 'column', md: 'row' } } },
+                React$2.createElement(Box, { sx: {
+                        flex: 1,
+                        minWidth: 0,
+                        minHeight: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        borderRight: function (theme) { return ({ md: "1px solid ".concat(theme.palette.divider) }); }
+                    } },
+                    React$2.createElement(Tabs, { value: activeTab, onChange: function (_, value) { return setActiveTab(value); }, variant: "scrollable", scrollButtons: "auto", sx: { px: 2, borderBottom: function (theme) { return "1px solid ".concat(theme.palette.divider); }, flexShrink: 0 } },
+                        React$2.createElement(Tab, { value: "recent", label: "My recent activity" }),
+                        React$2.createElement(Tab, { value: "unpublished", label: "Unpublished work" }),
+                        React$2.createElement(Tab, { value: "search", label: "Search" })),
+                    React$2.createElement(Box, { sx: { flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex', flexDirection: 'column' } },
+                        open && activeTab === 'search' ? (React$2.createElement(Box, { sx: {
+                                flex: 1,
+                                minHeight: 0,
+                                minWidth: 0,
+                                width: '100%',
+                                overflow: 'hidden',
+                                '& > section': { width: '100%', height: '100%', minHeight: 0, minWidth: 0 },
+                                '& > section > section:last-of-type': { display: 'none' }
+                            } },
+                            React$2.createElement(Search, { embedded: true, mode: "select", onClose: handleClose, onSelect: handleSelect }))) : null,
+                        activeTab === 'recent' ? (React$2.createElement(ContentAttachFeedPanel, { title: "My recent activity", description: "Select sandbox items to move to the recycle bin", entries: recentEntries, loading: recentLoading, error: recentError, selectedPaths: selectedPaths, onToggle: handleToggleFeed, onRefresh: loadRecentFeed })) : null,
+                        activeTab === 'unpublished' ? (React$2.createElement(ContentAttachFeedPanel, { title: "Unpublished work", description: "Select unpublished items to move to the recycle bin", entries: unpublishedEntries, loading: unpublishedLoading, error: unpublishedError, selectedPaths: selectedPaths, onToggle: handleToggleFeed, onRefresh: loadUnpublishedFeed })) : null)),
+                !isSearchTab ? (React$2.createElement(SelectedContentSourcePanel, { selectedPaths: selectedPaths, onRemove: handleRemove })) : null)),
+        React$2.createElement(DialogActions, { sx: { px: 2, py: 1.5 } },
+            React$2.createElement(Button, { onClick: handleClose }, "Cancel"),
+            React$2.createElement(Button, { variant: "contained", color: "error", onClick: handleConfirm, disabled: selectedPaths.length === 0 },
+                "Move to recycle bin (",
+                selectedPaths.length,
+                ")"))));
+};
+
+function RecycleBinToolbarButton(props) {
+    var _this = this;
+    var _a;
+    var dispatch = useDispatch();
+    var siteId = useActiveSiteId();
+    var contentPath = usePreviewContentPath();
+    var title = typeof props.title === 'string' && props.title.trim() ? props.title : 'Recycle bin';
+    var _b = useState$1(false), allowed = _b[0], setAllowed = _b[1];
+    var _c = useState$1(true), checkingAccess = _c[0], setCheckingAccess = _c[1];
+    var _d = useState$1(null), menuAnchor = _d[0], setMenuAnchor = _d[1];
+    var _e = useState$1(false), confirmCurrentOpen = _e[0], setConfirmCurrentOpen = _e[1];
+    var _f = useState$1(false), selectOpen = _f[0], setSelectOpen = _f[1];
+    var _g = useState$1(false), binning = _g[0], setBinning = _g[1];
+    var _h = useState$1(null), confirmSelectPaths = _h[0], setConfirmSelectPaths = _h[1];
+    var accessSubscriptionRef = useRef$1(null);
+    var refreshAccess = useCallback$1(function () {
+        var _a;
+        (_a = accessSubscriptionRef.current) === null || _a === void 0 ? void 0 : _a.unsubscribe();
+        if (!siteId) {
+            setAllowed(false);
+            setCheckingAccess(false);
+            return;
+        }
+        setCheckingAccess(true);
+        accessSubscriptionRef.current = canAccessRecycleBin(siteId).subscribe({
+            next: function (response) {
+                var _a, _b;
+                setAllowed(Boolean((_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.allowed));
+                setCheckingAccess(false);
+            },
+            error: function (e) {
+                console.error('[crafterwf] recycle-bin/can-access failed', e);
+                setAllowed(false);
+                setCheckingAccess(false);
+            }
+        });
+    }, [siteId]);
+    useEffect$2(function () {
+        refreshAccess();
+        return function () { var _a; return (_a = accessSubscriptionRef.current) === null || _a === void 0 ? void 0 : _a.unsubscribe(); };
+    }, [refreshAccess]);
+    var notifyContentTreeMoves = function (items) {
+        if (!siteId) {
+            return;
+        }
+        items.forEach(function (item) {
+            if (item.originalPath && item.binPath) {
+                emitStudioMoveContentEvent(dispatch, siteId, item.originalPath, item.binPath);
+            }
+        });
+    };
+    var runBinPaths = function (paths) { return __awaiter(_this, void 0, void 0, function () {
+        var binnedItems, e_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!siteId || paths.length === 0) {
+                        return [2 /*return*/];
+                    }
+                    setBinning(true);
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            binContentPaths(siteId, paths).subscribe({
+                                next: function (response) {
+                                    var _a, _b;
+                                    var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                                    var errors = result === null || result === void 0 ? void 0 : result.errors;
+                                    if (errors === null || errors === void 0 ? void 0 : errors.length) {
+                                        showStudioErrorSnack(errors.map(function (entry) { return entry.message; }).join(' '));
+                                    }
+                                    resolve((_b = result === null || result === void 0 ? void 0 : result.items) !== null && _b !== void 0 ? _b : []);
+                                },
+                                error: function (err) {
+                                    reject(err);
+                                }
+                            });
+                        })];
+                case 2:
+                    binnedItems = _a.sent();
+                    notifyContentTreeMoves(binnedItems);
+                    notifyRecycleBinUpdated();
+                    return [3 /*break*/, 5];
+                case 3:
+                    e_1 = _a.sent();
+                    console.error(e_1);
+                    showStudioErrorSnack('Unable to move item(s) to recycle bin.');
+                    return [3 /*break*/, 5];
+                case 4:
+                    setBinning(false);
+                    setConfirmCurrentOpen(false);
+                    setSelectOpen(false);
+                    setConfirmSelectPaths(null);
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    var handleBinCurrentPage = function () {
+        setMenuAnchor(null);
+        if (!contentPath) {
+            showStudioErrorSnack('Open a page in preview to recycle it.');
+            return;
+        }
+        setConfirmCurrentOpen(true);
+    };
+    var handleSelectItems = function () {
+        setMenuAnchor(null);
+        setSelectOpen(true);
+    };
+    var handleOpenRecycleBin = function () {
+        setMenuAnchor(null);
+        openRecycleBinDialog(dispatch, title, siteId !== null && siteId !== void 0 ? siteId : undefined);
+    };
+    if (checkingAccess || !allowed) {
+        return null;
+    }
+    return (React$2.createElement(React$2.Fragment, null,
+        React$2.createElement(Tooltip, { title: title },
+            React$2.createElement("span", null,
+                React$2.createElement(IconButton, __assign({ "aria-label": title, size: "large", disabled: binning }, props, { onClick: function (event) { return setMenuAnchor(event.currentTarget); } }), binning ? React$2.createElement(CircularProgress, { size: 22, color: "inherit" }) : React$2.createElement(DeleteOutlineRoundedIcon, null)))),
+        React$2.createElement(Menu$1, { anchorEl: menuAnchor, open: Boolean(menuAnchor), onClose: function () { return setMenuAnchor(null); }, anchorOrigin: { vertical: 'bottom', horizontal: 'right' }, transformOrigin: { vertical: 'top', horizontal: 'right' } },
+            React$2.createElement(MenuItem, { onClick: handleBinCurrentPage, disabled: !contentPath || binning },
+                React$2.createElement(ListItemText$1, { primary: "Put current page in recycle bin", secondary: contentPath ? contentPath : 'Open preview content first' })),
+            React$2.createElement(MenuItem, { onClick: handleSelectItems, disabled: binning },
+                React$2.createElement(ListItemText$1, { primary: "Select items to put in recycle bin" })),
+            React$2.createElement(MenuItem, { onClick: handleOpenRecycleBin, disabled: binning },
+                React$2.createElement(ListItemText$1, { primary: "Open recycle bin" }))),
+        React$2.createElement(Dialog, { open: confirmCurrentOpen, onClose: function () { return setConfirmCurrentOpen(false); }, maxWidth: "sm", fullWidth: true },
+            React$2.createElement(DialogTitle, null, "Move to recycle bin?"),
+            React$2.createElement(DialogContent, null,
+                React$2.createElement(DialogContentText, null,
+                    "Move ",
+                    React$2.createElement("strong", null, contentPath),
+                    " to the recycle bin? You can restore it later from the recycle bin dialog.")),
+            React$2.createElement(DialogActions, null,
+                React$2.createElement(Button, { onClick: function () { return setConfirmCurrentOpen(false); }, disabled: binning }, "Cancel"),
+                React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return contentPath && void runBinPaths([contentPath]); }, disabled: binning || !contentPath }, "Move to recycle bin"))),
+        React$2.createElement(RecycleBinSelectDialog, { open: selectOpen, onClose: function () { return setSelectOpen(false); }, onConfirm: function (paths) { return setConfirmSelectPaths(paths); } }),
+        React$2.createElement(Dialog, { open: Boolean(confirmSelectPaths === null || confirmSelectPaths === void 0 ? void 0 : confirmSelectPaths.length), onClose: function () { return setConfirmSelectPaths(null); }, maxWidth: "sm", fullWidth: true },
+            React$2.createElement(DialogTitle, null,
+                "Move ", (_a = confirmSelectPaths === null || confirmSelectPaths === void 0 ? void 0 : confirmSelectPaths.length) !== null && _a !== void 0 ? _a : 0,
+                " item(s) to recycle bin?"),
+            React$2.createElement(DialogContent, null,
+                React$2.createElement(DialogContentText, null,
+                    "Selected items will be moved under ",
+                    React$2.createElement("strong", null, "/recyclebin"),
+                    " and can be restored later.")),
+            React$2.createElement(DialogActions, null,
+                React$2.createElement(Button, { onClick: function () { return setConfirmSelectPaths(null); }, disabled: binning }, "Cancel"),
+                React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return confirmSelectPaths && void runBinPaths(confirmSelectPaths); }, disabled: binning }, "Move to recycle bin")))));
 }
 
 var SchemaInstallDialog = function (_a) {
@@ -29594,10 +30361,12 @@ var plugin = {
             'org.rd.plugin.crafterwf.calendarToolbarButton': CalendarToolbarButton,
             'org.rd.plugin.crafterwf.calendarDialog': CalendarDialog,
             'org.rd.plugin.crafterwf.activeWorkflowsToolbarButton': ActiveWorkflowsToolbarButton,
+            'org.rd.plugin.crafterwf.recycleBinToolbarButton': RecycleBinToolbarButton,
+            'org.rd.plugin.crafterwf.recycleBinDialog': RecycleBinDialog,
             'org.rd.plugin.crafterwf.workflowBypassGuard': WorkflowBypassGuard
         },
         _b[projectToolsConfigurationWidgetId] = ProjectToolsConfiguration,
         _b)
 };
 
-export { ActiveWorkflowsToolbarButton, Board, CalendarDialog, CalendarToolbarButton, ContentCommentsPanel, ContentCommentsToolbarButton, NotificationsPanel, NotificationsToolbarButton, OpenBoardDialogPanelButton, ProjectToolsConfiguration, TasksPanel, TasksToolbarButton, WorkflowBypassGuard, plugin as default, projectToolsConfigurationWidgetId };
+export { ActiveWorkflowsToolbarButton, Board, CalendarDialog, CalendarToolbarButton, ContentCommentsPanel, ContentCommentsToolbarButton, NotificationsPanel, NotificationsToolbarButton, OpenBoardDialogPanelButton, ProjectToolsConfiguration, RecycleBinDialog, RecycleBinToolbarButton, TasksPanel, TasksToolbarButton, WorkflowBypassGuard, plugin as default, projectToolsConfigurationWidgetId };

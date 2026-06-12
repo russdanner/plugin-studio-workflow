@@ -7,7 +7,7 @@ class SchemaMigrator {
 
     private static final Logger logger = LoggerFactory.getLogger(SchemaMigrator)
     private static final String LOCK_NAME = 'crafter_workflow_schema_migrate'
-    private static final int LATEST_SCHEMA_VERSION = 12
+    private static final int LATEST_SCHEMA_VERSION = 14
 
     private final WorkflowDb db
 
@@ -119,6 +119,20 @@ class SchemaMigrator {
                 }
                 if (currentVersion(sql) < 12) {
                     recordVersion(sql, 12, 'Step role and content rules')
+                }
+                current = currentVersion(sql)
+                if (current < 13 || !recycleBinTableReady(sql)) {
+                    applyV013(sql)
+                }
+                if (currentVersion(sql) < 13) {
+                    recordVersion(sql, 13, 'Recycle bin')
+                }
+                current = currentVersion(sql)
+                if (current < 14 || !recycleBinMetadataColumnsReady(sql)) {
+                    applyV014(sql)
+                }
+                if (currentVersion(sql) < 14) {
+                    recordVersion(sql, 14, 'Recycle bin metadata and purge audit')
                 }
             } finally {
                 sql.execute('SELECT RELEASE_LOCK(?)', [LOCK_NAME])
@@ -665,6 +679,63 @@ class SchemaMigrator {
             sql.execute('ALTER TABLE ' + refTable + ' ADD COLUMN content_type VARCHAR(255) NULL')
         }
         logger.info('Applied crafter-workflow schema migration V012 to `{}`', db.schemaName)
+    }
+
+    private void applyV013(sql) {
+        def table = db.table('wf_recycle_bin_item')
+        if (!tableExists(sql, 'wf_recycle_bin_item')) {
+            sql.execute('CREATE TABLE ' + table + ''' (
+                  id CHAR(36) NOT NULL PRIMARY KEY,
+                  site_id VARCHAR(255) NOT NULL,
+                  bin_path VARCHAR(1024) NOT NULL,
+                  internal_name VARCHAR(512) NULL,
+                  original_path VARCHAR(1024) NOT NULL,
+                  original_last_modifier VARCHAR(255) NULL,
+                  original_modified_on DATETIME NULL,
+                  original_created_on DATETIME NULL,
+                  state VARCHAR(32) NOT NULL DEFAULT 'binned',
+                  binned_on DATETIME NOT NULL,
+                  binned_by_user_id BIGINT NOT NULL,
+                  binned_by_username VARCHAR(255) NOT NULL,
+                  restored_on DATETIME NULL,
+                  restored_by_user_id BIGINT NULL,
+                  restored_by_username VARCHAR(255) NULL,
+                  KEY idx_recycle_bin_site_state (site_id, state),
+                  KEY idx_recycle_bin_original (site_id, original_path(255))
+                )''')
+        }
+        logger.info('Applied crafter-workflow schema migration V013 to `{}`', db.schemaName)
+    }
+
+    private boolean recycleBinTableReady(sql) {
+        return tableExists(sql, 'wf_recycle_bin_item') &&
+            columnExists(sql, 'wf_recycle_bin_item', 'bin_path')
+    }
+
+    private boolean recycleBinMetadataColumnsReady(sql) {
+        return columnExists(sql, 'wf_recycle_bin_item', 'original_created_by') &&
+            columnExists(sql, 'wf_recycle_bin_item', 'original_sandbox_state') &&
+            columnExists(sql, 'wf_recycle_bin_item', 'purged_on')
+    }
+
+    private void applyV014(sql) {
+        def table = db.table('wf_recycle_bin_item')
+        if (!columnExists(sql, 'wf_recycle_bin_item', 'original_created_by')) {
+            sql.execute('ALTER TABLE ' + table + ' ADD COLUMN original_created_by VARCHAR(255) NULL')
+        }
+        if (!columnExists(sql, 'wf_recycle_bin_item', 'original_sandbox_state')) {
+            sql.execute('ALTER TABLE ' + table + ' ADD COLUMN original_sandbox_state VARCHAR(64) NULL')
+        }
+        if (!columnExists(sql, 'wf_recycle_bin_item', 'purged_on')) {
+            sql.execute('ALTER TABLE ' + table + ' ADD COLUMN purged_on DATETIME NULL')
+        }
+        if (!columnExists(sql, 'wf_recycle_bin_item', 'purged_by_user_id')) {
+            sql.execute('ALTER TABLE ' + table + ' ADD COLUMN purged_by_user_id BIGINT NULL')
+        }
+        if (!columnExists(sql, 'wf_recycle_bin_item', 'purged_by_username')) {
+            sql.execute('ALTER TABLE ' + table + ' ADD COLUMN purged_by_username VARCHAR(255) NULL')
+        }
+        logger.info('Applied crafter-workflow schema migration V014 to `{}`', db.schemaName)
     }
 
     private boolean stepRulesColumnsReady(sql) {
