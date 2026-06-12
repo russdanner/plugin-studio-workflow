@@ -165,14 +165,14 @@ const ContentSearchAttachDialog = ({
       disableRestoreFocus
       aria-labelledby="crafterwf-content-search-title"
       PaperProps={{
-        sx: {
-          width: 'min(96vw, 1600px)',
-          maxWidth: '96vw',
+        sx: (theme) => ({
+          width: 'min(96vw, 1280px)',
+          maxWidth: `min(${theme.breakpoints.values.lg}px, calc(100vw - ${theme.spacing(4)}))`,
           height: 'min(92vh, 960px)',
           maxHeight: '92vh',
           display: 'flex',
           flexDirection: 'column'
-        }
+        })
       }}
     >
       <DialogTitle id="crafterwf-content-search-title" sx={{ pb: 0 }}>

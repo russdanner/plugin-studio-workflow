@@ -12240,14 +12240,14 @@ var ContentSearchAttachDialog = function (_a) {
     }, [stableAttachedPathsKey, open]);
     var isSearchTab = activeTab === 'search';
     return (React.createElement(Dialog, { open: open, onClose: handleClose, fullWidth: true, maxWidth: false, scroll: "paper", disableRestoreFocus: true, "aria-labelledby": "crafterwf-content-search-title", PaperProps: {
-            sx: {
-                width: 'min(96vw, 1600px)',
-                maxWidth: '96vw',
+            sx: function (theme) { return ({
+                width: 'min(96vw, 1280px)',
+                maxWidth: "min(".concat(theme.breakpoints.values.lg, "px, calc(100vw - ").concat(theme.spacing(4), "))"),
                 height: 'min(92vh, 960px)',
                 maxHeight: '92vh',
                 display: 'flex',
                 flexDirection: 'column'
-            }
+            }); }
         } },
         React.createElement(DialogTitle, { id: "crafterwf-content-search-title", sx: { pb: 0 } }, "Add existing content"),
         React.createElement(DialogContent, { sx: {
@@ -12426,6 +12426,7 @@ var CardActions = function (_a) {
         handleCardActionsClose();
     };
     var handleClickActions = function (event) {
+        event.stopPropagation();
         onMenuOpen();
         setAnchorEl(event.currentTarget);
     };
@@ -12864,7 +12865,7 @@ var BoardCard = function (_a) {
             }
         };
     }, []);
-    var handleShowMoreClick = function () {
+    var handleCardClick = function () {
         if (!detailsOpen) {
             openDetails();
         }
@@ -12995,13 +12996,14 @@ var BoardCard = function (_a) {
         });
     };
     return (React.createElement(React.Fragment, null,
-        !dialogOnly && (React.createElement(Card, { elevation: 0, sx: function (theme) {
+        !dialogOnly && (React.createElement(Card, { elevation: 0, onClick: handleCardClick, sx: function (theme) {
                 var _a;
                 return ({
                     borderRadius: 2,
                     border: "1px solid ".concat(theme.palette.divider),
                     borderTop: ((_a = card.cover) === null || _a === void 0 ? void 0 : _a.color) ? "4px solid ".concat(coverColorForCss(card.cover.color)) : undefined,
                     boxShadow: theme.shadows[1],
+                    cursor: 'pointer',
                     transition: theme.transitions.create(['box-shadow', 'border-color'], {
                         duration: theme.transitions.duration.short
                     }),
@@ -13011,13 +13013,19 @@ var BoardCard = function (_a) {
                     }
                 });
             } },
-            React.createElement(CardHeader, { action: React.createElement(CardActions, { card: card, cardDetails: cardDetailsData, onMenuOpen: loadCardDetailsData, onDetailsChanged: handleDetailsChanged, onPackageChanged: handlePackageChanged, onNestedDialogChange: handleNestedDialogChange }), title: card.name, titleTypographyProps: { variant: 'body2', fontWeight: 600 }, sx: { py: 1, cursor: 'pointer', '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }, onClick: function () { return openDetails(); } }),
-            card.badges.attachments > 0 && (React.createElement(CardActions$1, { disableSpacing: true, onClick: handleShowMoreClick },
+            React.createElement(CardHeader, { action: React.createElement(Box, { component: "span", onClick: function (event) { return event.stopPropagation(); }, sx: { display: 'inline-flex' } },
+                    React.createElement(CardActions, { card: card, cardDetails: cardDetailsData, onMenuOpen: loadCardDetailsData, onDetailsChanged: handleDetailsChanged, onPackageChanged: handlePackageChanged, onNestedDialogChange: handleNestedDialogChange })), title: card.name, titleTypographyProps: { variant: 'body2', fontWeight: 600 }, sx: { py: 1, '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } } }),
+            card.badges.attachments > 0 && (React.createElement(CardActions$1, { disableSpacing: true },
                 React.createElement(IconButton, { size: "small", "aria-label": "attachments" },
                     React.createElement(Badge, { badgeContent: card.badges.attachments, color: "primary" },
                         React.createElement(AttachmentRoundedIcon, null))))))),
         React.createElement(Dialog, { open: detailsOpen, onClose: handleDialogClose, disableRestoreFocus: true, fullWidth: true, maxWidth: "sm", scroll: "paper", "aria-labelledby": "workflow-package-details-title", PaperProps: {
-                sx: { borderRadius: 2, maxWidth: '100%', overflow: 'hidden' }
+                sx: function (theme) { return ({
+                    borderRadius: 2,
+                    overflow: 'hidden',
+                    width: '100%',
+                    maxWidth: "min(".concat(theme.breakpoints.values.sm, "px, calc(100% - ").concat(theme.spacing(4), "))")
+                }); }
             } },
             React.createElement(DialogTitle, { id: "workflow-package-details-title", sx: function (theme) {
                     var _a;

@@ -234,6 +234,7 @@ const CardActions = ({
   };
 
   const handleClickActions = (event: React.MouseEvent<HTMLElement>) => {
+    event.stopPropagation();
     onMenuOpen();
     setAnchorEl(event.currentTarget);
   };

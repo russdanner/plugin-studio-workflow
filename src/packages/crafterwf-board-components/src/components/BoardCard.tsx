@@ -409,7 +409,7 @@ const BoardCard = ({
     };
   }, []);
 
-  const handleShowMoreClick = () => {
+  const handleCardClick = () => {
     if (!detailsOpen) {
       openDetails();
     }
@@ -568,11 +568,13 @@ const BoardCard = ({
       {!dialogOnly && (
       <Card
         elevation={0}
+        onClick={handleCardClick}
         sx={(theme) => ({
           borderRadius: 2,
           border: `1px solid ${theme.palette.divider}`,
           borderTop: card.cover?.color ? `4px solid ${coverColorForCss(card.cover.color)}` : undefined,
           boxShadow: theme.shadows[1],
+          cursor: 'pointer',
           transition: theme.transitions.create(['box-shadow', 'border-color'], {
             duration: theme.transitions.duration.short
           }),
@@ -584,22 +586,23 @@ const BoardCard = ({
       >
         <CardHeader
           action={
-            <BoardCardActions
-              card={card}
-              cardDetails={cardDetailsData}
-              onMenuOpen={loadCardDetailsData}
-              onDetailsChanged={handleDetailsChanged}
-              onPackageChanged={handlePackageChanged}
-              onNestedDialogChange={handleNestedDialogChange}
-            />
+            <Box component="span" onClick={(event) => event.stopPropagation()} sx={{ display: 'inline-flex' }}>
+              <BoardCardActions
+                card={card}
+                cardDetails={cardDetailsData}
+                onMenuOpen={loadCardDetailsData}
+                onDetailsChanged={handleDetailsChanged}
+                onPackageChanged={handlePackageChanged}
+                onNestedDialogChange={handleNestedDialogChange}
+              />
+            </Box>
           }
           title={card.name}
           titleTypographyProps={{ variant: 'body2', fontWeight: 600 }}
-          sx={{ py: 1, cursor: 'pointer', '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }}
-          onClick={() => openDetails()}
+          sx={{ py: 1, '& .MuiCardHeader-action': { alignSelf: 'center', m: 0 } }}
         />
         {card.badges.attachments > 0 && (
-          <CardActions disableSpacing onClick={handleShowMoreClick}>
+          <CardActions disableSpacing>
             <IconButton size="small" aria-label="attachments">
               <Badge badgeContent={card.badges.attachments} color="primary">
                 <AttachmentRoundedIcon />
@@ -619,7 +622,12 @@ const BoardCard = ({
         scroll="paper"
         aria-labelledby="workflow-package-details-title"
         PaperProps={{
-          sx: { borderRadius: 2, maxWidth: '100%', overflow: 'hidden' }
+          sx: (theme) => ({
+            borderRadius: 2,
+            overflow: 'hidden',
+            width: '100%',
+            maxWidth: `min(${theme.breakpoints.values.sm}px, calc(100% - ${theme.spacing(4)}))`
+          })
         }}
       >
         <DialogTitle
