@@ -2,6 +2,7 @@ package plugins.org.rd.plugin.crafterwf.util
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import plugins.org.rd.plugin.crafterwf.service.WorkflowDefinitionService
 
 class ContentTypeSupport {
 
@@ -13,6 +14,11 @@ class ContentTypeSupport {
         this.applicationContext = applicationContext
     }
 
+    static boolean isUnknownPlaceholder(String contentType) {
+        def value = contentType?.trim()
+        return value in ['/page/unknown', '/component/unknown']
+    }
+
     String resolveContentType(String siteId, String contentPath) {
         if (!siteId?.trim() || !contentPath?.trim()) {
             return null
@@ -22,6 +28,13 @@ class ContentTypeSupport {
             return '/asset/static'
         }
         def fromService = resolveFromServices(siteId, path)
+        if (fromService && !isUnknownPlaceholder(fromService)) {
+            return fromService
+        }
+        def fromXml = resolveFromContentXml(siteId, path)
+        if (fromXml) {
+            return fromXml
+        }
         if (fromService) {
             return fromService
         }
@@ -57,6 +70,59 @@ class ContentTypeSupport {
                 }
             } catch (Exception e) {
                 logger.debug('Could not resolve content type from {}: {}', beanName, e.message)
+            }
+        }
+        return null
+    }
+
+    private String resolveFromContentXml(String siteId, String contentPath) {
+        if (!contentPath?.trim()?.endsWith('.xml')) {
+            return null
+        }
+        def text = readContentXmlText(siteId, contentPath.trim())
+        if (!text?.trim()) {
+            return null
+        }
+        def matcher = (text =~ /<content-type>\s*([^<\s]+)\s*<\/content-type>/)
+        if (matcher.find()) {
+            def type = matcher.group(1).trim()
+            if (type && !isUnknownPlaceholder(type)) {
+                return type
+            }
+        }
+        return null
+    }
+
+    private String readContentXmlText(String siteId, String path) {
+        def contentService = WorkflowBeanLookup.resolve(applicationContext, 'contentService')
+        if (contentService?.metaClass?.respondsTo(contentService, 'contentExists', String, String)) {
+            try {
+                if (!contentService.contentExists(siteId, path)) {
+                    return null
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        if (contentService?.metaClass?.respondsTo(contentService, 'getContentAsResource', String, String)) {
+            try {
+                def resource = contentService.getContentAsResource(siteId, path)
+                def text = WorkflowDefinitionService.readUtf8FromResource(resource, path, 'getContentAsResource')
+                if (text?.trim()) {
+                    return text
+                }
+            } catch (Exception e) {
+                logger.debug('Could not read content xml via getContentAsResource: {}', e.message)
+            }
+        }
+        def legacy = WorkflowBeanLookup.resolve(applicationContext, 'cstudioContentService')
+        if (legacy?.metaClass?.respondsTo(legacy, 'getContentAsString', String, String)) {
+            try {
+                def text = legacy.getContentAsString(siteId, path)
+                if (text?.trim()) {
+                    return text
+                }
+            } catch (Exception e) {
+                logger.debug('Could not read content xml via cstudioContentService: {}', e.message)
             }
         }
         return null

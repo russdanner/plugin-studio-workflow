@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { formatDateTime } from './dateTimeFormatting';
+import { isValidContentPath } from './attachmentUtils';
 
 const FEED_LIMIT = 50;
 
@@ -74,12 +75,14 @@ export function loadUnpublishedWorkFeed(siteId: string): Observable<ContentAttac
     sortOrder: 'desc'
   }).pipe(
     map((items) =>
-      (items as SandboxItem[]).map((item) => ({
-        path: item.path,
-        label: item.label,
-        systemType: item.systemType,
-        subtitle: item.dateModified ? `Modified · ${formatDateTime(item.dateModified)}` : 'Unpublished'
-      }))
+      (items as SandboxItem[])
+        .filter((item) => isValidContentPath(item.path))
+        .map((item) => ({
+          path: item.path.trim(),
+          label: item.label,
+          systemType: item.systemType,
+          subtitle: item.dateModified ? `Modified · ${formatDateTime(item.dateModified)}` : 'Unpublished'
+        }))
     ),
     catchError(() => of([]))
   );

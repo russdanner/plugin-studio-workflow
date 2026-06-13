@@ -1,3 +1,5 @@
+import { Observable } from 'rxjs';
+import { AjaxResponse } from 'rxjs/ajax';
 export declare type WorkflowBypassStudioAction = 'publish' | 'request_publish' | 'reject';
 export interface WorkflowBypassViolation {
     contentPath: string;
@@ -17,8 +19,9 @@ export interface WorkflowBypassCheckResult {
     allowUiBypass: boolean;
     violations: WorkflowBypassViolation[];
 }
-export declare function checkWorkflowBypass(siteId: string, contentPaths: string[], action: WorkflowBypassStudioAction): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<{
+export declare type WorkflowBypassCheckResponse = {
     result: WorkflowBypassCheckResult;
-}>>;
-export declare function acknowledgeWorkflowBypass(siteId: string, action: WorkflowBypassStudioAction, violations: WorkflowBypassViolation[]): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
-export declare function recordWorkflowBypassAction(siteId: string, action: WorkflowBypassStudioAction, violations: WorkflowBypassViolation[]): import("rxjs").Observable<import("rxjs/ajax").AjaxResponse<any>>;
+};
+export declare function checkWorkflowBypass(siteId: string, contentPaths: string[], action: WorkflowBypassStudioAction): Observable<AjaxResponse<WorkflowBypassCheckResponse>>;
+export declare function acknowledgeWorkflowBypass(siteId: string, action: WorkflowBypassStudioAction, violations: WorkflowBypassViolation[]): Observable<AjaxResponse<any>>;
+export declare function recordWorkflowBypassAction(siteId: string, action: WorkflowBypassStudioAction, violations: WorkflowBypassViolation[]): Observable<AjaxResponse<any>>;

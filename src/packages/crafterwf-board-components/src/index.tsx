@@ -13,6 +13,8 @@ import ActiveWorkflowsToolbarButton from './components/activeWorkflows/ActiveWor
 import RecycleBinDialog from './components/recycleBin/RecycleBinDialog';
 import RecycleBinToolbarButton from './components/recycleBin/RecycleBinToolbarButton';
 import WorkflowBypassGuard from './components/workflowBypass/WorkflowBypassGuard';
+import WorkflowBypassGuardHost from './components/workflowBypass/WorkflowBypassGuardHost';
+import { mountWorkflowStudioHooks } from './utils/mountWorkflowStudioHooks';
 import ProjectToolsConfiguration from './components/projectTools/ProjectToolsConfiguration';
 import { projectToolsConfigurationWidgetId } from './consts';
 import { messages } from './messages';
@@ -40,7 +42,9 @@ const plugin: PluginDescriptor = {
     'org.rd.plugin.crafterwf.activeWorkflowsToolbarButton': ActiveWorkflowsToolbarButton,
     'org.rd.plugin.crafterwf.recycleBinToolbarButton': RecycleBinToolbarButton,
     'org.rd.plugin.crafterwf.recycleBinDialog': RecycleBinDialog,
-    'org.rd.plugin.crafterwf.workflowBypassGuard': WorkflowBypassGuard,
+    // Legacy site ui.xml widget id (renamed during recycle bin work).
+    'org.rd.plugin.crafterwf.recycleBinPanel': RecycleBinDialog,
+    'org.rd.plugin.crafterwf.workflowBypassGuard': WorkflowBypassGuardHost,
     [projectToolsConfigurationWidgetId]: ProjectToolsConfiguration
   }
 };
@@ -65,3 +69,5 @@ export {
 };
 
 export default plugin;
+
+mountWorkflowStudioHooks();

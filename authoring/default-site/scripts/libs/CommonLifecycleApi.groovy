@@ -45,31 +45,50 @@ class CommonLifecycleApi {
         logger.debug("Run update operation event on site '{}' path '{}'", site, path)
     }
 
+    private static String operationName(def contentLifecycleOperation) {
+        if (!contentLifecycleOperation) {
+            return null
+        }
+        try {
+            if (contentLifecycleOperation.metaClass?.respondsTo(contentLifecycleOperation, 'name')) {
+                return contentLifecycleOperation.name()?.toString()?.trim()?.toUpperCase()
+            }
+        } catch (Exception ignored) {
+        }
+        return contentLifecycleOperation?.toString()?.trim()?.toUpperCase()
+    }
+
     def execute() {
         def op = contentLifecycleParams?.contentLifecycleOperation
         def site = contentLifecycleParams?.site
         def path = contentLifecycleParams?.path
-        System.out.println("[crafterwf] CommonLifecycleApi op=${op} site=${site} path=${path}")
+        def opName = operationName(op)
+        logger.info("[crafterwf] CommonLifecycleApi op={} site={} path={}", op, site, path)
 
-        if (contentLifecycleParams.contentLifecycleOperation == "COPY") {
-            onCopy(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "DELETE") {
-            onDelete(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "DUPLICATE") {
-            onDuplicate(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "NEW") {
-            onNew(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "RENAME") {
-            onRename(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "REVERT") {
-            onRevert(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else if (contentLifecycleParams.contentLifecycleOperation == "UPDATE") {
-            onUpdate(contentLifecycleParams.site, contentLifecycleParams.path)
-        } else {
-            logger.info("Unknown operation '{}' on site '{}' path '{}'",
-                    contentLifecycleParams.contentLifecycleOperation,
-                    contentLifecycleParams.site,
-                    contentLifecycleParams.path)
+        switch (opName) {
+            case 'COPY':
+                onCopy(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'DELETE':
+                onDelete(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'DUPLICATE':
+                onDuplicate(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'NEW':
+                onNew(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'RENAME':
+                onRename(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'REVERT':
+                onRevert(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            case 'UPDATE':
+                onUpdate(contentLifecycleParams.site, contentLifecycleParams.path)
+                break
+            default:
+                logger.info("Unknown operation '{}' on site '{}' path '{}'", op, site, path)
         }
 
         invokeWorkflowBridge()
@@ -86,11 +105,8 @@ class CommonLifecycleApi {
                 contentLifecycleParams?.user
             )
         } catch (Exception e) {
-            System.out.println(
-                "[crafterwf] CommonLifecycleApi bridge failed path=${contentLifecycleParams?.path}: ${e.message}"
-            )
             logger.warn(
-                "Crafterwf workflow bridge failed for {}: {}",
+                "[crafterwf] CommonLifecycleApi bridge failed path={}: {}",
                 contentLifecycleParams?.path, e.message, e
             )
         }

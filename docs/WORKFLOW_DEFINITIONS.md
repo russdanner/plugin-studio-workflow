@@ -88,9 +88,15 @@ Workflow definitions may declare `createListeners` and `editListeners`. Each lis
 
 Listeners are configured in **Project Tools → Workflows → Edit workflow → Content event listeners** (Create / Edit tabs).
 
-**Runtime wiring (server only):** Studio runs each content type’s stock `controller.groovy`, which calls `CommonLifecycleApi.execute()`. `./scripts/install-plugin.sh` installs a patched `CommonLifecycleApi.groovy` and `CrafterwfWorkflowLifecycleBridge.groovy` under Studio **`default-site/scripts/libs/`** (the lifecycle Groovy classpath). That hook delegates to the plugin’s `WorkflowContentEventService` — no browser/client involvement. The install script also **normalizes** site `controller.groovy` files back to stock (removes legacy per-controller bridge patches). **Restart authoring Tomcat** after install so lifecycle classes reload. **Commit the site** if controllers were normalized.
+**Runtime wiring:** Studio runs each content type’s stock `controller.groovy`, which calls `CommonLifecycleApi.execute()`. `./scripts/install-plugin.sh` installs a patched `CommonLifecycleApi.groovy` and `CrafterwfWorkflowLifecycleBridge.groovy` under Studio **`default-site/scripts/libs/`** (the lifecycle Groovy classpath). That hook delegates to the plugin’s `WorkflowContentEventService`. **Restart authoring Tomcat** after install so lifecycle classes reload.
 
-**Logs:** every save/duplicate prints `[crafterwf] CommonLifecycleApi op=...` and `[crafterwf] lifecycle site=...` to `catalina.out`. Enrollment logs `[crafterwf] bridge event...` and SLF4J `Workflow lifecycle event:` / `Processing workflow content event:`.
+**Preview / in-context saves:** Studio’s preview content pipeline does **not** run lifecycle controllers (and the regular form pipeline skips lifecycle when `isPreview=true`). When authors save from **Preview / Experience Builder**, `WorkflowContentEventBridge` (mounted globally via `mountWorkflowStudioHooks()`) listens for Studio `contentEvent` socket actions and calls `content-event/process.json` so listeners still run. Saves from **Site Dashboard → form editor** use the normal pipeline and hit lifecycle directly.
+
+**Content type resolution:** `WorkflowContentEventService` resolves the content type before matching listeners. If Studio passes `/page/unknown` or `/component/unknown` (path inference fallback), the service re-resolves from the item XML (`<content-type>` element) via `ContentTypeSupport`. Listener skips are logged at INFO with `configuredType=…` when types do not match.
+
+**Non-item paths:** folder paths (without a `.xml` or `.html` suffix) are ignored — only enrollable content items trigger listeners.
+
+**Logs:** lifecycle and listener processing log via SLF4J at INFO — look in **`logs/tomcat/catalina.out`** and **`studio.log`**. Examples: `CommonLifecycleApi op=…`, `Workflow lifecycle event:`, `Processing workflow content event:`, `Listener listener-1 matched on …`, `Listener listener-1 skipped for … (type=… configuredType=…)`. Dashboard saves show lifecycle bridge lines; preview saves show `Processing workflow content event` from the REST bridge.
 
 Example listener block:
 

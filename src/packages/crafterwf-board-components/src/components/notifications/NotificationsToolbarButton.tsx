@@ -59,7 +59,7 @@ export function NotificationsToolbarButton(props: Record<string, unknown>) {
           </ToolbarIconBadge>
         </IconButton>
       </span>
-    </Tooltip>
+      </Tooltip>
   );
 }
 

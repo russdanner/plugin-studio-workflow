@@ -8,6 +8,7 @@ import { fetchItemsByPath } from '@craftercms/studio-ui/services/content';
 
 import AttachedContentItemRow from './AttachedContentItemRow';
 import type { AttachedSandboxItem } from '../types/CardDetailsRecord';
+import { filterValidSandboxPaths } from '../utils/attachmentUtils';
 
 export interface SelectedContentSourcePanelProps {
   selectedPaths: string[];
@@ -28,8 +29,15 @@ const SelectedContentSourcePanel = ({ selectedPaths, onRemove }: SelectedContent
       return;
     }
 
+    const paths = filterValidSandboxPaths(selectedPaths);
+    if (paths.length === 0) {
+      setItemsByPath({});
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
-    fetchItemsByPath(siteId, selectedPaths, { castAsDetailedItem: true }).subscribe({
+    fetchItemsByPath(siteId, paths, { castAsDetailedItem: true }).subscribe({
       next(items) {
         const nextMap: Record<string, AttachedSandboxItem> = {};
         (items as AttachedSandboxItem[]).forEach((item) => {
@@ -37,7 +45,7 @@ const SelectedContentSourcePanel = ({ selectedPaths, onRemove }: SelectedContent
             nextMap[item.path] = item;
           }
         });
-        selectedPaths.forEach((path) => {
+        paths.forEach((path) => {
           if (!nextMap[path]) {
             nextMap[path] = { path } as AttachedSandboxItem;
           }
@@ -47,7 +55,7 @@ const SelectedContentSourcePanel = ({ selectedPaths, onRemove }: SelectedContent
       },
       error() {
         const fallback: Record<string, AttachedSandboxItem> = {};
-        selectedPaths.forEach((path) => {
+        paths.forEach((path) => {
           fallback[path] = { path } as AttachedSandboxItem;
         });
         setItemsByPath(fallback);

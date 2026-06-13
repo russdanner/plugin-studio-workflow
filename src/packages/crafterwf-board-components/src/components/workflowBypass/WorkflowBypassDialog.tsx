@@ -5,6 +5,7 @@ import {
   Alert,
   Button,
   Checkbox,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -20,6 +21,7 @@ import { WorkflowBypassStudioAction, WorkflowBypassViolation } from '../../api/b
 
 export interface WorkflowBypassDialogProps {
   open: boolean;
+  checking?: boolean;
   action: WorkflowBypassStudioAction;
   allowUiBypass: boolean;
   violations: WorkflowBypassViolation[];
@@ -52,6 +54,7 @@ function actionNoun(action: WorkflowBypassStudioAction): string {
 
 const WorkflowBypassDialog = ({
   open,
+  checking = false,
   action,
   allowUiBypass,
   violations,
@@ -70,16 +73,29 @@ const WorkflowBypassDialog = ({
   const primaryMessage = violations[0]?.warningMessage;
 
   return (
-    <Dialog open={open} onClose={acknowledging ? undefined : onCancel} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={acknowledging || checking ? undefined : onCancel}
+      maxWidth="sm"
+      fullWidth
+      sx={{ zIndex: (theme) => theme.zIndex.modal + 20 }}
+    >
       <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-        {allowUiBypass ? (
+        {checking ? (
+          <CircularProgress size={22} />
+        ) : allowUiBypass ? (
           <WarningAmberRoundedIcon color="warning" />
         ) : (
           <BlockRoundedIcon color="error" />
         )}
-        {allowUiBypass ? 'Workflow bypass warning' : 'Workflow step required'}
+        {checking ? 'Checking workflow…' : allowUiBypass ? 'Workflow bypass warning' : 'Workflow step required'}
       </DialogTitle>
       <DialogContent dividers>
+        {checking ? (
+          <Typography variant="body2" color="text.secondary">
+            Checking whether this content is in an active workflow package…
+          </Typography>
+        ) : (
         <Stack spacing={2}>
           <Typography variant="body2" color="text.secondary">
             {allowUiBypass
@@ -126,9 +142,14 @@ const WorkflowBypassDialog = ({
             />
           )}
         </Stack>
+        )}
       </DialogContent>
       <DialogActions>
-        {allowUiBypass ? (
+        {checking ? (
+          <Button onClick={onCancel} disabled={acknowledging}>
+            Cancel
+          </Button>
+        ) : allowUiBypass ? (
           <>
             <Button onClick={onCancel} disabled={acknowledging}>
               Cancel

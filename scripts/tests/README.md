@@ -99,9 +99,22 @@ scripts/tests/
     ├── 22-mutations-tasks.sh
     ├── 23-mutations-notifications.sh
     ├── 24-mutations-admin.sh
+    ├── 25-mutations-workflow-publishing.sh
+    ├── 26-mutations-content-events.sh
     ├── 30-cleanup.sh
-    └── 90-negative.sh
+    ├── 90-negative.sh
+    └── 91-negative-content-events.sh
 ```
+
+### Unit tests (TypeScript)
+
+Pure path/event helpers in `crafterwf-board-components` have lightweight tests via [tsx](https://github.com/privatenumber/tsx) (no Jest/Vitest):
+
+```bash
+cd src && yarn test:unit
+```
+
+Covers `attachmentUtils` (`isSandboxContentPath`, `filterValidSandboxPaths`, `resolveSandboxItemPath`) and `contentEventUtils` (`resolveBridgeEventType`).
 
 ## Adding tests
 
@@ -153,8 +166,10 @@ For full regression after deploy:
 
 ## Coverage notes
 
-- **44 endpoints** are implemented; **42** have automated curl coverage (see manifest).
+- **46+ endpoints** implemented; see [endpoints.manifest.json](./endpoints.manifest.json) for curl coverage.
 - **Documented but not implemented** (skipped): `workflow-step/*`, `workflow-package/attach-link`.
 - **Publishing / bypass:** `workflow-bypass/check` runs after package content attach; `admin/workflow/save` round-trips `actionType` + `allowUiBypass`. Full step-action move (real Studio publish) is opt-in: `RUN_STEP_ACTION_TEST=1`.
+- **Content events:** `content-event/process` — listener enrollment, folder-path skip, unknown contentType re-resolution (`26-mutations-content-events.sh`, `91-negative-content-events.sh`).
 - **UI-only:** `workflow-bypass/acknowledge` and `record-action` (POST JSON) are documented but not curl-tested (Studio dialog flow).
+- **Unit tests:** `cd src && yarn test:unit` — path utilities and preview event-type mapping (no Studio required).
 - `admin/schema/install` runs only when `RUN_SCHEMA_INSTALL=1` (idempotent but intentionally opt-in).

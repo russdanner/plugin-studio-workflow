@@ -58,6 +58,7 @@ import { notifyCalendarUpdated } from '../types/calendarEvent';
 import {
   extractContentPathFromAttachmentUrl,
   isStaticAssetPath,
+  filterValidSandboxPaths,
   isValidContentPath,
   resolveAttachmentDisplayName,
   resolveAttachmentUrl
@@ -195,8 +196,9 @@ const BoardCard = ({
           attachedContentItems: pathsToFetch.size === 0 ? [] : []
         }));
 
-        if (pathsToFetch.size > 0) {
-          fetchItemsByPath(siteId, Array.from(pathsToFetch), { castAsDetailedItem: true }).subscribe({
+        const sandboxPaths = filterValidSandboxPaths(Array.from(pathsToFetch));
+        if (sandboxPaths.length > 0) {
+          fetchItemsByPath(siteId, sandboxPaths, { castAsDetailedItem: true }).subscribe({
             next(sandboxItems) {
               const byPath: Record<string, (typeof sandboxItems)[number]> = {};
               sandboxItems.forEach((item) => {

@@ -110,11 +110,18 @@ Soft-delete sandbox content to `/recyclebin/{uuid}/…` with restore and collisi
 
 ## API testing
 
-curl-based integration tests for all plugin REST services:
+curl-based integration tests for plugin REST services:
 
 ```bash
 ./scripts/run-api-tests.sh --smoke   # read-only GET smoke
 ./scripts/run-api-tests.sh           # full suite
 ```
 
-Requires a valid `CRAFTER_STUDIO_TOKEN` (or `scripts/.studio-token`). See [scripts/tests/README.md](./scripts/tests/README.md).
+Unit tests for path/event utilities (no Studio required):
+
+```bash
+./scripts/run-unit-tests.sh
+# or: cd src && yarn test:unit
+```
+
+Requires a valid `CRAFTER_STUDIO_TOKEN` (or `scripts/.studio-token`) for curl tests. See [scripts/tests/README.md](./scripts/tests/README.md).

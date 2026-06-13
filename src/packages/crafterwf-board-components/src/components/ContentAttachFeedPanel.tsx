@@ -18,6 +18,7 @@ import { fetchItemsByPath } from '@craftercms/studio-ui/services/content';
 import AttachedContentItemRow from './AttachedContentItemRow';
 import type { AttachedSandboxItem } from '../types/CardDetailsRecord';
 import { ContentAttachFeedEntry } from '../utils/contentAttachFeeds';
+import { filterValidSandboxPaths } from '../utils/attachmentUtils';
 
 export interface ContentAttachFeedPanelProps {
   title: string;
@@ -51,7 +52,11 @@ const ContentAttachFeedPanel = ({
       return;
     }
 
-    const paths = entries.map((entry) => entry.path);
+    const paths = filterValidSandboxPaths(entries.map((entry) => entry.path));
+    if (paths.length === 0) {
+      setItemsByPath({});
+      return;
+    }
     fetchItemsByPath(siteId, paths, { castAsDetailedItem: true }).subscribe({
       next(items) {
         const nextMap: Record<string, AttachedSandboxItem> = {};

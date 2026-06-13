@@ -33,7 +33,7 @@ These documents describe **what** the system does and **how** it is structured. 
 | [EXTENSIONS.md](./EXTENSIONS.md) | Cross-cutting features index |
 | [GROOVY_SANDBOX.md](./GROOVY_SANDBOX.md) | Studio Groovy sandbox rules and whitelist |
 | [POTENTIAL_REQUIREMENTS.md](./POTENTIAL_REQUIREMENTS.md) | Stakeholder requirements + **plugin remediation analysis** |
-| [../scripts/tests/README.md](../scripts/tests/README.md) | curl API test suite (all REST endpoints) |
+| [../scripts/tests/README.md](../scripts/tests/README.md) | curl API test suite (REST endpoints) + `scripts/run-unit-tests.sh` for TS unit tests |
 
 ## Design principles
 

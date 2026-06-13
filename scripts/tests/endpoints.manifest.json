@@ -426,7 +426,21 @@
       "suite": null,
       "body": "json",
       "description": "Record completed bypass action audit + notifications (UI guard)"
-    }
+    },
+    {
+      "path": "content-event/process",
+      "method": "GET",
+      "suite": "26-mutations-content-events",
+      "params": [
+        "eventType",
+        "contentPath"
+      ],
+      "optionalParams": [
+        "contentType"
+      ],
+      "description": "Process content create/edit event for workflow listener enrollment",
+      "httpNote": "Also available as POST with JSON body (process.post.groovy)"
+    },
     {
       "path": "recycle-bin/can-access",
       "method": "GET",

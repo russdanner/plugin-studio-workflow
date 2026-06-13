@@ -29,12 +29,16 @@ class WorkflowContentEventService {
         if (!siteId?.trim() || !contentPath?.trim()) {
             return []
         }
+        if (!isEnrollableContentPath(contentPath)) {
+            logger.debug("Skipping workflow content event for non-content path: {}", contentPath)
+            return []
+        }
         def normalizedEvent = normalizeEventType(eventType)
         if (!normalizedEvent) {
             logger.info("Ignoring workflow content event with unsupported type: {}", eventType)
             return []
         }
-        def resolvedType = contentType?.trim() ?: contentTypeSupport.resolveContentType(siteId, contentPath)
+        def resolvedType = resolveEffectiveContentType(contentType, siteId, contentPath)
         def workflowIds = definitionService.listWorkflowIds(siteId)
         logger.info(
             "Processing workflow content event: site={} event={} path={} contentType={} workflows={}",
@@ -53,9 +57,9 @@ class WorkflowContentEventService {
             )
             for (def listener in listeners) {
                 if (!EventListenerJson.matchesListener(listener, resolvedType, contentPath)) {
-                    logger.debug(
-                        "Listener {} skipped for {} (type={} path={})",
-                        listener.id, workflowId, resolvedType, contentPath
+                    logger.info(
+                        "Listener {} skipped for {} (type={} path={}, configuredType={})",
+                        listener.id, workflowId, resolvedType, contentPath, listener.contentType
                     )
                     continue
                 }
@@ -105,6 +109,22 @@ class WorkflowContentEventService {
         }
         // Content saves fire UPDATE; fall back to create listeners when no edit rules exist.
         return createListeners
+    }
+
+    private String resolveEffectiveContentType(String passed, String siteId, String path) {
+        def trimmed = passed?.trim()
+        if (trimmed && !ContentTypeSupport.isUnknownPlaceholder(trimmed)) {
+            return trimmed
+        }
+        return contentTypeSupport.resolveContentType(siteId, path)
+    }
+
+    private static boolean isEnrollableContentPath(String contentPath) {
+        def path = contentPath?.trim()
+        if (!path) {
+            return false
+        }
+        return path.endsWith('.xml') || path.endsWith('.html')
     }
 
     private static String normalizeEventType(String eventType) {

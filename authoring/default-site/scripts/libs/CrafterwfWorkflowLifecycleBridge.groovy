@@ -13,22 +13,23 @@ class CrafterwfWorkflowLifecycleBridge {
 
     static void handle(def applicationContext, String site, String path, String contentType,
                        def contentLifecycleOperation, def user) {
-        System.out.println(
-            "[crafterwf] lifecycle site=${site} path=${path} op=${contentLifecycleOperation} type=${contentType}"
+        LOGGER.info(
+            "[crafterwf] lifecycle site={} path={} op={} type={}",
+            site, path, contentLifecycleOperation, contentType
         )
         if (!applicationContext || !site?.trim() || !path?.trim()) {
-            System.out.println("[crafterwf] lifecycle skip: missing applicationContext, site, or path")
+            LOGGER.info("[crafterwf] lifecycle skip: missing applicationContext, site, or path")
             return
         }
         try {
             def manager = applicationContext.getBean('scriptEngineManager')
             if (!manager) {
-                System.out.println("[crafterwf] lifecycle skip: scriptEngineManager bean not available")
+                LOGGER.info("[crafterwf] lifecycle skip: scriptEngineManager bean not available")
                 return
             }
             def engine = manager.getScriptEngine(site)
             if (!engine) {
-                System.out.println("[crafterwf] lifecycle skip: scriptEngine not available for site ${site}")
+                LOGGER.info("[crafterwf] lifecycle skip: scriptEngine not available for site {}", site)
                 return
             }
             def bridgeClass = engine.groovyClassLoader.loadClass(
@@ -36,10 +37,10 @@ class CrafterwfWorkflowLifecycleBridge {
             )
             bridgeClass.handle(applicationContext, site, path, contentType, contentLifecycleOperation, user)
         } catch (Exception e) {
-            System.out.println(
-                "[crafterwf] lifecycle delegate failed path=${path}: ${e.class.simpleName}: ${e.message}"
+            LOGGER.warn(
+                "[crafterwf] lifecycle delegate failed path={}: {}: {}",
+                path, e.class.simpleName, e.message, e
             )
-            LOGGER.warn("Crafterwf workflow lifecycle delegate failed for {}: {}", path, e.message, e)
         }
     }
 }

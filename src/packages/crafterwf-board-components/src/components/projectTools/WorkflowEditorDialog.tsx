@@ -14,6 +14,7 @@ import {
   Button,
   Checkbox,
   Dialog,
+  DialogContent,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -373,8 +374,14 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
   const selectedStep = selectedStepIndex >= 0 ? steps[selectedStepIndex] : null;
 
   return (
-    <Dialog fullScreen open={open} onClose={onClose} scroll="paper">
-      <AppBar sx={{ position: 'relative' }} color="default" elevation={1}>
+    <Dialog
+      fullScreen
+      open={open}
+      onClose={onClose}
+      scroll="paper"
+      PaperProps={{ sx: { display: 'flex', flexDirection: 'column' } }}
+    >
+      <AppBar sx={{ position: 'sticky', top: 0, zIndex: (theme) => theme.zIndex.appBar + 1 }} color="default" elevation={1}>
         <Toolbar>
           <IconButton edge="start" aria-label="Close workflow editor" onClick={onClose} disabled={saving}>
             <CloseRoundedIcon />
@@ -391,10 +398,9 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
         </Toolbar>
       </AppBar>
 
-      <Box sx={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden' }}>
+      <DialogContent sx={{ flex: 1, p: 0, overflow: 'auto' }}>
         <Box
           sx={{
-            flexShrink: 0,
             px: 3,
             py: 1.5,
             borderBottom: 1,
@@ -428,7 +434,6 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
 
         <Box
           sx={{
-            flexShrink: 0,
             px: 3,
             py: 2,
             borderBottom: 1,
@@ -455,9 +460,8 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
           />
         </Box>
 
-        <Box sx={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
-          <Box sx={{ px: 3, py: 2 }}>
-            <Stack spacing={2}>
+        <Box sx={{ px: 3, py: 2, pb: 4 }}>
+          <Stack spacing={2}>
               {validationError && (
                 <Alert severity="warning" onClose={() => setValidationError(null)}>
                   {validationError}
@@ -676,10 +680,9 @@ const WorkflowEditorDialog = ({ open, detail, onClose, onSaved }: WorkflowEditor
                   />
                 </AccordionDetails>
               </Accordion>
-            </Stack>
-          </Box>
+          </Stack>
         </Box>
-      </Box>
+      </DialogContent>
 
       {rulesStepIndex != null && steps[rulesStepIndex] && (
         <WorkflowStepRulesDialog

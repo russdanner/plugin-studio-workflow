@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { memo } from 'react';
 import { type NodeProps } from '@xyflow/react';
-import { Chip, Typography } from '@mui/material';
+import { Chip, Typography, useTheme } from '@mui/material';
 
 import { resolveStepColor } from '../../colors';
 import { Position, WorkflowFlowHandle } from './workflowFlowHandle';
@@ -17,18 +17,19 @@ export interface WorkflowStepFlowNodeData extends Record<string, unknown> {
 export const WORKFLOW_STEP_NODE_WIDTH = 340;
 export const WORKFLOW_STEP_NODE_HEIGHT = 140;
 
-const handleStyle: React.CSSProperties = {
-  width: 20,
-  height: 20,
-  border: '3px solid #fff',
-  background: '#2563eb',
-  boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
-};
-
 const WorkflowStepFlowNode = ({ data, selected }: NodeProps) => {
+  const theme = useTheme();
   const stepData = data as WorkflowStepFlowNodeData;
   const stepColor = resolveStepColor(stepData.color);
   const isSelected = selected || stepData.selected;
+
+  const handleStyle: React.CSSProperties = {
+    width: 20,
+    height: 20,
+    border: `3px solid ${theme.palette.background.paper}`,
+    background: theme.palette.primary.main,
+    boxShadow: theme.shadows[2]
+  };
 
   return (
     <>
@@ -40,11 +41,12 @@ const WorkflowStepFlowNode = ({ data, selected }: NodeProps) => {
           minHeight: WORKFLOW_STEP_NODE_HEIGHT,
           boxSizing: 'border-box',
           borderRadius: 12,
-          border: `3px solid ${isSelected ? '#1976d2' : '#cbd5e1'}`,
+          border: `3px solid ${isSelected ? theme.palette.primary.main : theme.palette.divider}`,
           borderTop: `8px solid ${stepColor}`,
-          background: '#ffffff',
+          background: theme.palette.background.paper,
+          color: theme.palette.text.primary,
           opacity: 1,
-          boxShadow: '0 4px 14px rgba(15, 23, 42, 0.12)',
+          boxShadow: theme.shadows[3],
           padding: '16px 18px',
           cursor: 'grab',
           position: 'relative',

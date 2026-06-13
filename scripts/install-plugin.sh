@@ -108,6 +108,9 @@ PATCH_FILES=()
 if [[ ${#PATCH_FILES[@]} -gt 0 ]]; then
   echo "Patching Project Tools title (formatjs id) in site config..."
   python3 "${SCRIPT_DIR}/fix-project-tools-intl.py" "${PATCH_FILES[@]}" || true
+  if [[ -d "${SITE_REPO}" ]]; then
+    python3 "${SCRIPT_DIR}/fix-site-ui-widgets.py" "${SITE_REPO}" || true
+  fi
   if git -C "${SITE_REPO}" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     for f in "${PATCH_FILES[@]}"; do
       git -C "${SITE_REPO}" add "${f#${SITE_REPO}/}" 2>/dev/null || true
@@ -267,3 +270,5 @@ fi
 
 echo
 echo "Done. Open Studio → site '${SITE_ID}' → hard-refresh preview (Ctrl+Shift+R) to load new JS."
+echo "If content event listeners or lifecycle hooks still fail, restart Crafter authoring (Tomcat)"
+echo "  after install-plugin — CommonLifecycleApi is copied to default-site and requires a restart."

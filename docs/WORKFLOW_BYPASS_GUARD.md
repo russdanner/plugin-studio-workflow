@@ -75,11 +75,22 @@ Excludes the acting user.
 | `workflow-bypass/acknowledge.json` | POST | Body: `{ siteId, action, violations[] }` — audit acknowledge |
 | `workflow-bypass/record-action.json` | POST | Body: `{ siteId, action, violations[] }` — audit action + notify |
 
-## UI widget
+## UI mounting
 
-Headless guard mounted from the **Active workflows** preview toolbar button (always loaded in Preview). It watches Studio publish/reject dialog Redux state — not the optional `workflowBypassGuard` widget registration alone (that entry only declares the component for the plugin bundle).
+Headless Studio hooks mount **once** when the plugin bundle loads (`mountWorkflowStudioHooks()` in `index.tsx`):
 
-Intercept flow: check API → acknowledgement dialog → resume Studio dialog → on successful submit, record action + notify.
+| Component | Role |
+|-----------|------|
+| `WorkflowBypassGuard` | Watches Studio Redux publish/reject dialogs via `store.subscribe()` |
+| `WorkflowContentEventBridge` | Bridges preview saves to `content-event/process.json` |
+
+Both run inside a hidden `CrafterCMSNextBridge` container (no extra toolbar UI). The legacy widget id `org.rd.plugin.crafterwf.workflowBypassGuard` (`WorkflowBypassGuardHost`) remains registered for site `ui.xml` compatibility but renders nothing — hooks are global, not per-toolbar.
+
+Intercept flow: close Studio dialog immediately → check API → block or acknowledgement dialog → resume Studio dialog on allow → on successful submit, record action + notify (acknowledge mode only).
+
+**Path handling:** the guard sends raw sandbox paths (`/site/...`) to `workflow-bypass/check.json`. The server expands path variants in `WorkflowPackageAttachmentDao.findPackagesByContentPath` — the client does not duplicate variants.
+
+**Valid paths only:** only `/site/...` and `/static-assets/...` paths from publish dialog items (`path`, `localId`) or preview guest path are checked — numeric ids and bare URLs are ignored.
 
 ## Related documents
 

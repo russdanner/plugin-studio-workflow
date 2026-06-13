@@ -26,8 +26,9 @@ class WorkflowContentLifecycleBridge {
             "Workflow lifecycle event: site={} path={} operation={} eventType={} contentType={}",
             site, path, contentLifecycleOperation, eventType, contentType
         )
-        System.out.println(
-            "[crafterwf] bridge event site=${site} path=${path} op=${contentLifecycleOperation} eventType=${eventType} type=${contentType}"
+        logger.info(
+            "[crafterwf] bridge event site={} path={} op={} eventType={} type={}",
+            site, path, contentLifecycleOperation, eventType, contentType
         )
         try {
             def ctx = WorkflowContext.create(applicationContext, null, false)

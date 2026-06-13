@@ -103,9 +103,9 @@ _suite_type_from_file() {
   case "${base}" in
     00-auth) printf 'auth' ;;
     10-read-*|11-read-*|12-read-*) printf 'read' ;;
-    20-mutations-*|21-mutations-*|22-mutations-*|23-mutations-*|24-mutations-*|25-mutations-*) printf 'mutation' ;;
+    20-mutations-*|21-mutations-*|22-mutations-*|23-mutations-*|24-mutations-*|25-mutations-*|26-mutations-*) printf 'mutation' ;;
     30-cleanup) printf 'cleanup' ;;
-    90-negative) printf 'negative' ;;
+    90-negative|91-negative-*) printf 'negative' ;;
     *) printf 'general' ;;
   esac
 }
@@ -123,8 +123,10 @@ _suite_name_from_file() {
     23-mutations-notifications) printf 'Mutations — notifications' ;;
     24-mutations-admin) printf 'Mutations — admin workflows' ;;
     25-mutations-workflow-publishing) printf 'Mutations — publishing & step actions' ;;
+    26-mutations-content-events) printf 'Mutations — content event listeners' ;;
     30-cleanup) printf 'Cleanup' ;;
     90-negative) printf 'Negative — validation' ;;
+    91-negative-content-events) printf 'Negative — content events' ;;
     *) printf '%s' "${base}" ;;
   esac
 }
@@ -159,8 +161,12 @@ run_mutations() {
   _run_suite_file "${TESTS_ROOT}/suites/23-mutations-notifications.sh"
   _run_suite_file "${TESTS_ROOT}/suites/24-mutations-admin.sh"
   _run_suite_file "${TESTS_ROOT}/suites/25-mutations-workflow-publishing.sh"
+  _run_suite_file "${TESTS_ROOT}/suites/26-mutations-content-events.sh"
 }
-run_negative() { _run_suite_file "${TESTS_ROOT}/suites/90-negative.sh"; }
+run_negative() {
+  _run_suite_file "${TESTS_ROOT}/suites/90-negative.sh"
+  _run_suite_file "${TESTS_ROOT}/suites/91-negative-content-events.sh"
+}
 run_cleanup() {
   [[ "${KEEP_FIXTURES}" -eq 1 ]] && { test_skip "cleanup suite" "--keep-fixtures"; return 0; }
   _run_suite_file "${TESTS_ROOT}/suites/30-cleanup.sh"

@@ -1,16 +1,17 @@
+import { useTheme } from '@mui/material';
 import { useEffect } from 'react';
 
 const REACT_FLOW_STYLES_ID = 'crafterwf-react-flow-styles';
 const REACT_FLOW_CRITICAL_ID = 'crafterwf-react-flow-critical';
 
-/** Minimal rules so the canvas works even if the external stylesheet is slow or blocked. */
-const CRITICAL_REACT_FLOW_CSS = `
+function buildCriticalReactFlowCss(canvasBg: string, nodeBg: string, handleBorder: string, handleBg: string): string {
+  return `
 .crafterwf-workflow-flow-canvas .react-flow {
   width: 100%;
   height: 100%;
   position: relative;
   overflow: hidden;
-  background: #f8fafc;
+  background: ${canvasBg};
 }
 .crafterwf-workflow-flow-canvas .react-flow__container {
   position: absolute;
@@ -58,7 +59,7 @@ const CRITICAL_REACT_FLOW_CSS = `
   z-index: 3 !important;
 }
 .crafterwf-workflow-flow-canvas .react-flow__node .crafterwf-workflow-step-node {
-  background: #ffffff !important;
+  background: ${nodeBg} !important;
   opacity: 1 !important;
 }
 .crafterwf-workflow-flow-canvas .react-flow__panel {
@@ -71,8 +72,8 @@ const CRITICAL_REACT_FLOW_CSS = `
   min-width: 18px !important;
   min-height: 18px !important;
   border-radius: 50%;
-  border: 2px solid #fff !important;
-  background: #2563eb !important;
+  border: 2px solid ${handleBorder} !important;
+  background: ${handleBg} !important;
   z-index: 10;
   pointer-events: all !important;
   cursor: crosshair;
@@ -87,6 +88,7 @@ const CRITICAL_REACT_FLOW_CSS = `
   stroke-width: 2.5px;
 }
 `;
+}
 
 function getReactFlowCssPath(siteId?: string | null): string {
   const base =
@@ -98,13 +100,21 @@ function getReactFlowCssPath(siteId?: string | null): string {
 }
 
 export function useReactFlowStyles(siteId?: string | null) {
+  const theme = useTheme();
+
   useEffect(() => {
-    if (!document.getElementById(REACT_FLOW_CRITICAL_ID)) {
-      const style = document.createElement('style');
+    const canvasBg = theme.palette.background.default;
+    const nodeBg = theme.palette.background.paper;
+    const handleBorder = theme.palette.background.paper;
+    const handleBg = theme.palette.primary.main;
+
+    let style = document.getElementById(REACT_FLOW_CRITICAL_ID) as HTMLStyleElement | null;
+    if (!style) {
+      style = document.createElement('style');
       style.id = REACT_FLOW_CRITICAL_ID;
-      style.textContent = CRITICAL_REACT_FLOW_CSS;
       document.head.appendChild(style);
     }
+    style.textContent = buildCriticalReactFlowCss(canvasBg, nodeBg, handleBorder, handleBg);
 
     const linkId = REACT_FLOW_STYLES_ID;
     const href = getReactFlowCssPath(siteId);
@@ -120,5 +130,11 @@ export function useReactFlowStyles(siteId?: string | null) {
     link.rel = 'stylesheet';
     link.href = href;
     document.head.appendChild(link);
-  }, [siteId]);
+  }, [
+    siteId,
+    theme.palette.mode,
+    theme.palette.background.default,
+    theme.palette.background.paper,
+    theme.palette.primary.main
+  ]);
 }

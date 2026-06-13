@@ -150,7 +150,8 @@ function buildEdges(
   transitionColor: string,
   actionColor: string,
   backwardColor: string,
-  showBackwardArrows: boolean
+  showBackwardArrows: boolean,
+  labelBackground: string
 ): Edge[] {
   const edges: Edge[] = [];
   const stepByKey = new Map(steps.map((step) => [step.clientKey, step]));
@@ -177,7 +178,7 @@ function buildEdges(
         deletable: true,
         label: backward ? 'Move (back)' : 'Move',
         labelStyle: { fill: strokeColor, fontWeight: 700, fontSize: 13 },
-        labelBgStyle: { fill: '#ffffff', fillOpacity: 0.95 },
+        labelBgStyle: { fill: labelBackground, fillOpacity: 0.95 },
         labelBgPadding: [8, 4] as [number, number],
         labelBgBorderRadius: 4,
         style: {
@@ -208,7 +209,7 @@ function buildEdges(
       deletable: false,
       label: actionLabel,
       labelStyle: { fill: actionColor, fontWeight: 700, fontSize: 12 },
-      labelBgStyle: { fill: '#ffffff', fillOpacity: 0.92 },
+      labelBgStyle: { fill: labelBackground, fillOpacity: 0.92 },
       labelBgPadding: [6, 4] as [number, number],
       labelBgBorderRadius: 4,
       style: { stroke: actionColor, strokeWidth: 2.5, strokeDasharray: '8 5' },
@@ -396,6 +397,9 @@ function FlowCanvas({
   const transitionColor = theme.palette.text.secondary;
   const actionColor = theme.palette.primary.main;
   const backwardColor = theme.palette.warning.dark;
+  const labelBackground = theme.palette.background.paper;
+  const backgroundDotColor =
+    theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300];
   const isDraggingRef = useRef(false);
   const [showBackwardArrows, setShowBackwardArrows] = React.useState(false);
 
@@ -411,8 +415,16 @@ function FlowCanvas({
   );
 
   const edges = useMemo(
-    () => buildEdges(steps, transitionColor, actionColor, backwardColor, showBackwardArrows),
-    [steps, transitionColor, actionColor, backwardColor, showBackwardArrows]
+    () =>
+      buildEdges(
+        steps,
+        transitionColor,
+        actionColor,
+        backwardColor,
+        showBackwardArrows,
+        labelBackground
+      ),
+    [steps, transitionColor, actionColor, backwardColor, showBackwardArrows, labelBackground]
   );
 
   useEffect(() => {
@@ -524,14 +536,16 @@ function FlowCanvas({
       <Box
         className="crafterwf-workflow-flow-canvas"
         sx={{
-          height: 560,
+          height: { xs: 360, sm: 420 },
+          maxHeight: 'min(50vh, 480px)',
           width: '100%',
           position: 'relative',
           touchAction: 'none',
           userSelect: 'none',
           '& .react-flow': {
             width: '100%',
-            height: '100%'
+            height: '100%',
+            bgcolor: 'background.default'
           }
         }}
       >
@@ -562,7 +576,12 @@ function FlowCanvas({
           maxZoom={1.75}
           proOptions={{ hideAttribution: true }}
         >
-          <Background gap={24} size={1.5} />
+          <Background
+            gap={24}
+            size={1.5}
+            color={backgroundDotColor}
+            bgColor={theme.palette.background.default}
+          />
           <FlowViewportInitializer initialFlowViewport={initialFlowViewport} />
           <FlowZoomToolbar
             onResetRowLayout={handleResetRowLayout}

@@ -4,7 +4,7 @@ import { fetchSandboxItem } from '@craftercms/studio-ui/services/content';
 
 import { getWorkflow, WorkflowSummary } from '../api/adminApi';
 import { attachContent, createPackage, ContentPackageWithComments } from '../api/workflowApi';
-import { resolveAttachmentLabel } from './attachmentUtils';
+import { isValidContentPath, resolveAttachmentLabel } from './attachmentUtils';
 import { openWorkflowBoard } from './openWorkflowBoard';
 
 export const WORKFLOWS_UPDATED_EVENT = 'crafterwf:workflows-updated';
@@ -125,6 +125,9 @@ export function startWorkflowPackageForContent(
 }
 
 export async function resolveContentLabel(siteId: string, contentPath: string): Promise<string> {
+  if (!isValidContentPath(contentPath)) {
+    return resolveAttachmentLabel(contentPath);
+  }
   return new Promise((resolve) => {
     fetchSandboxItem(siteId, contentPath, { castAsDetailedItem: true }).subscribe({
       next(item) {

@@ -470,6 +470,22 @@ Body: `{ siteId, action, violations[] }` — records `workflow_bypass_acknowledg
 
 Body: `{ siteId, action, violations[] }` — records `workflow_bypass_action` audit entries and sends notifications.
 
+### `content-event/process.json`
+
+Processes a content **create** or **edit** event against all workflow definitions’ listeners (same logic as the lifecycle bridge).
+
+| Param | Description |
+|-------|-------------|
+| `eventType` | `create` or `edit` (aliases: `NEW`, `DUPLICATE`, `UPDATE`, etc.) |
+| `contentPath` | Sandbox path to the content item (must end with `.xml` or `.html`) |
+| `contentType` | Optional hint; `/page/unknown` and `/component/unknown` are re-resolved from item XML |
+
+GET query params or POST JSON body (`process.post.groovy`).
+
+Returns `{ siteId, eventType, contentPath, results[] }` where each result describes listener enrollment (package id, created/attached/moved flags) or an error entry.
+
+Used by the preview **WorkflowContentEventBridge** when lifecycle controllers do not run. See [WORKFLOW_DEFINITIONS.md](./WORKFLOW_DEFINITIONS.md#content-event-listeners).
+
 ## Error responses
 
 | Code | Meaning |
@@ -491,6 +507,8 @@ flowchart TB
     CTX --> TS[TaskService]
     CTX --> ALS[AuditLogService]
     CTX --> ADM[WorkflowAdminService]
+    CTX --> CES[WorkflowContentEventService]
+    CTX --> WBS[WorkflowBypassService]
     BS --> DAO[DAO layer]
     PS --> DAO
     CS --> DAO

@@ -33,6 +33,51 @@ export function isValidContentPath(path: string | undefined | null): boolean {
   return trimmed !== 'undefined' && trimmed !== 'null';
 }
 
+/** True for repository paths the workflow bypass API accepts (not numeric ids or URLs). */
+export function isSandboxContentPath(path: string | undefined | null): boolean {
+  if (!isValidContentPath(path)) {
+    return false;
+  }
+  const trimmed = path!.trim();
+  return trimmed.startsWith('/site/') || trimmed.startsWith('/static-assets/');
+}
+
+/** Drop null/empty/invalid paths before calling Studio sandbox_items_by_path. */
+export function filterValidSandboxPaths(
+  paths: Array<string | null | undefined>
+): string[] {
+  const seen = new Set<string>();
+  const valid: string[] = [];
+  paths.forEach((path) => {
+    if (!isValidContentPath(path)) {
+      return;
+    }
+    const trimmed = path!.trim();
+    if (seen.has(trimmed)) {
+      return;
+    }
+    seen.add(trimmed);
+    valid.push(trimmed);
+  });
+  return valid;
+}
+
+/** Resolve a sandbox item path from Studio save/preview payloads (uri, path, localId). */
+export function resolveSandboxItemPath(
+  item: Record<string, unknown> | null | undefined
+): string | null {
+  if (!item) {
+    return null;
+  }
+  const candidates = [item.path, item.uri, item.localId, item.url];
+  for (const candidate of candidates) {
+    if (typeof candidate === 'string' && isSandboxContentPath(candidate)) {
+      return candidate.trim();
+    }
+  }
+  return null;
+}
+
 export function extractContentPathFromAttachmentUrl(url: string): string | null {
   if (!url) {
     return null;

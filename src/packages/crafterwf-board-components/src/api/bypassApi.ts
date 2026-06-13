@@ -1,4 +1,7 @@
-import { post, get } from '@craftercms/studio-ui/utils/ajax';
+import { post } from '@craftercms/studio-ui/utils/ajax';
+import { Observable } from 'rxjs';
+import { AjaxResponse } from 'rxjs/ajax';
+import { pluginGet } from './pluginHttp';
 import { PLUGIN_SERVICE_BASE } from './workflowApi';
 
 export type WorkflowBypassStudioAction = 'publish' | 'request_publish' | 'reject';
@@ -23,17 +26,19 @@ export interface WorkflowBypassCheckResult {
   violations: WorkflowBypassViolation[];
 }
 
+export type WorkflowBypassCheckResponse = { result: WorkflowBypassCheckResult };
+
 export function checkWorkflowBypass(
   siteId: string,
   contentPaths: string[],
   action: WorkflowBypassStudioAction
-) {
+): Observable<AjaxResponse<WorkflowBypassCheckResponse>> {
   const paths = contentPaths.filter(Boolean).join(',');
-  return get<{ result: WorkflowBypassCheckResult }>(
+  return pluginGet(
     `${PLUGIN_SERVICE_BASE}/workflow-bypass/check.json?siteId=${encodeURIComponent(siteId)}` +
       `&contentPaths=${encodeURIComponent(paths)}` +
       `&action=${encodeURIComponent(action)}`
-  );
+  ) as Observable<AjaxResponse<WorkflowBypassCheckResponse>>;
 }
 
 export function acknowledgeWorkflowBypass(

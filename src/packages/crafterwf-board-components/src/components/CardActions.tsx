@@ -30,7 +30,11 @@ import { createCustomDocumentEventListener } from '@craftercms/studio-ui/utils/d
 import CardRecord from '../types/CardRecord';
 import CardDetailsRecord from '../types/CardDetailsRecord';
 import { attachContent, archivePackage } from '../api/workflowApi';
-import { resolveAttachmentLabel } from '../utils/attachmentUtils';
+import {
+  isValidContentPath,
+  resolveAttachmentLabel,
+  resolveSandboxItemPath
+} from '../utils/attachmentUtils';
 import { notifyWorkflowsUpdated } from '../utils/activeWorkflows';
 import ContentSearchAttachDialog from './ContentSearchAttachDialog';
 
@@ -80,6 +84,11 @@ const CardActions = ({
       : '';
 
   const attachContentToPackage = (contentName: string, contentPath: string) => {
+    if (!isValidContentPath(contentPath)) {
+      console.error('[crafterwf] Cannot attach content: invalid path.', contentPath);
+      notifyNestedDialogClosed();
+      return;
+    }
     attachContent(siteId, card.id, contentPath, contentName, serverAddress).subscribe({
       next: () => {
         notifyWorkflowsUpdated();
@@ -112,7 +121,15 @@ const CardActions = ({
     fetchSandboxItem(siteId, path, { castAsDetailedItem: true }).subscribe({
       next(sandboxItem) {
         createCustomDocumentEventListener('CRAFTERWF_NEW_CONTENT', (response) => {
-          attachContentToPackage(response.item.internalName, response.item.uri);
+          const savedItem = (response?.item ?? response) as Record<string, unknown> | undefined;
+          const contentPath = resolveSandboxItemPath(savedItem);
+          if (!contentPath) {
+            console.error('[crafterwf] New content saved but no path was returned; skipping attach.', response);
+            notifyNestedDialogClosed();
+            return;
+          }
+          attachContentToPackage(resolveAttachmentLabel(savedItem ?? { path: contentPath }), contentPath);
+          notifyNestedDialogClosed();
         });
 
         createCustomDocumentEventListener('CRAFTERWF_CONTENTTYPE_SELECTED', (response) => {

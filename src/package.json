@@ -15,7 +15,8 @@
   "scripts": {
     "w:prettier": "yarn prettier --write './packages/**/*.{ts,tsx}'",
     "dist": "yarn workspace crafterwf-board-components dist && yarn workspace crafterwf-app dist",
-    "dist:deploy": "PLUGIN_DEPLOY_PATH=../../../authoring/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf yarn dist"
+    "dist:deploy": "PLUGIN_DEPLOY_PATH=../../../authoring/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf yarn dist",
+    "test:unit": "yarn workspace crafterwf-board-components test:unit"
   },
   "resolutions": {
     "webpack-dev-server": "^5.2.1"

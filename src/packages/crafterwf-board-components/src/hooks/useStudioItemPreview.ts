@@ -5,6 +5,7 @@ import useActiveSiteId from '@craftercms/studio-ui/hooks/useActiveSiteId';
 import { useEnv } from '@craftercms/studio-ui/hooks/useEnv';
 import { fetchSandboxItem } from '@craftercms/studio-ui/services/content';
 
+import { isValidContentPath } from '../utils/attachmentUtils';
 import { openContentInInspectMode, previewStudioItem, StudioPreviewItem } from '../utils/studioItemPreview';
 
 export function useStudioItemPreview() {
@@ -24,7 +25,7 @@ export function useStudioItemPreview() {
 
   const previewPath = useCallback(
     (path: string, label?: string) => {
-      if (!path || !site) {
+      if (!isValidContentPath(path) || !site) {
         return;
       }
       fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({
@@ -41,7 +42,7 @@ export function useStudioItemPreview() {
 
   const inspectPath = useCallback(
     (path: string, label?: string) => {
-      if (!path || !site) {
+      if (!isValidContentPath(path) || !site) {
         return;
       }
       fetchSandboxItem(site, path, { castAsDetailedItem: true }).subscribe({

@@ -3,7 +3,7 @@ const { useState: useState$1, useRef: useRef$1, useEffect: useEffect$2, useConte
 const React__default = craftercms.libs.React && Object.prototype.hasOwnProperty.call(craftercms.libs.React, 'default') ? craftercms.libs.React['default'] : craftercms.libs.React;
 const RefreshRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RefreshRounded');
 const SettingsRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SettingsRounded');
-const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogTitle, DialogContent, Tabs, Tab, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, cardClasses, Fab, FormControlLabel, Switch, ToggleButtonGroup, ToggleButton, Alert, Menu: Menu$1, ListItemText: ListItemText$1, DialogContentText, Popover, Autocomplete, RadioGroup, Radio, useTheme, AppBar, Toolbar, FormLabel } = craftercms.libs.MaterialUI;
+const { Box, Typography, Checkbox, Stack, Tooltip, IconButton, MenuItem, Avatar, CircularProgress, Popper, Paper, List, ListItemButton, Chip, Button, TextField, FormControl, InputLabel, Select, Accordion, AccordionSummary, AccordionDetails, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, TablePagination, TableSortLabel, Divider, Dialog, DialogTitle, DialogContent, Tabs, Tab, DialogActions, Card, CardHeader, CardActions: CardActions$1, Badge, cardClasses, Fab, FormControlLabel, Switch, Alert, ToggleButtonGroup, ToggleButton, Menu: Menu$1, ListItemText: ListItemText$1, InputAdornment, DialogContentText, Popover, Autocomplete, RadioGroup, Radio, useTheme, AppBar, Toolbar, FormLabel } = craftercms.libs.MaterialUI;
 const { connect, Provider: Provider$2, useSelector, useDispatch } = craftercms.libs.ReactRedux;
 const ReactDOM = craftercms.libs.ReactDOM && Object.prototype.hasOwnProperty.call(craftercms.libs.ReactDOM, 'default') ? craftercms.libs.ReactDOM['default'] : craftercms.libs.ReactDOM;
 const { ApiResponseErrorState } = craftercms.components;
@@ -38,20 +38,24 @@ const { createCustomDocumentEventListener } = craftercms.utils.dom;
 const Search = craftercms.components.Search && Object.prototype.hasOwnProperty.call(craftercms.components.Search, 'default') ? craftercms.components.Search['default'] : craftercms.components.Search;
 const { fetchMyActivity, fetchUnpublished } = craftercms.services.dashboard;
 const { of, forkJoin } = craftercms.libs.rxjs;
-const { map, catchError } = craftercms.libs.rxjs;
+const { map, catchError, filter: filter$1 } = craftercms.libs.rxjs;
 const ChevronRightRounded = craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronRightRounded');
 const Collapse = craftercms.libs.MaterialUI.Collapse && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.Collapse, 'default') ? craftercms.libs.MaterialUI.Collapse['default'] : craftercms.libs.MaterialUI.Collapse;
 const ListItemButton$1 = craftercms.libs.MaterialUI.ListItemButton && Object.prototype.hasOwnProperty.call(craftercms.libs.MaterialUI.ListItemButton, 'default') ? craftercms.libs.MaterialUI.ListItemButton['default'] : craftercms.libs.MaterialUI.ListItemButton;
 const ToolsPanelListItemButton = craftercms.components.ToolsPanelListItemButton && Object.prototype.hasOwnProperty.call(craftercms.components.ToolsPanelListItemButton, 'default') ? craftercms.components.ToolsPanelListItemButton['default'] : craftercms.components.ToolsPanelListItemButton;
 const CommentRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CommentRounded');
 const NotificationsNoneRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/NotificationsNoneRounded');
+const BlockRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded');
+const WarningAmberRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded');
+const { getHostToHostBus } = craftercms.utils.subjects;
 const InventoryRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/InventoryRounded');
 const ChevronLeftRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ChevronLeftRounded');
 const TaskAltRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/TaskAltRounded');
 const CalendarMonthRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CalendarMonthRounded');
-const BlockRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/BlockRounded');
-const WarningAmberRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/WarningAmberRounded');
+const DeleteForeverRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/DeleteForeverRounded');
+const PreviewRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/PreviewRounded');
 const RestoreFromTrashRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/RestoreFromTrashRounded');
+const SearchRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/SearchRounded');
 const CheckCircleRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/CheckCircleRounded');
 const ErrorOutlineRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/ErrorOutlineRounded');
 const AddRoundedIcon = craftercms.utils.constants.components.get('@mui/icons-material/AddRounded') && Object.prototype.hasOwnProperty.call(craftercms.utils.constants.components.get('@mui/icons-material/AddRounded'), 'default') ? craftercms.utils.constants.components.get('@mui/icons-material/AddRounded')['default'] : craftercms.utils.constants.components.get('@mui/icons-material/AddRounded');
@@ -10188,12 +10192,12 @@ function createCrafterwfWidgetDescriptor(widgetId, siteId) {
 
 var WORKFLOW_BOARD_WIDGET_ID = 'org.rd.plugin.crafterwf.board';
 /** Resolve at runtime — avoids bundling studio-ui dialog actions into the plugin. */
-function showWidgetDialogAction$1() {
+function showWidgetDialogAction$2() {
     var craftercms = window.craftercms;
     return craftercms.libs.ReduxToolkit.createAction('SHOW_WIDGET_DIALOG');
 }
 function openWorkflowBoard(dispatch, workflowTitle, options, siteId) {
-    dispatch(showWidgetDialogAction$1()({
+    dispatch(showWidgetDialogAction$2()({
         title: workflowTitle,
         extraProps: __assign({ workflowId: options.workflowId }, (options.openPackageId ? { openPackageId: options.openPackageId } : {})),
         widget: createCrafterwfWidgetDescriptor(WORKFLOW_BOARD_WIDGET_ID, siteId)
@@ -11409,7 +11413,7 @@ function listPackageAuditLog(siteId, packageId, page, pageSize, sortBy, sortOrde
 }
 
 var DEFAULT_PAGE_SIZE = 10;
-function formatDate$3(value) {
+function formatDate$2(value) {
     if (!value) {
         return '—';
     }
@@ -11520,7 +11524,7 @@ var PackageAuditTrailSection = function (_a) {
                             React$2.createElement(CircularProgress, { size: 22 })))) : entries.length === 0 ? (React$2.createElement(TableRow, null,
                         React$2.createElement(TableCell, { colSpan: 4, align: "center", sx: { py: 3 } },
                             React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "No audit entries for this package.")))) : (entries.map(function (entry) { return (React$2.createElement(TableRow, { key: entry.id, hover: true },
-                        React$2.createElement(TableCell, { sx: { whiteSpace: 'nowrap', verticalAlign: 'top' } }, formatDate$3(entry.createdOn)),
+                        React$2.createElement(TableCell, { sx: { whiteSpace: 'nowrap', verticalAlign: 'top' } }, formatDate$2(entry.createdOn)),
                         React$2.createElement(TableCell, { sx: { verticalAlign: 'top' } }, entry.username ? (React$2.createElement(UserAvatarFromUsername, { username: entry.username, size: 22 })) : ('unknown')),
                         React$2.createElement(TableCell, { sx: { textTransform: 'capitalize', verticalAlign: 'top' } }, formatOperation$1(entry.operation)),
                         React$2.createElement(TableCell, { sx: {
@@ -14165,7 +14169,7 @@ function openNotificationTarget(dispatch, siteId, notification, previewPath, ins
     }
 }
 
-function formatDate$2(value) {
+function formatDate$1(value) {
     if (!value) {
         return '';
     }
@@ -14354,7 +14358,7 @@ var NotificationsPanel = function () {
                             wordBreak: 'break-all',
                             '&:hover': { color: 'primary.dark' }
                         } }, linkLabel)) : (React$2.createElement(Box, { component: "span", color: "text.secondary" }, linkLabel)))),
-                React$2.createElement(Typography, { variant: "caption", color: "text.secondary" }, formatDate$2(notification.createdOn)),
+                React$2.createElement(Typography, { variant: "caption", color: "text.secondary" }, formatDate$1(notification.createdOn)),
                 !notification.archived && (React$2.createElement(Stack, { direction: "row", spacing: 1, sx: { mt: 0.75, flexWrap: 'wrap' } },
                     React$2.createElement(Button, { size: "small", sx: { px: 0, minWidth: 0 }, onClick: function () { return handleResolve(notification.id, !notification.resolved); } }, notification.resolved ? 'Reopen' : 'Resolve'),
                     React$2.createElement(Button, { size: "small", sx: { px: 0, minWidth: 0 }, onClick: function () { return handleArchive(notification.id, true); } }, "Archive"))),
@@ -14362,6 +14366,450 @@ var NotificationsPanel = function () {
         }))),
         React$2.createElement(Button, { size: "small", sx: { alignSelf: 'flex-start', px: 0, minWidth: 0 }, onClick: function () { return setShowArchived(function (prev) { return !prev; }); } }, showArchived ? 'Hide archived' : 'Show archived')));
 };
+
+function checkWorkflowBypass(siteId, contentPaths, action) {
+    var paths = contentPaths.filter(Boolean).join(',');
+    return get$2("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/check.json?siteId=").concat(encodeURIComponent(siteId)) +
+        "&contentPaths=".concat(encodeURIComponent(paths)) +
+        "&action=".concat(encodeURIComponent(action)));
+}
+function acknowledgeWorkflowBypass(siteId, action, violations) {
+    return post("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/acknowledge.json"), {
+        siteId: siteId,
+        action: action,
+        violations: violations
+    });
+}
+function recordWorkflowBypassAction(siteId, action, violations) {
+    return post("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/record-action.json"), {
+        siteId: siteId,
+        action: action,
+        violations: violations
+    });
+}
+
+function actionLabel(action) {
+    switch (action) {
+        case 'request_publish':
+            return 'request publish';
+        case 'reject':
+            return 'reject';
+        default:
+            return 'publish';
+    }
+}
+function actionNoun(action) {
+    switch (action) {
+        case 'request_publish':
+            return 'Request publish';
+        case 'reject':
+            return 'Reject';
+        default:
+            return 'Publish';
+    }
+}
+var WorkflowBypassDialog = function (_a) {
+    var _b;
+    var open = _a.open, _c = _a.checking, checking = _c === void 0 ? false : _c, action = _a.action, allowUiBypass = _a.allowUiBypass, violations = _a.violations, _d = _a.acknowledging, acknowledging = _d === void 0 ? false : _d, onCancel = _a.onCancel, onConfirm = _a.onConfirm;
+    var _e = useState$1(false), acknowledged = _e[0], setAcknowledged = _e[1];
+    React$2.useEffect(function () {
+        if (open) {
+            setAcknowledged(false);
+        }
+    }, [open, violations, allowUiBypass]);
+    var primaryMessage = (_b = violations[0]) === null || _b === void 0 ? void 0 : _b.warningMessage;
+    return (React$2.createElement(Dialog, { open: open, onClose: acknowledging || checking ? undefined : onCancel, maxWidth: "sm", fullWidth: true, sx: { zIndex: function (theme) { return theme.zIndex.modal + 2; } } },
+        React$2.createElement(DialogTitle, { sx: { display: 'flex', alignItems: 'center', gap: 1 } },
+            checking ? (React$2.createElement(CircularProgress, { size: 22 })) : allowUiBypass ? (React$2.createElement(WarningAmberRoundedIcon, { color: "warning" })) : (React$2.createElement(BlockRoundedIcon, { color: "error" })),
+            checking ? 'Checking workflow…' : allowUiBypass ? 'Workflow bypass warning' : 'Workflow step required'),
+        React$2.createElement(DialogContent, { dividers: true }, checking ? (React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "Checking whether this content is in an active workflow package\u2026")) : (React$2.createElement(Stack, { spacing: 2 },
+            React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, allowUiBypass
+                ? "You are about to ".concat(actionLabel(action), " content outside the configured workflow step. Review the package details below. You may continue after acknowledging this warning.")
+                : "".concat(actionNoun(action), " is blocked because this content is in a workflow package that is not on the correct step. Move the package to the step that runs this action, then try again.")),
+            primaryMessage && (React$2.createElement(Alert, { severity: allowUiBypass ? 'warning' : 'error', sx: { alignItems: 'flex-start' } }, primaryMessage)),
+            violations.map(function (violation) { return (React$2.createElement(Stack, { key: "".concat(violation.packageId, "-").concat(violation.contentPath), spacing: 0.5, sx: function (theme) { return ({
+                    p: 1.5,
+                    borderRadius: 1,
+                    border: "1px solid ".concat(theme.palette.divider)
+                }); } },
+                React$2.createElement(Typography, { variant: "subtitle2" }, violation.packageTitle),
+                React$2.createElement(Typography, { variant: "body2" },
+                    React$2.createElement("strong", null, "Workflow:"),
+                    " ",
+                    violation.workflowName),
+                React$2.createElement(Typography, { variant: "body2" },
+                    React$2.createElement("strong", null, "Current step:"),
+                    " ",
+                    violation.currentStepName),
+                React$2.createElement(Typography, { variant: "caption", color: "text.secondary" }, violation.contentPath))); }),
+            allowUiBypass && (React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { checked: acknowledged, onChange: function (e) { return setAcknowledged(e.target.checked); }, disabled: acknowledging }), label: "I understand this action bypasses the workflow step." }))))),
+        React$2.createElement(DialogActions, null, checking ? (React$2.createElement(Button, { onClick: onCancel, disabled: acknowledging }, "Cancel")) : allowUiBypass ? (React$2.createElement(React$2.Fragment, null,
+            React$2.createElement(Button, { onClick: onCancel, disabled: acknowledging }, "Cancel"),
+            React$2.createElement(Button, { variant: "contained", color: "warning", disabled: !acknowledged || acknowledging, onClick: onConfirm }, "Continue"))) : (React$2.createElement(Button, { variant: "contained", onClick: onCancel }, "Close")))));
+};
+
+function extractContentPaths(payload) {
+    var _a;
+    var items = payload.items;
+    var fromItems = (items !== null && items !== void 0 ? items : [])
+        .map(function (item) { return (item.path || item.localId || item.url || '').trim(); })
+        .filter(Boolean);
+    if (fromItems.length) {
+        return normalizeContentPaths(fromItems);
+    }
+    var paths = payload.paths;
+    if (Array.isArray(paths)) {
+        return normalizeContentPaths(paths.map(function (path) { return String(path).trim(); }).filter(Boolean));
+    }
+    if (typeof paths === 'string' && paths.trim()) {
+        return normalizeContentPaths([paths.trim()]);
+    }
+    var singlePath = (_a = payload.path) !== null && _a !== void 0 ? _a : payload.contentPath;
+    if (typeof singlePath === 'string' && singlePath.trim()) {
+        return normalizeContentPaths([singlePath.trim()]);
+    }
+    return [];
+}
+function normalizeContentPaths(paths) {
+    var _a;
+    var variants = new Set();
+    for (var _i = 0, paths_1 = paths; _i < paths_1.length; _i++) {
+        var raw = paths_1[_i];
+        var path = raw.trim();
+        if (!path) {
+            continue;
+        }
+        variants.add(path);
+        if (path.startsWith('/site/website/')) {
+            variants.add(path.replace(/^\/site\/website\//, '/'));
+        }
+        else if (path.startsWith('/')) {
+            variants.add("/site/website".concat(path));
+        }
+        else {
+            variants.add("/site/website/".concat(path));
+        }
+        if (!path.endsWith('/index.xml') && !/\.[a-zA-Z0-9]+$/.test((_a = path.split('/').pop()) !== null && _a !== void 0 ? _a : '')) {
+            variants.add("".concat(path.replace(/\/$/, ''), "/index.xml"));
+        }
+    }
+    return Array.from(variants);
+}
+function parseBypassCheckResult(response) {
+    var _a, _b;
+    var candidate = ((_b = (_a = response === null || response === void 0 ? void 0 : response.response) === null || _a === void 0 ? void 0 : _a.result) !== null && _b !== void 0 ? _b : response === null || response === void 0 ? void 0 : response.response);
+    if (!candidate || typeof candidate !== 'object') {
+        return null;
+    }
+    if ('requiresAcknowledgement' in candidate || 'violations' in candidate) {
+        return candidate;
+    }
+    return null;
+}
+function resolvePublishAction(payload) {
+    if (payload.isRequestPublish) {
+        return 'request_publish';
+    }
+    return 'publish';
+}
+/** Headless guard: intercepts Studio publish/reject when content is in a workflow off-step. */
+var WorkflowBypassGuard = function () {
+    var siteId = useActiveSiteId();
+    var dispatch = useDispatch();
+    var publishDialog = useSelector(function (state) { var _a; return (_a = state.dialogs) === null || _a === void 0 ? void 0 : _a.publish; });
+    var rejectDialog = useSelector(function (state) { var _a; return (_a = state.dialogs) === null || _a === void 0 ? void 0 : _a.reject; });
+    var _a = useState$1(false), dialogOpen = _a[0], setDialogOpen = _a[1];
+    var _b = useState$1(false), checking = _b[0], setChecking = _b[1];
+    var _c = useState$1(false), acknowledging = _c[0], setAcknowledging = _c[1];
+    var _d = useState$1([]), violations = _d[0], setViolations = _d[1];
+    var _e = useState$1(false), allowUiBypass = _e[0], setAllowUiBypass = _e[1];
+    var _f = useState$1('publish'), studioAction = _f[0], setStudioAction = _f[1];
+    var pendingStudioDialog = useRef$1(null);
+    var pendingBypassRecord = useRef$1(null);
+    var interceptingRef = useRef$1(false);
+    var lastInterceptKey = useRef$1('');
+    var publishWasSubmittingRef = useRef$1(false);
+    var rejectWasSubmittingRef = useRef$1(false);
+    var subscriptionsRef = useRef$1([]);
+    var trackSubscription = useCallback$1(function (subscription) {
+        subscriptionsRef.current.push(subscription);
+        return subscription;
+    }, []);
+    useEffect$2(function () {
+        return function () {
+            subscriptionsRef.current.forEach(function (sub) { return sub.unsubscribe(); });
+            subscriptionsRef.current = [];
+        };
+    }, []);
+    var reopenPendingStudioDialog = useCallback$1(function (pending) {
+        if (!pending) {
+            return;
+        }
+        if (pending.kind === 'publish') {
+            dispatch(showPublishDialog(pending.payload));
+        }
+        else {
+            dispatch(showRejectDialog(pending.payload));
+        }
+    }, [dispatch]);
+    var closeBypassDialog = useCallback$1(function () {
+        var pending = pendingStudioDialog.current;
+        var hadBlock = violations.length > 0;
+        setDialogOpen(false);
+        setChecking(false);
+        setViolations([]);
+        pendingStudioDialog.current = null;
+        if (!hadBlock && pending) {
+            reopenPendingStudioDialog(pending);
+        }
+    }, [reopenPendingStudioDialog, violations.length]);
+    var resumeStudioDialog = useCallback$1(function () {
+        var pending = pendingStudioDialog.current;
+        if (!pending) {
+            return;
+        }
+        var payload = __assign(__assign({}, pending.payload), { crafterwfBypassAcknowledged: true });
+        if (pending.kind === 'publish') {
+            dispatch(showPublishDialog(payload));
+        }
+        else {
+            dispatch(showRejectDialog(payload));
+        }
+        pendingStudioDialog.current = null;
+    }, [dispatch]);
+    var recordCompletedBypass = useCallback$1(function (action) {
+        var pending = pendingBypassRecord.current;
+        if (!pending || !siteId || pending.action !== action) {
+            return;
+        }
+        pendingBypassRecord.current = null;
+        trackSubscription(recordWorkflowBypassAction(siteId, pending.action, pending.violations).subscribe({
+            error: function (e) {
+                console.error('[crafterwf] Failed to record workflow bypass action', e);
+            }
+        }));
+    }, [siteId, trackSubscription]);
+    var interceptDialog = useCallback$1(function (kind, payload, action) {
+        if (!siteId || payload.crafterwfBypassAcknowledged || interceptingRef.current) {
+            return;
+        }
+        var paths = extractContentPaths(payload);
+        if (!paths.length) {
+            return;
+        }
+        var interceptKey = "".concat(kind, ":").concat(paths.join('|'), ":").concat(action);
+        if (lastInterceptKey.current === interceptKey) {
+            return;
+        }
+        interceptingRef.current = true;
+        pendingStudioDialog.current = { kind: kind, payload: payload };
+        if (kind === 'publish') {
+            dispatch(closePublishDialog());
+        }
+        else {
+            dispatch(closeRejectDialog());
+        }
+        setChecking(true);
+        setDialogOpen(true);
+        setViolations([]);
+        trackSubscription(checkWorkflowBypass(siteId, paths, action).subscribe({
+            next: function (response) {
+                var _a;
+                interceptingRef.current = false;
+                setChecking(false);
+                var result = parseBypassCheckResult(response);
+                if (!(result === null || result === void 0 ? void 0 : result.requiresAcknowledgement) || !((_a = result.violations) === null || _a === void 0 ? void 0 : _a.length)) {
+                    setDialogOpen(false);
+                    var pending_1 = pendingStudioDialog.current;
+                    pendingStudioDialog.current = null;
+                    lastInterceptKey.current = '';
+                    reopenPendingStudioDialog(pending_1);
+                    return;
+                }
+                lastInterceptKey.current = interceptKey;
+                setStudioAction(action);
+                setAllowUiBypass(result.allowUiBypass === true);
+                setViolations(result.violations);
+            },
+            error: function (e) {
+                interceptingRef.current = false;
+                setChecking(false);
+                setDialogOpen(false);
+                console.error('[crafterwf] Workflow bypass check failed', e);
+                var pending = pendingStudioDialog.current;
+                pendingStudioDialog.current = null;
+                lastInterceptKey.current = '';
+                reopenPendingStudioDialog(pending);
+            }
+        }));
+    }, [dispatch, reopenPendingStudioDialog, siteId, trackSubscription]);
+    useEffect$2(function () {
+        if (!(publishDialog === null || publishDialog === void 0 ? void 0 : publishDialog.open) || publishDialog.crafterwfBypassAcknowledged) {
+            if (!(publishDialog === null || publishDialog === void 0 ? void 0 : publishDialog.open)) {
+                if (publishWasSubmittingRef.current) {
+                    recordCompletedBypass('publish');
+                    recordCompletedBypass('request_publish');
+                }
+                else if (!interceptingRef.current && !dialogOpen) {
+                    pendingBypassRecord.current = null;
+                }
+                publishWasSubmittingRef.current = false;
+                if (!interceptingRef.current) {
+                    lastInterceptKey.current = '';
+                }
+            }
+            return;
+        }
+        if (publishDialog.isSubmitting) {
+            publishWasSubmittingRef.current = true;
+        }
+        interceptDialog('publish', publishDialog, resolvePublishAction(publishDialog));
+    }, [publishDialog, interceptDialog, recordCompletedBypass, dialogOpen]);
+    useEffect$2(function () {
+        if (!(rejectDialog === null || rejectDialog === void 0 ? void 0 : rejectDialog.open) || rejectDialog.crafterwfBypassAcknowledged) {
+            if (!(rejectDialog === null || rejectDialog === void 0 ? void 0 : rejectDialog.open)) {
+                if (rejectWasSubmittingRef.current) {
+                    recordCompletedBypass('reject');
+                }
+                else if (!interceptingRef.current && !dialogOpen) {
+                    pendingBypassRecord.current = null;
+                }
+                rejectWasSubmittingRef.current = false;
+                if (!interceptingRef.current) {
+                    lastInterceptKey.current = '';
+                }
+            }
+            return;
+        }
+        if (rejectDialog.isSubmitting) {
+            rejectWasSubmittingRef.current = true;
+        }
+        interceptDialog('reject', rejectDialog, 'reject');
+    }, [rejectDialog, interceptDialog, recordCompletedBypass, dialogOpen]);
+    var handleConfirm = function () {
+        if (!allowUiBypass || !siteId || !violations.length) {
+            return;
+        }
+        setAcknowledging(true);
+        trackSubscription(acknowledgeWorkflowBypass(siteId, studioAction, violations).subscribe({
+            next: function () {
+                pendingBypassRecord.current = { action: studioAction, violations: __spreadArray([], violations, true) };
+                setAcknowledging(false);
+                setDialogOpen(false);
+                resumeStudioDialog();
+            },
+            error: function (e) {
+                console.error('[crafterwf] Failed to record workflow bypass acknowledgement', e);
+                setAcknowledging(false);
+            }
+        }));
+    };
+    return (React$2.createElement(WorkflowBypassDialog, { open: dialogOpen, checking: checking, action: studioAction, allowUiBypass: allowUiBypass, violations: violations, acknowledging: acknowledging, onCancel: closeBypassDialog, onConfirm: handleConfirm }));
+};
+
+/*
+ * Copyright (C) 2007-2022 Crafter Software Corporation. All Rights Reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License version 3 as published by
+ * the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+// New or updated (writeContent, createFolder, copyContent, revertContent, renameFolder
+const contentEvent = /*#__PURE__*/ createAction('CONTENT_EVENT');
+// endregion
+
+function processWorkflowContentEvent(siteId, eventType, contentPath, contentType) {
+    var params = new URLSearchParams({
+        siteId: siteId,
+        eventType: eventType,
+        contentPath: contentPath
+    });
+    if (contentType === null || contentType === void 0 ? void 0 : contentType.trim()) {
+        params.set('contentType', contentType.trim());
+    }
+    return pluginGet("".concat(PLUGIN_SERVICE_BASE, "/content-event/process.json?").concat(params.toString()));
+}
+
+var PREVIEW_PATH = '/studio/preview';
+var DEDUPE_MS = 3000;
+function isPreviewStudioShell() {
+    return typeof window !== 'undefined' && window.location.pathname.includes(PREVIEW_PATH);
+}
+function dedupeKey(siteId, eventType, contentPath) {
+    return "".concat(siteId, "|").concat(eventType, "|").concat(contentPath);
+}
+/**
+ * Preview / in-context saves use Studio's preview content pipeline, which does not run
+ * content-type controller.groovy lifecycle scripts. Bridge those saves to the plugin
+ * content-event REST endpoint so workflow listeners still run.
+ */
+function WorkflowContentEventBridge() {
+    var siteId = useActiveSiteId();
+    var username = useSelector(function (state) { var _a, _b; return (_b = (_a = state.user) === null || _a === void 0 ? void 0 : _a.username) !== null && _b !== void 0 ? _b : ''; });
+    var recentKeysRef = useRef$1(new Map());
+    useEffect$2(function () {
+        if (!siteId || !username || !isPreviewStudioShell()) {
+            return undefined;
+        }
+        var subscription = getHostToHostBus()
+            .pipe(filter$1(function (event) { return event.type === contentEvent.type; }))
+            .subscribe(function (_a) {
+            var _b, _c, _d, _e;
+            var payload = _a.payload;
+            var targetPath = typeof (payload === null || payload === void 0 ? void 0 : payload.targetPath) === 'string' ? payload.targetPath.trim() : '';
+            var eventSiteId = typeof (payload === null || payload === void 0 ? void 0 : payload.siteId) === 'string' ? payload.siteId.trim() : siteId;
+            var eventUsername = (_d = (_c = (_b = payload === null || payload === void 0 ? void 0 : payload.user) === null || _b === void 0 ? void 0 : _b.username) === null || _c === void 0 ? void 0 : _c.trim()) !== null && _d !== void 0 ? _d : '';
+            if (!targetPath || eventSiteId !== siteId || eventUsername !== username) {
+                return;
+            }
+            var key = dedupeKey(siteId, 'edit', targetPath);
+            var now = Date.now();
+            var last = (_e = recentKeysRef.current.get(key)) !== null && _e !== void 0 ? _e : 0;
+            if (now - last < DEDUPE_MS) {
+                return;
+            }
+            recentKeysRef.current.set(key, now);
+            processWorkflowContentEvent(siteId, 'edit', targetPath).subscribe({
+                error: function (err) {
+                    // eslint-disable-next-line no-console
+                    console.warn('[crafterwf] Preview content-event bridge failed', targetPath, err);
+                }
+            });
+        });
+        return function () { return subscription.unsubscribe(); };
+    }, [siteId, username]);
+    return null;
+}
+
+var activeHostCount = 0;
+/** Ensures a single bypass guard instance even when multiple toolbar widgets mount this host. */
+function WorkflowBypassGuardHost() {
+    var isPrimary = useState$1(function () {
+        activeHostCount += 1;
+        return activeHostCount === 1;
+    })[0];
+    useEffect$2(function () {
+        return function () {
+            if (isPrimary) {
+                activeHostCount = 0;
+            }
+        };
+    }, [isPrimary]);
+    if (!isPrimary) {
+        return null;
+    }
+    return (React$2.createElement(React$2.Fragment, null,
+        React$2.createElement(WorkflowBypassGuard, null),
+        React$2.createElement(WorkflowContentEventBridge, null)));
+}
 
 var NOTIFICATIONS_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.notificationsPanel';
 function NotificationsToolbarButton(props) {
@@ -14398,11 +14846,13 @@ function NotificationsToolbarButton(props) {
         dispatch(buildOpenIcePanelAction(title, NOTIFICATIONS_PANEL_WIDGET_ID, siteId !== null && siteId !== void 0 ? siteId : undefined));
         refreshUnreadCount();
     };
-    return (React$2.createElement(Tooltip, { title: title },
-        React$2.createElement("span", null,
-            React$2.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openNotificationsPanel }),
-                React$2.createElement(ToolbarIconBadge, { count: unreadCount, overdueCount: 0, color: "error" },
-                    React$2.createElement(NotificationsNoneRoundedIcon, null))))));
+    return (React$2.createElement(React$2.Fragment, null,
+        React$2.createElement(WorkflowBypassGuardHost, null),
+        React$2.createElement(Tooltip, { title: title },
+            React$2.createElement("span", null,
+                React$2.createElement(IconButton, __assign({ "aria-label": title, size: "large" }, props, { onClick: openNotificationsPanel }),
+                    React$2.createElement(ToolbarIconBadge, { count: unreadCount, overdueCount: 0, color: "error" },
+                        React$2.createElement(NotificationsNoneRoundedIcon, null)))))));
 }
 
 var PRIORITY_RANK = {
@@ -16113,13 +16563,13 @@ var CalendarDialog = function () { return (React$2.createElement(Box, { sx: func
 
 var CALENDAR_DIALOG_WIDGET_ID = 'org.rd.plugin.crafterwf.calendarDialog';
 /** Resolve at runtime — avoids bundling studio-ui dialog actions into the plugin. */
-function showWidgetDialogAction() {
+function showWidgetDialogAction$1() {
     var craftercms = window.craftercms;
     return craftercms.libs.ReduxToolkit.createAction('SHOW_WIDGET_DIALOG');
 }
 function openCalendarDialog(dispatch, title, siteId) {
     if (title === void 0) { title = 'Calendar'; }
-    dispatch(showWidgetDialogAction()({
+    dispatch(showWidgetDialogAction$1()({
         title: title,
         fullHeight: false,
         maxWidth: 'lg',
@@ -16179,271 +16629,6 @@ function CalendarToolbarButton(props) {
                 React$2.createElement(ToolbarIconBadge, { count: todayCount, overdueCount: overdueCount, color: overdueCount > 0 ? 'error' : 'primary' },
                     React$2.createElement(CalendarMonthRoundedIcon, null))))));
 }
-
-function checkWorkflowBypass(siteId, contentPaths, action) {
-    var paths = contentPaths.filter(Boolean).join(',');
-    return get$2("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/check.json?siteId=").concat(encodeURIComponent(siteId)) +
-        "&contentPaths=".concat(encodeURIComponent(paths)) +
-        "&action=".concat(encodeURIComponent(action)));
-}
-function acknowledgeWorkflowBypass(siteId, action, violations) {
-    return post("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/acknowledge.json"), {
-        siteId: siteId,
-        action: action,
-        violations: violations
-    });
-}
-function recordWorkflowBypassAction(siteId, action, violations) {
-    return post("".concat(PLUGIN_SERVICE_BASE, "/workflow-bypass/record-action.json"), {
-        siteId: siteId,
-        action: action,
-        violations: violations
-    });
-}
-
-function actionLabel(action) {
-    switch (action) {
-        case 'request_publish':
-            return 'request publish';
-        case 'reject':
-            return 'reject';
-        default:
-            return 'publish';
-    }
-}
-function actionNoun(action) {
-    switch (action) {
-        case 'request_publish':
-            return 'Request publish';
-        case 'reject':
-            return 'Reject';
-        default:
-            return 'Publish';
-    }
-}
-var WorkflowBypassDialog = function (_a) {
-    var _b;
-    var open = _a.open, action = _a.action, allowUiBypass = _a.allowUiBypass, violations = _a.violations, _c = _a.acknowledging, acknowledging = _c === void 0 ? false : _c, onCancel = _a.onCancel, onConfirm = _a.onConfirm;
-    var _d = useState$1(false), acknowledged = _d[0], setAcknowledged = _d[1];
-    React$2.useEffect(function () {
-        if (open) {
-            setAcknowledged(false);
-        }
-    }, [open, violations, allowUiBypass]);
-    var primaryMessage = (_b = violations[0]) === null || _b === void 0 ? void 0 : _b.warningMessage;
-    return (React$2.createElement(Dialog, { open: open, onClose: acknowledging ? undefined : onCancel, maxWidth: "sm", fullWidth: true },
-        React$2.createElement(DialogTitle, { sx: { display: 'flex', alignItems: 'center', gap: 1 } },
-            allowUiBypass ? (React$2.createElement(WarningAmberRoundedIcon, { color: "warning" })) : (React$2.createElement(BlockRoundedIcon, { color: "error" })),
-            allowUiBypass ? 'Workflow bypass warning' : 'Workflow step required'),
-        React$2.createElement(DialogContent, { dividers: true },
-            React$2.createElement(Stack, { spacing: 2 },
-                React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, allowUiBypass
-                    ? "You are about to ".concat(actionLabel(action), " content outside the configured workflow step. Review the package details below. You may continue after acknowledging this warning.")
-                    : "".concat(actionNoun(action), " is blocked because this content is in a workflow package that is not on the correct step. Move the package to the step that runs this action, then try again.")),
-                primaryMessage && (React$2.createElement(Alert, { severity: allowUiBypass ? 'warning' : 'error', sx: { alignItems: 'flex-start' } }, primaryMessage)),
-                violations.map(function (violation) { return (React$2.createElement(Stack, { key: "".concat(violation.packageId, "-").concat(violation.contentPath), spacing: 0.5, sx: function (theme) { return ({
-                        p: 1.5,
-                        borderRadius: 1,
-                        border: "1px solid ".concat(theme.palette.divider)
-                    }); } },
-                    React$2.createElement(Typography, { variant: "subtitle2" }, violation.packageTitle),
-                    React$2.createElement(Typography, { variant: "body2" },
-                        React$2.createElement("strong", null, "Workflow:"),
-                        " ",
-                        violation.workflowName),
-                    React$2.createElement(Typography, { variant: "body2" },
-                        React$2.createElement("strong", null, "Current step:"),
-                        " ",
-                        violation.currentStepName),
-                    React$2.createElement(Typography, { variant: "caption", color: "text.secondary" }, violation.contentPath))); }),
-                allowUiBypass && (React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { checked: acknowledged, onChange: function (e) { return setAcknowledged(e.target.checked); }, disabled: acknowledging }), label: "I understand this action bypasses the workflow step." })))),
-        React$2.createElement(DialogActions, null, allowUiBypass ? (React$2.createElement(React$2.Fragment, null,
-            React$2.createElement(Button, { onClick: onCancel, disabled: acknowledging }, "Cancel"),
-            React$2.createElement(Button, { variant: "contained", color: "warning", disabled: !acknowledged || acknowledging, onClick: onConfirm }, "Continue"))) : (React$2.createElement(Button, { variant: "contained", onClick: onCancel }, "Close")))));
-};
-
-function extractContentPaths(payload) {
-    var items = payload.items;
-    var fromItems = (items !== null && items !== void 0 ? items : [])
-        .map(function (item) { return (item.path || item.id || '').trim(); })
-        .filter(Boolean);
-    if (fromItems.length) {
-        return fromItems;
-    }
-    var paths = payload.paths;
-    if (Array.isArray(paths)) {
-        return paths.map(function (path) { return String(path).trim(); }).filter(Boolean);
-    }
-    if (typeof paths === 'string' && paths.trim()) {
-        return [paths.trim()];
-    }
-    return [];
-}
-function resolvePublishAction(payload) {
-    if (payload.isRequestPublish) {
-        return 'request_publish';
-    }
-    return 'publish';
-}
-/** Headless guard: intercepts Studio publish/reject when content is in a workflow off-step. */
-var WorkflowBypassGuard = function () {
-    var siteId = useActiveSiteId();
-    var dispatch = useDispatch();
-    var publishDialog = useSelector(function (state) { var _a; return (_a = state.dialogs) === null || _a === void 0 ? void 0 : _a.publish; });
-    var rejectDialog = useSelector(function (state) { var _a; return (_a = state.dialogs) === null || _a === void 0 ? void 0 : _a.reject; });
-    var _a = useState$1(false), dialogOpen = _a[0], setDialogOpen = _a[1];
-    var _b = useState$1(false), acknowledging = _b[0], setAcknowledging = _b[1];
-    var _c = useState$1([]), violations = _c[0], setViolations = _c[1];
-    var _d = useState$1(false), allowUiBypass = _d[0], setAllowUiBypass = _d[1];
-    var _e = useState$1('publish'), studioAction = _e[0], setStudioAction = _e[1];
-    var pendingStudioDialog = useRef$1(null);
-    var pendingBypassRecord = useRef$1(null);
-    var interceptingRef = useRef$1(false);
-    var lastInterceptKey = useRef$1('');
-    var publishWasSubmittingRef = useRef$1(false);
-    var rejectWasSubmittingRef = useRef$1(false);
-    var subscriptionsRef = useRef$1([]);
-    var trackSubscription = useCallback$1(function (subscription) {
-        subscriptionsRef.current.push(subscription);
-        return subscription;
-    }, []);
-    useEffect$2(function () {
-        return function () {
-            subscriptionsRef.current.forEach(function (sub) { return sub.unsubscribe(); });
-            subscriptionsRef.current = [];
-        };
-    }, []);
-    var closeBypassDialog = useCallback$1(function () {
-        setDialogOpen(false);
-        setViolations([]);
-        pendingStudioDialog.current = null;
-    }, []);
-    var recordCompletedBypass = useCallback$1(function (action) {
-        var pending = pendingBypassRecord.current;
-        if (!pending || !siteId || pending.action !== action) {
-            return;
-        }
-        pendingBypassRecord.current = null;
-        trackSubscription(recordWorkflowBypassAction(siteId, pending.action, pending.violations).subscribe({
-            error: function (e) {
-                console.error('[crafterwf] Failed to record workflow bypass action', e);
-            }
-        }));
-    }, [siteId, trackSubscription]);
-    var resumeStudioDialog = useCallback$1(function () {
-        var pending = pendingStudioDialog.current;
-        if (!pending) {
-            return;
-        }
-        var payload = __assign(__assign({}, pending.payload), { crafterwfBypassAcknowledged: true });
-        if (pending.kind === 'publish') {
-            dispatch(showPublishDialog(payload));
-        }
-        else {
-            dispatch(showRejectDialog(payload));
-        }
-        pendingStudioDialog.current = null;
-    }, [dispatch]);
-    var interceptDialog = useCallback$1(function (kind, payload, action) {
-        if (!siteId || payload.crafterwfBypassAcknowledged) {
-            return;
-        }
-        var paths = extractContentPaths(payload);
-        if (!paths.length || interceptingRef.current) {
-            return;
-        }
-        var interceptKey = "".concat(kind, ":").concat(paths.join('|'), ":").concat(action);
-        if (lastInterceptKey.current === interceptKey) {
-            return;
-        }
-        interceptingRef.current = true;
-        trackSubscription(checkWorkflowBypass(siteId, paths, action).subscribe({
-            next: function (response) {
-                var _a, _b;
-                interceptingRef.current = false;
-                var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
-                if (!(result === null || result === void 0 ? void 0 : result.requiresAcknowledgement) || !((_b = result.violations) === null || _b === void 0 ? void 0 : _b.length)) {
-                    lastInterceptKey.current = '';
-                    return;
-                }
-                lastInterceptKey.current = interceptKey;
-                pendingStudioDialog.current = { kind: kind, payload: payload };
-                setStudioAction(action);
-                setAllowUiBypass(result.allowUiBypass === true);
-                setViolations(result.violations);
-                setDialogOpen(true);
-                if (kind === 'publish') {
-                    dispatch(closePublishDialog());
-                }
-                else {
-                    dispatch(closeRejectDialog());
-                }
-            },
-            error: function (e) {
-                interceptingRef.current = false;
-                console.error('[crafterwf] Workflow bypass check failed', e);
-            }
-        }));
-    }, [dispatch, siteId, trackSubscription]);
-    useEffect$2(function () {
-        if (!(publishDialog === null || publishDialog === void 0 ? void 0 : publishDialog.open) || publishDialog.crafterwfBypassAcknowledged) {
-            if (!(publishDialog === null || publishDialog === void 0 ? void 0 : publishDialog.open)) {
-                if (publishWasSubmittingRef.current) {
-                    recordCompletedBypass('publish');
-                    recordCompletedBypass('request_publish');
-                }
-                else {
-                    pendingBypassRecord.current = null;
-                }
-                publishWasSubmittingRef.current = false;
-                lastInterceptKey.current = '';
-            }
-            return;
-        }
-        if (publishDialog.isSubmitting) {
-            publishWasSubmittingRef.current = true;
-        }
-        interceptDialog('publish', publishDialog, resolvePublishAction(publishDialog));
-    }, [publishDialog, interceptDialog, recordCompletedBypass]);
-    useEffect$2(function () {
-        if (!(rejectDialog === null || rejectDialog === void 0 ? void 0 : rejectDialog.open) || rejectDialog.crafterwfBypassAcknowledged) {
-            if (!(rejectDialog === null || rejectDialog === void 0 ? void 0 : rejectDialog.open)) {
-                if (rejectWasSubmittingRef.current) {
-                    recordCompletedBypass('reject');
-                }
-                else {
-                    pendingBypassRecord.current = null;
-                }
-                rejectWasSubmittingRef.current = false;
-                lastInterceptKey.current = '';
-            }
-            return;
-        }
-        if (rejectDialog.isSubmitting) {
-            rejectWasSubmittingRef.current = true;
-        }
-        interceptDialog('reject', rejectDialog, 'reject');
-    }, [rejectDialog, interceptDialog, recordCompletedBypass]);
-    var handleConfirm = function () {
-        if (!allowUiBypass || !siteId || !violations.length) {
-            return;
-        }
-        setAcknowledging(true);
-        trackSubscription(acknowledgeWorkflowBypass(siteId, studioAction, violations).subscribe({
-            next: function () {
-                pendingBypassRecord.current = { action: studioAction, violations: __spreadArray([], violations, true) };
-                setAcknowledging(false);
-                setDialogOpen(false);
-                resumeStudioDialog();
-            },
-            error: function (e) {
-                console.error('[crafterwf] Failed to record workflow bypass acknowledgement', e);
-                setAcknowledging(false);
-            }
-        }));
-    };
-    return (React$2.createElement(WorkflowBypassDialog, { open: dialogOpen, action: studioAction, allowUiBypass: allowUiBypass, violations: violations, acknowledging: acknowledging, onCancel: closeBypassDialog, onConfirm: handleConfirm }));
-};
 
 function ActiveWorkflowsToolbarButton(props) {
     var _this = this;
@@ -16609,7 +16794,7 @@ function ActiveWorkflowsToolbarButton(props) {
                 ? "".concat(title, " \u2014 1 active package on this page")
                 : "".concat(title, " \u2014 ").concat(packageCount, " active packages on this page");
     return (React$2.createElement(React$2.Fragment, null,
-        React$2.createElement(WorkflowBypassGuard, null),
+        React$2.createElement(WorkflowBypassGuardHost, null),
         React$2.createElement(Tooltip, { title: tooltipTitle },
             React$2.createElement("span", null,
                 React$2.createElement(IconButton, __assign({ "aria-label": title, onClick: handleClick, size: "large", disabled: !contentPath || loading || starting }, props),
@@ -16632,9 +16817,17 @@ var RECYCLE_BIN_UPDATED_EVENT = 'crafterwf-recycle-bin-updated';
 function canAccessRecycleBin(siteId) {
     return pluginGet("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/can-access.json?siteId=").concat(encodeURIComponent(siteId)));
 }
-function listRecycleBinItems(siteId, state) {
-    if (state === void 0) { state = 'binned'; }
-    return pluginGet("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/list.json?siteId=").concat(encodeURIComponent(siteId), "&state=").concat(encodeURIComponent(state)));
+function listRecycleBinItems(siteId, options) {
+    if (options === void 0) { options = {}; }
+    var _a = options.state, state = _a === void 0 ? 'binned' : _a, _b = options.page, page = _b === void 0 ? 1 : _b, _c = options.pageSize, pageSize = _c === void 0 ? 10 : _c, _d = options.sortBy, sortBy = _d === void 0 ? 'binnedOn' : _d, _e = options.sortOrder, sortOrder = _e === void 0 ? 'desc' : _e, _f = options.q, q = _f === void 0 ? '' : _f;
+    var query = "".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/list.json?siteId=").concat(encodeURIComponent(siteId)) +
+        "&state=".concat(encodeURIComponent(state)) +
+        "&page=".concat(page) +
+        "&pageSize=".concat(pageSize) +
+        "&sortBy=".concat(encodeURIComponent(sortBy)) +
+        "&sortOrder=".concat(encodeURIComponent(sortOrder));
+    var trimmedQ = q.trim();
+    return pluginGet(trimmedQ ? "".concat(query, "&q=").concat(encodeURIComponent(trimmedQ)) : query);
 }
 function binContentPaths(siteId, paths) {
     var pathsParam = paths.map(function (path) { return encodeURIComponent(path); }).join(',');
@@ -16647,13 +16840,32 @@ function restoreRecycleBinItem(siteId, id, confirmCollision) {
     if (confirmCollision === void 0) { confirmCollision = false; }
     return pluginPost("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/restore.json?siteId=").concat(encodeURIComponent(siteId), "&id=").concat(encodeURIComponent(id), "&confirmCollision=").concat(confirmCollision ? 'true' : 'false'));
 }
+function purgeRecycleBinItem(siteId, id) {
+    return pluginPost("".concat(PLUGIN_SERVICE_BASE, "/recycle-bin/purge.json?siteId=").concat(encodeURIComponent(siteId), "&id=").concat(encodeURIComponent(id)));
+}
 function notifyRecycleBinUpdated() {
     if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent(RECYCLE_BIN_UPDATED_EVENT));
     }
 }
 
-function formatDate$1(value) {
+var SANDBOX_STATE_LABELS = {
+    new: 'New',
+    modified: 'Modified',
+    deleted: 'Deleted',
+    locked: 'Locked',
+    systemProcessing: 'System processing',
+    submitted: 'Submitted',
+    scheduled: 'Scheduled',
+    publishing: 'Publishing',
+    submittedToStaging: 'Submitted to staging',
+    submittedToLive: 'Submitted to live',
+    disabled: 'Disabled',
+    staged: 'Staged',
+    live: 'Live',
+    unpublished: 'Unpublished'
+};
+function formatRecycleBinDate(value) {
     if (!value) {
         return '—';
     }
@@ -16663,40 +16875,143 @@ function formatDate$1(value) {
     }
     return date.toLocaleString();
 }
-var RecycleBinPanel = function () {
+function formatRecycleBinUserDate(username, date) {
+    var who = (username === null || username === void 0 ? void 0 : username.trim()) || '—';
+    var when = formatRecycleBinDate(date);
+    return "".concat(who, " \u00B7 ").concat(when);
+}
+function formatSandboxStateLabel(state) {
+    var _a;
+    if (!(state === null || state === void 0 ? void 0 : state.trim())) {
+        return '—';
+    }
+    return (_a = SANDBOX_STATE_LABELS[state]) !== null && _a !== void 0 ? _a : state;
+}
+function displayRecycleBinName(item) {
+    var _a;
+    return ((_a = item.internalName) === null || _a === void 0 ? void 0 : _a.trim()) || item.originalPath.split('/').filter(Boolean).pop() || item.originalPath;
+}
+
+/** Tell Studio's path navigator a sandbox item moved (refreshes the sidebar tree). */
+function emitStudioMoveContentEvent(dispatch, siteId, sourcePath, targetPath) {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    var createAction = (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction;
+    if (!createAction) {
+        return;
+    }
+    var moveContentEvent = createAction('MOVE_CONTENT_EVENT');
+    dispatch(moveContentEvent({
+        siteId: siteId,
+        sourcePath: sourcePath,
+        targetPath: targetPath,
+        timestamp: Date.now(),
+        eventType: 'MOVE_CONTENT_EVENT',
+        user: null
+    }));
+}
+/** Tell Studio's path navigator content was deleted (refreshes the sidebar tree). */
+function emitStudioDeleteContentEvent(dispatch, siteId, targetPath) {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    var createAction = (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction;
+    if (!createAction) {
+        return;
+    }
+    var deleteContentEvent = createAction('DELETE_CONTENT_EVENT');
+    dispatch(deleteContentEvent({
+        siteId: siteId,
+        targetPath: targetPath,
+        timestamp: Date.now(),
+        eventType: 'DELETE_CONTENT_EVENT',
+        user: null
+    }));
+}
+
+var PAGE_SIZE_OPTIONS = [5, 10, 25, 50];
+var FILTER_DEBOUNCE_MS = 300;
+var SORT_COLUMNS = [
+    { id: 'internalName', label: 'Name' },
+    { id: 'originalCreatedOn', label: 'Created' },
+    { id: 'originalModifiedOn', label: 'Last modified' },
+    { id: 'binnedOn', label: 'Binned' }
+];
+function MetadataCell(_a) {
+    var username = _a.username, date = _a.date;
+    return (React$2.createElement(Typography, { variant: "caption", component: "div", sx: { whiteSpace: 'nowrap' } }, formatRecycleBinUserDate(username, date)));
+}
+/** Content widget for Studio's SHOW_WIDGET_DIALOG shell. */
+var RecycleBinDialog = function () {
+    var dispatch = useDispatch();
     var siteId = useActiveSiteId();
+    var previewPath = useStudioItemPreview().previewPath;
     var _a = useState$1([]), items = _a[0], setItems = _a[1];
-    var _b = useState$1(false), loading = _b[0], setLoading = _b[1];
-    var _c = useState$1(null), error = _c[0], setError = _c[1];
-    var _d = useState$1(null), restoringId = _d[0], setRestoringId = _d[1];
-    var _e = useState$1(null), collisionDialog = _e[0], setCollisionDialog = _e[1];
+    var _b = useState$1(0), total = _b[0], setTotal = _b[1];
+    var _c = useState$1(0), page = _c[0], setPage = _c[1];
+    var _d = useState$1(10), pageSize = _d[0], setPageSize = _d[1];
+    var _e = useState$1('binnedOn'), sortBy = _e[0], setSortBy = _e[1];
+    var _f = useState$1('desc'), sortOrder = _f[0], setSortOrder = _f[1];
+    var _g = useState$1(''), filterInput = _g[0], setFilterInput = _g[1];
+    var _h = useState$1(''), filterQuery = _h[0], setFilterQuery = _h[1];
+    var _j = useState$1(false), loading = _j[0], setLoading = _j[1];
+    var _k = useState$1(null), error = _k[0], setError = _k[1];
+    var _l = useState$1(null), busyId = _l[0], setBusyId = _l[1];
+    var _m = useState$1(null), busyAction = _m[0], setBusyAction = _m[1];
+    var _o = useState$1(null), collisionDialog = _o[0], setCollisionDialog = _o[1];
+    var _p = useState$1(null), purgeDialog = _p[0], setPurgeDialog = _p[1];
     var refresh = useCallback$1(function () {
         if (!siteId) {
             setItems([]);
+            setTotal(0);
             return;
         }
         setLoading(true);
         setError(null);
-        listRecycleBinItems(siteId).subscribe({
+        listRecycleBinItems(siteId, {
+            page: page + 1,
+            pageSize: pageSize,
+            sortBy: sortBy,
+            sortOrder: sortOrder,
+            q: filterQuery
+        }).subscribe({
             next: function (response) {
                 var _a, _b, _c;
-                setItems((_c = (_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.items) !== null && _c !== void 0 ? _c : []);
+                var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                setItems((_b = result === null || result === void 0 ? void 0 : result.items) !== null && _b !== void 0 ? _b : []);
+                setTotal((_c = result === null || result === void 0 ? void 0 : result.total) !== null && _c !== void 0 ? _c : 0);
                 setLoading(false);
             },
             error: function (e) {
                 console.error(e);
                 setError('Unable to load recycle bin.');
                 setItems([]);
+                setTotal(0);
                 setLoading(false);
             }
         });
-    }, [siteId]);
+    }, [filterQuery, page, pageSize, siteId, sortBy, sortOrder]);
+    useEffect$2(function () {
+        var handle = window.setTimeout(function () { return setFilterQuery(filterInput.trim()); }, FILTER_DEBOUNCE_MS);
+        return function () { return window.clearTimeout(handle); };
+    }, [filterInput]);
     useEffect$2(function () {
         refresh();
         var handleUpdated = function () { return refresh(); };
         window.addEventListener(RECYCLE_BIN_UPDATED_EVENT, handleUpdated);
         return function () { return window.removeEventListener(RECYCLE_BIN_UPDATED_EVENT, handleUpdated); };
     }, [refresh]);
+    var handleSort = function (field) {
+        if (sortBy === field) {
+            setSortOrder(function (current) { return (current === 'asc' ? 'desc' : 'asc'); });
+        }
+        else {
+            setSortBy(field);
+            setSortOrder('desc');
+        }
+        setPage(0);
+    };
     var performRestore = function (item, confirmCollision) { return __awaiter(void 0, void 0, void 0, function () {
         var e_1;
         return __generator(this, function (_a) {
@@ -16705,13 +17020,22 @@ var RecycleBinPanel = function () {
                     if (!siteId) {
                         return [2 /*return*/];
                     }
-                    setRestoringId(item.id);
+                    setBusyId(item.id);
+                    setBusyAction('restore');
                     _a.label = 1;
                 case 1:
                     _a.trys.push([1, 3, 4, 5]);
                     return [4 /*yield*/, new Promise(function (resolve, reject) {
                             restoreRecycleBinItem(siteId, item.id, confirmCollision).subscribe({
-                                next: function () {
+                                next: function (response) {
+                                    var _a, _b;
+                                    var restored = (_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.item;
+                                    if ((restored === null || restored === void 0 ? void 0 : restored.binPath) && (restored === null || restored === void 0 ? void 0 : restored.originalPath)) {
+                                        emitStudioMoveContentEvent(dispatch, siteId, restored.binPath, restored.originalPath);
+                                    }
+                                    else if (item.binPath && item.originalPath) {
+                                        emitStudioMoveContentEvent(dispatch, siteId, item.binPath, item.originalPath);
+                                    }
                                     resolve();
                                 },
                                 error: function (err) {
@@ -16729,8 +17053,51 @@ var RecycleBinPanel = function () {
                     showStudioErrorSnack('Unable to restore item. Check permissions and try again.');
                     return [3 /*break*/, 5];
                 case 4:
-                    setRestoringId(null);
+                    setBusyId(null);
+                    setBusyAction(null);
                     setCollisionDialog(null);
+                    return [7 /*endfinally*/];
+                case 5: return [2 /*return*/];
+            }
+        });
+    }); };
+    var performPurge = function (item) { return __awaiter(void 0, void 0, void 0, function () {
+        var e_2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!siteId) {
+                        return [2 /*return*/];
+                    }
+                    setBusyId(item.id);
+                    setBusyAction('purge');
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, 4, 5]);
+                    return [4 /*yield*/, new Promise(function (resolve, reject) {
+                            purgeRecycleBinItem(siteId, item.id).subscribe({
+                                next: function () {
+                                    emitStudioDeleteContentEvent(dispatch, siteId, item.binPath);
+                                    resolve();
+                                },
+                                error: function (err) {
+                                    reject(err);
+                                }
+                            });
+                        })];
+                case 2:
+                    _a.sent();
+                    notifyRecycleBinUpdated();
+                    return [3 /*break*/, 5];
+                case 3:
+                    e_2 = _a.sent();
+                    console.error(e_2);
+                    showStudioErrorSnack('Unable to permanently delete item. Check permissions and try again.');
+                    return [3 /*break*/, 5];
+                case 4:
+                    setBusyId(null);
+                    setBusyAction(null);
+                    setPurgeDialog(null);
                     return [7 /*endfinally*/];
                 case 5: return [2 /*return*/];
             }
@@ -16759,27 +17126,107 @@ var RecycleBinPanel = function () {
             }
         });
     };
-    return (React$2.createElement(Box, { sx: { p: 2, height: '100%', overflow: 'auto' } },
-        React$2.createElement(Typography, { variant: "subtitle2", color: "text.secondary", sx: { mb: 2 } }, "Items moved here can be restored to their original path. Restore requires confirmation when the original path already exists."),
-        loading ? (React$2.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', py: 4 } },
-            React$2.createElement(CircularProgress, { size: 28 }))) : null,
-        error ? (React$2.createElement(Typography, { color: "error", variant: "body2", sx: { mb: 2 } }, error)) : null,
-        !loading && !error && items.length === 0 ? (React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "The recycle bin is empty.")) : null,
-        !loading && items.length > 0 ? (React$2.createElement(Table, { size: "small" },
-            React$2.createElement(TableHead, null,
-                React$2.createElement(TableRow, null,
-                    React$2.createElement(TableCell, null, "Name"),
-                    React$2.createElement(TableCell, null, "Original path"),
-                    React$2.createElement(TableCell, null, "Binned by"),
-                    React$2.createElement(TableCell, null, "Binned on"),
-                    React$2.createElement(TableCell, { align: "right" }, "Actions"))),
-            React$2.createElement(TableBody, null, items.map(function (item) { return (React$2.createElement(TableRow, { key: item.id, hover: true },
-                React$2.createElement(TableCell, null, item.internalName || item.originalPath),
-                React$2.createElement(TableCell, { sx: { fontFamily: 'monospace', fontSize: '0.8rem' } }, item.originalPath),
-                React$2.createElement(TableCell, null, item.binnedByUsername || '—'),
-                React$2.createElement(TableCell, null, formatDate$1(item.binnedOn)),
-                React$2.createElement(TableCell, { align: "right" },
-                    React$2.createElement(Button, { size: "small", startIcon: restoringId === item.id ? React$2.createElement(CircularProgress, { size: 14, color: "inherit" }) : React$2.createElement(RestoreFromTrashRoundedIcon, null), onClick: function () { return handleRestoreClick(item); }, disabled: restoringId === item.id }, "Restore")))); })))) : null,
+    var handlePreview = function (item) {
+        previewPath(item.binPath, displayRecycleBinName(item));
+    };
+    return (React$2.createElement(Box, { sx: function (theme) { return ({
+            width: '100%',
+            minWidth: 0,
+            minHeight: 0,
+            flex: 1,
+            boxSizing: 'border-box',
+            px: theme.spacing(2.5),
+            py: theme.spacing(2),
+            height: '100%',
+            display: 'flex',
+            flexDirection: 'column'
+        }); } },
+        React$2.createElement(Stack, { direction: "row", spacing: 1.5, alignItems: "center", sx: { mb: 2, flexShrink: 0 } },
+            React$2.createElement(Box, { sx: function (theme) { return ({
+                    width: 40,
+                    height: 40,
+                    borderRadius: 2,
+                    display: 'grid',
+                    placeItems: 'center',
+                    bgcolor: theme.palette.error.main,
+                    color: theme.palette.error.contrastText
+                }); } },
+                React$2.createElement(DeleteOutlineRoundedIcon, { fontSize: "small" })),
+            React$2.createElement(Box, { sx: { minWidth: 0, flex: 1 } },
+                React$2.createElement(Typography, { variant: "subtitle1", sx: { fontWeight: 600, lineHeight: 1.3 } }, "Recycle bin"),
+                React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "Review metadata, preview binned content, restore, or permanently delete.")),
+            !loading ? React$2.createElement(Chip, { size: "small", label: "".concat(total, " item").concat(total === 1 ? '' : 's') }) : null),
+        React$2.createElement(Stack, { direction: { xs: 'column', sm: 'row' }, spacing: 1.5, sx: { mb: 1.5, flexShrink: 0 }, alignItems: { sm: 'center' } },
+            React$2.createElement(TextField, { size: "small", placeholder: "Filter by name, path, user, state, or date\u2026", value: filterInput, onChange: function (event) {
+                    setFilterInput(event.target.value);
+                    setPage(0);
+                }, sx: { flex: 1, minWidth: 220 }, InputProps: {
+                    startAdornment: (React$2.createElement(InputAdornment, { position: "start" },
+                        React$2.createElement(SearchRoundedIcon, { fontSize: "small", color: "action" }))),
+                    endAdornment: filterInput ? (React$2.createElement(InputAdornment, { position: "end" },
+                        React$2.createElement(IconButton, { size: "small", "aria-label": "Clear filter", onClick: function () { return setFilterInput(''); }, edge: "end" },
+                            React$2.createElement(ClearRoundedIcon, { fontSize: "small" })))) : null
+                } }),
+            React$2.createElement(FormControl, { size: "small", sx: { minWidth: 180 } },
+                React$2.createElement(InputLabel, { id: "crafterwf-recycle-bin-sort-label" }, "Sort by"),
+                React$2.createElement(Select, { labelId: "crafterwf-recycle-bin-sort-label", label: "Sort by", value: sortBy, onChange: function (event) {
+                        setSortBy(event.target.value);
+                        setPage(0);
+                    } }, SORT_COLUMNS.map(function (column) { return (React$2.createElement(MenuItem, { key: column.id, value: column.id }, column.label)); }))),
+            React$2.createElement(FormControl, { size: "small", sx: { minWidth: 140 } },
+                React$2.createElement(InputLabel, { id: "crafterwf-recycle-bin-order-label" }, "Order"),
+                React$2.createElement(Select, { labelId: "crafterwf-recycle-bin-order-label", label: "Order", value: sortOrder, onChange: function (event) {
+                        setSortOrder(event.target.value);
+                        setPage(0);
+                    } },
+                    React$2.createElement(MenuItem, { value: "desc" }, "Newest first"),
+                    React$2.createElement(MenuItem, { value: "asc" }, "Oldest first")))),
+        React$2.createElement(Divider, { sx: { mb: 1.5, flexShrink: 0 } }),
+        React$2.createElement(TableContainer, { sx: { flex: 1, minHeight: 0 } },
+            loading ? (React$2.createElement(Box, { sx: { display: 'flex', justifyContent: 'center', alignItems: 'center', py: 6 } },
+                React$2.createElement(CircularProgress, { size: 32 }))) : null,
+            error ? (React$2.createElement(Typography, { color: "error", variant: "body2", sx: { py: 2 } }, error)) : null,
+            !loading && !error && items.length === 0 ? (React$2.createElement(Stack, { spacing: 1, alignItems: "center", sx: { py: 6, px: 2, textAlign: 'center' } },
+                React$2.createElement(DeleteOutlineRoundedIcon, { sx: { fontSize: 48, color: 'text.disabled', opacity: 0.5 } }),
+                React$2.createElement(Typography, { variant: "subtitle1", color: "text.secondary" }, filterQuery ? 'No items match your filter' : 'The recycle bin is empty'),
+                filterQuery ? (React$2.createElement(Button, { size: "small", onClick: function () { return setFilterInput(''); } }, "Clear filter")) : null)) : null,
+            !loading && items.length > 0 ? (React$2.createElement(Table, { size: "small", stickyHeader: true },
+                React$2.createElement(TableHead, null,
+                    React$2.createElement(TableRow, null,
+                        SORT_COLUMNS.map(function (column) { return (React$2.createElement(TableCell, { key: column.id, sortDirection: sortBy === column.id ? sortOrder : false },
+                            React$2.createElement(TableSortLabel, { active: sortBy === column.id, direction: sortBy === column.id ? sortOrder : 'asc', onClick: function () { return handleSort(column.id); } }, column.label))); }),
+                        React$2.createElement(TableCell, null, "Last state"),
+                        React$2.createElement(TableCell, { align: "right" }, "Actions"))),
+                React$2.createElement(TableBody, null, items.map(function (item) {
+                    var isBusy = busyId === item.id;
+                    return (React$2.createElement(TableRow, { key: item.id, hover: true },
+                        React$2.createElement(TableCell, { sx: { minWidth: 160 } },
+                            React$2.createElement(Typography, { variant: "body2", sx: { fontWeight: 600 } }, displayRecycleBinName(item)),
+                            React$2.createElement(Typography, { variant: "caption", component: "div", sx: { fontFamily: 'monospace', wordBreak: 'break-all', color: 'text.secondary' } }, item.originalPath)),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.originalCreatedBy, date: item.originalCreatedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.originalLastModifier, date: item.originalModifiedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(MetadataCell, { username: item.binnedByUsername, date: item.binnedOn })),
+                        React$2.createElement(TableCell, null,
+                            React$2.createElement(Chip, { size: "small", variant: "outlined", label: formatSandboxStateLabel(item.originalSandboxState) })),
+                        React$2.createElement(TableCell, { align: "right", sx: { whiteSpace: 'nowrap' } },
+                            React$2.createElement(Tooltip, { title: "Preview in Studio" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", "aria-label": "Preview ".concat(displayRecycleBinName(item)), onClick: function () { return handlePreview(item); }, disabled: isBusy },
+                                        React$2.createElement(PreviewRoundedIcon, { fontSize: "small" })))),
+                            React$2.createElement(Tooltip, { title: "Restore to original path" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", color: "primary", "aria-label": "Restore ".concat(displayRecycleBinName(item)), onClick: function () { return handleRestoreClick(item); }, disabled: isBusy }, isBusy && busyAction === 'restore' ? (React$2.createElement(CircularProgress, { size: 18, color: "inherit" })) : (React$2.createElement(RestoreFromTrashRoundedIcon, { fontSize: "small" }))))),
+                            React$2.createElement(Tooltip, { title: "Delete permanently" },
+                                React$2.createElement("span", null,
+                                    React$2.createElement(IconButton, { size: "small", color: "error", "aria-label": "Delete permanently ".concat(displayRecycleBinName(item)), onClick: function () { return setPurgeDialog(item); }, disabled: isBusy }, isBusy && busyAction === 'purge' ? (React$2.createElement(CircularProgress, { size: 18, color: "inherit" })) : (React$2.createElement(DeleteForeverRoundedIcon, { fontSize: "small" }))))))));
+                })))) : null),
+        !loading && total > 0 ? (React$2.createElement(TablePagination, { component: "div", count: total, page: page, onPageChange: function (_, nextPage) { return setPage(nextPage); }, rowsPerPage: pageSize, onRowsPerPageChange: function (event) {
+                setPageSize(parseInt(event.target.value, 10));
+                setPage(0);
+            }, rowsPerPageOptions: PAGE_SIZE_OPTIONS, sx: { flexShrink: 0, borderTop: 1, borderColor: 'divider' } })) : null,
         React$2.createElement(Dialog, { open: Boolean(collisionDialog), onClose: function () { return setCollisionDialog(null); }, maxWidth: "sm", fullWidth: true },
             React$2.createElement(DialogTitle, null, "Path already exists"),
             React$2.createElement(DialogContent, null,
@@ -16787,15 +17234,62 @@ var RecycleBinPanel = function () {
                     React$2.createElement(Stack, { spacing: 1.5 },
                         React$2.createElement(Typography, { variant: "body2" },
                             "Restoring ",
-                            React$2.createElement("strong", null, (collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.item.internalName) || (collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.item.originalPath)),
-                            ' ',
-                            "will move content back to:"),
+                            React$2.createElement("strong", null, collisionDialog ? displayRecycleBinName(collisionDialog.item) : ''),
+                            " will move content back to:"),
                         React$2.createElement(Typography, { variant: "body2", sx: { fontFamily: 'monospace' } }, collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.originalPath),
                         React$2.createElement(Typography, { variant: "body2", color: "warning.main" }, "That path already exists in the sandbox. Confirm only if you intend to overwrite or merge with the existing item.")))),
             React$2.createElement(DialogActions, null,
                 React$2.createElement(Button, { onClick: function () { return setCollisionDialog(null); } }, "Cancel"),
-                React$2.createElement(Button, { variant: "contained", color: "warning", onClick: function () { return collisionDialog && void performRestore(collisionDialog.item, true); }, disabled: restoringId === (collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.item.id) }, "Restore anyway")))));
+                React$2.createElement(Button, { variant: "contained", color: "warning", onClick: function () { return collisionDialog && void performRestore(collisionDialog.item, true); }, disabled: busyId === (collisionDialog === null || collisionDialog === void 0 ? void 0 : collisionDialog.item.id) }, "Restore anyway"))),
+        React$2.createElement(Dialog, { open: Boolean(purgeDialog), onClose: function () { return setPurgeDialog(null); }, maxWidth: "sm", fullWidth: true },
+            React$2.createElement(DialogTitle, null, "Delete permanently?"),
+            React$2.createElement(DialogContent, null,
+                React$2.createElement(DialogContentText, { component: "div" },
+                    React$2.createElement(Stack, { spacing: 1.5 },
+                        React$2.createElement(Typography, { variant: "body2" },
+                            "Permanently delete ",
+                            React$2.createElement("strong", null, purgeDialog ? displayRecycleBinName(purgeDialog) : ''),
+                            "?"),
+                        React$2.createElement(Typography, { variant: "body2", sx: { fontFamily: 'monospace' } }, purgeDialog === null || purgeDialog === void 0 ? void 0 : purgeDialog.binPath),
+                        React$2.createElement(Typography, { variant: "body2", color: "error" }, "This cannot be undone. The sandbox content will be removed and the recycle bin record will be marked purged.")))),
+            React$2.createElement(DialogActions, null,
+                React$2.createElement(Button, { onClick: function () { return setPurgeDialog(null); } }, "Cancel"),
+                React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return purgeDialog && void performPurge(purgeDialog); }, disabled: busyId === (purgeDialog === null || purgeDialog === void 0 ? void 0 : purgeDialog.id) }, "Delete permanently")))));
 };
+
+var RECYCLE_BIN_DIALOG_WIDGET_ID = 'org.rd.plugin.crafterwf.recycleBinDialog';
+function showWidgetDialogAction() {
+    var _a, _b;
+    var craftercms = window
+        .craftercms;
+    return (_b = (_a = craftercms === null || craftercms === void 0 ? void 0 : craftercms.libs) === null || _a === void 0 ? void 0 : _a.ReduxToolkit) === null || _b === void 0 ? void 0 : _b.createAction('SHOW_WIDGET_DIALOG');
+}
+function openRecycleBinDialog(dispatch, title, siteId) {
+    if (title === void 0) { title = 'Recycle bin'; }
+    var showWidgetDialog = showWidgetDialogAction();
+    if (!showWidgetDialog) {
+        return;
+    }
+    dispatch(showWidgetDialog({
+        title: title,
+        fullHeight: false,
+        maxWidth: false,
+        PaperProps: {
+            sx: {
+                width: '70vw',
+                maxWidth: '70vw',
+                height: '70vh',
+                maxHeight: '70vh',
+                m: 2,
+                borderRadius: 2,
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column'
+            }
+        },
+        widget: createCrafterwfWidgetDescriptor(RECYCLE_BIN_DIALOG_WIDGET_ID, siteId)
+    }));
+}
 
 var EMPTY_EXCLUDED = [];
 var RecycleBinSelectDialog = function (_a) {
@@ -16928,7 +17422,6 @@ var RecycleBinSelectDialog = function (_a) {
                 ")"))));
 };
 
-var RECYCLE_BIN_PANEL_WIDGET_ID = 'org.rd.plugin.crafterwf.recycleBinPanel';
 function RecycleBinToolbarButton(props) {
     var _this = this;
     var _a;
@@ -16970,12 +17463,18 @@ function RecycleBinToolbarButton(props) {
         refreshAccess();
         return function () { var _a; return (_a = accessSubscriptionRef.current) === null || _a === void 0 ? void 0 : _a.unsubscribe(); };
     }, [refreshAccess]);
-    var openRecycleBinPanel = function () {
-        setMenuAnchor(null);
-        dispatch(buildOpenIcePanelAction(title, RECYCLE_BIN_PANEL_WIDGET_ID, siteId !== null && siteId !== void 0 ? siteId : undefined));
+    var notifyContentTreeMoves = function (items) {
+        if (!siteId) {
+            return;
+        }
+        items.forEach(function (item) {
+            if (item.originalPath && item.binPath) {
+                emitStudioMoveContentEvent(dispatch, siteId, item.originalPath, item.binPath);
+            }
+        });
     };
     var runBinPaths = function (paths) { return __awaiter(_this, void 0, void 0, function () {
-        var e_1;
+        var binnedItems, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -16990,11 +17489,12 @@ function RecycleBinToolbarButton(props) {
                             binContentPaths(siteId, paths).subscribe({
                                 next: function (response) {
                                     var _a, _b;
-                                    var errors = (_b = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.errors;
+                                    var result = (_a = response.response) === null || _a === void 0 ? void 0 : _a.result;
+                                    var errors = result === null || result === void 0 ? void 0 : result.errors;
                                     if (errors === null || errors === void 0 ? void 0 : errors.length) {
                                         showStudioErrorSnack(errors.map(function (entry) { return entry.message; }).join(' '));
                                     }
-                                    resolve();
+                                    resolve((_b = result === null || result === void 0 ? void 0 : result.items) !== null && _b !== void 0 ? _b : []);
                                 },
                                 error: function (err) {
                                     reject(err);
@@ -17002,7 +17502,8 @@ function RecycleBinToolbarButton(props) {
                             });
                         })];
                 case 2:
-                    _a.sent();
+                    binnedItems = _a.sent();
+                    notifyContentTreeMoves(binnedItems);
                     notifyRecycleBinUpdated();
                     return [3 /*break*/, 5];
                 case 3:
@@ -17032,6 +17533,10 @@ function RecycleBinToolbarButton(props) {
         setMenuAnchor(null);
         setSelectOpen(true);
     };
+    var handleOpenRecycleBin = function () {
+        setMenuAnchor(null);
+        openRecycleBinDialog(dispatch, title, siteId !== null && siteId !== void 0 ? siteId : undefined);
+    };
     if (checkingAccess || !allowed) {
         return null;
     }
@@ -17044,7 +17549,7 @@ function RecycleBinToolbarButton(props) {
                 React$2.createElement(ListItemText$1, { primary: "Put current page in recycle bin", secondary: contentPath ? contentPath : 'Open preview content first' })),
             React$2.createElement(MenuItem, { onClick: handleSelectItems, disabled: binning },
                 React$2.createElement(ListItemText$1, { primary: "Select items to put in recycle bin" })),
-            React$2.createElement(MenuItem, { onClick: openRecycleBinPanel, disabled: binning },
+            React$2.createElement(MenuItem, { onClick: handleOpenRecycleBin, disabled: binning },
                 React$2.createElement(ListItemText$1, { primary: "Open recycle bin" }))),
         React$2.createElement(Dialog, { open: confirmCurrentOpen, onClose: function () { return setConfirmCurrentOpen(false); }, maxWidth: "sm", fullWidth: true },
             React$2.createElement(DialogTitle, null, "Move to recycle bin?"),
@@ -17052,7 +17557,7 @@ function RecycleBinToolbarButton(props) {
                 React$2.createElement(DialogContentText, null,
                     "Move ",
                     React$2.createElement("strong", null, contentPath),
-                    " to the recycle bin? You can restore it later from the recycle bin panel.")),
+                    " to the recycle bin? You can restore it later from the recycle bin dialog.")),
             React$2.createElement(DialogActions, null,
                 React$2.createElement(Button, { onClick: function () { return setConfirmCurrentOpen(false); }, disabled: binning }, "Cancel"),
                 React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return contentPath && void runBinPaths([contentPath]); }, disabled: binning || !contentPath }, "Move to recycle bin"))),
@@ -17069,6 +17574,38 @@ function RecycleBinToolbarButton(props) {
             React$2.createElement(DialogActions, null,
                 React$2.createElement(Button, { onClick: function () { return setConfirmSelectPaths(null); }, disabled: binning }, "Cancel"),
                 React$2.createElement(Button, { variant: "contained", color: "error", onClick: function () { return confirmSelectPaths && void runBinPaths(confirmSelectPaths); }, disabled: binning }, "Move to recycle bin")))));
+}
+
+/** Mount headless workflow hooks once in the Studio shell (shared Redux store). */
+function mountWorkflowStudioHooks(component) {
+    if (typeof window === 'undefined' || window.__crafterwfStudioHooksMounted) {
+        return;
+    }
+    var attemptMount = function () {
+        var cms = window.CrafterCMSNext;
+        if (!(cms === null || cms === void 0 ? void 0 : cms.render)) {
+            return false;
+        }
+        window.__crafterwfStudioHooksMounted = true;
+        var el = document.createElement('div');
+        el.setAttribute('data-crafterwf-studio-hooks', 'true');
+        el.style.cssText = 'position:fixed;width:0;height:0;overflow:hidden;pointer-events:none';
+        document.body.appendChild(el);
+        cms.render(el, component, {}, true).catch(function (error) {
+            console.error('[crafterwf] Failed to mount workflow studio hooks', error);
+            window.__crafterwfStudioHooksMounted = false;
+        });
+        return true;
+    };
+    if (attemptMount()) {
+        return;
+    }
+    var intervalId = window.setInterval(function () {
+        if (attemptMount()) {
+            window.clearInterval(intervalId);
+        }
+    }, 250);
+    window.setTimeout(function () { return window.clearInterval(intervalId); }, 15000);
 }
 
 var SchemaInstallDialog = function (_a) {
@@ -28866,18 +29403,19 @@ function WorkflowFlowHandle(props) {
 
 var WORKFLOW_STEP_NODE_WIDTH = 340;
 var WORKFLOW_STEP_NODE_HEIGHT = 140;
-var handleStyle = {
-    width: 20,
-    height: 20,
-    border: '3px solid #fff',
-    background: '#2563eb',
-    boxShadow: '0 1px 4px rgba(0,0,0,0.25)'
-};
 var WorkflowStepFlowNode = function (_a) {
     var data = _a.data, selected = _a.selected;
+    var theme = useTheme();
     var stepData = data;
     var stepColor = resolveStepColor(stepData.color);
     var isSelected = selected || stepData.selected;
+    var handleStyle = {
+        width: 20,
+        height: 20,
+        border: "3px solid ".concat(theme.palette.background.paper),
+        background: theme.palette.primary.main,
+        boxShadow: theme.shadows[2]
+    };
     return (React$2.createElement(React$2.Fragment, null,
         React$2.createElement(WorkflowFlowHandle, { type: "target", position: Position.Left, id: "target", style: handleStyle }),
         React$2.createElement("div", { className: "crafterwf-workflow-step-node", style: {
@@ -28885,11 +29423,12 @@ var WorkflowStepFlowNode = function (_a) {
                 minHeight: WORKFLOW_STEP_NODE_HEIGHT,
                 boxSizing: 'border-box',
                 borderRadius: 12,
-                border: "3px solid ".concat(isSelected ? '#1976d2' : '#cbd5e1'),
+                border: "3px solid ".concat(isSelected ? theme.palette.primary.main : theme.palette.divider),
                 borderTop: "8px solid ".concat(stepColor),
-                background: '#ffffff',
+                background: theme.palette.background.paper,
+                color: theme.palette.text.primary,
                 opacity: 1,
-                boxShadow: '0 4px 14px rgba(15, 23, 42, 0.12)',
+                boxShadow: theme.shadows[3],
                 padding: '16px 18px',
                 cursor: 'grab',
                 position: 'relative',
@@ -28905,8 +29444,9 @@ var WorkflowStepFlowNode$1 = memo(WorkflowStepFlowNode);
 
 var REACT_FLOW_STYLES_ID = 'crafterwf-react-flow-styles';
 var REACT_FLOW_CRITICAL_ID = 'crafterwf-react-flow-critical';
-/** Minimal rules so the canvas works even if the external stylesheet is slow or blocked. */
-var CRITICAL_REACT_FLOW_CSS = "\n.crafterwf-workflow-flow-canvas .react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n  background: #f8fafc;\n}\n.crafterwf-workflow-flow-canvas .react-flow__container {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n}\n.crafterwf-workflow-flow-canvas .react-flow__background {\n  pointer-events: none !important;\n  z-index: 0 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane {\n  z-index: 1 !important;\n  touch-action: none;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane.draggable {\n  cursor: grab;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane.dragging {\n  cursor: grabbing;\n}\n.crafterwf-workflow-flow-canvas .react-flow__viewport {\n  z-index: 2 !important;\n  pointer-events: none !important;\n  touch-action: none;\n}\n.crafterwf-workflow-flow-canvas .react-flow__renderer {\n  position: relative;\n  z-index: 4 !important;\n  pointer-events: none !important;\n  width: 100%;\n  height: 100%;\n}\n.crafterwf-workflow-flow-canvas .react-flow__nodes {\n  pointer-events: none !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node {\n  pointer-events: all !important;\n  cursor: grab;\n  z-index: 2 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node.dragging {\n  cursor: grabbing;\n  z-index: 3 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node .crafterwf-workflow-step-node {\n  background: #ffffff !important;\n  opacity: 1 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__panel {\n  z-index: 10 !important;\n  pointer-events: all !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__handle {\n  width: 18px !important;\n  height: 18px !important;\n  min-width: 18px !important;\n  min-height: 18px !important;\n  border-radius: 50%;\n  border: 2px solid #fff !important;\n  background: #2563eb !important;\n  z-index: 10;\n  pointer-events: all !important;\n  cursor: crosshair;\n}\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectable,\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectionindicator,\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectingfrom {\n  pointer-events: all !important;\n  cursor: crosshair;\n}\n.crafterwf-workflow-flow-canvas .react-flow__edge-path {\n  stroke-width: 2.5px;\n}\n";
+function buildCriticalReactFlowCss(canvasBg, nodeBg, handleBorder, handleBg) {
+    return "\n.crafterwf-workflow-flow-canvas .react-flow {\n  width: 100%;\n  height: 100%;\n  position: relative;\n  overflow: hidden;\n  background: ".concat(canvasBg, ";\n}\n.crafterwf-workflow-flow-canvas .react-flow__container {\n  position: absolute;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n}\n.crafterwf-workflow-flow-canvas .react-flow__background {\n  pointer-events: none !important;\n  z-index: 0 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane {\n  z-index: 1 !important;\n  touch-action: none;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane.draggable {\n  cursor: grab;\n}\n.crafterwf-workflow-flow-canvas .react-flow__pane.dragging {\n  cursor: grabbing;\n}\n.crafterwf-workflow-flow-canvas .react-flow__viewport {\n  z-index: 2 !important;\n  pointer-events: none !important;\n  touch-action: none;\n}\n.crafterwf-workflow-flow-canvas .react-flow__renderer {\n  position: relative;\n  z-index: 4 !important;\n  pointer-events: none !important;\n  width: 100%;\n  height: 100%;\n}\n.crafterwf-workflow-flow-canvas .react-flow__nodes {\n  pointer-events: none !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node {\n  pointer-events: all !important;\n  cursor: grab;\n  z-index: 2 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node.dragging {\n  cursor: grabbing;\n  z-index: 3 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__node .crafterwf-workflow-step-node {\n  background: ").concat(nodeBg, " !important;\n  opacity: 1 !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__panel {\n  z-index: 10 !important;\n  pointer-events: all !important;\n}\n.crafterwf-workflow-flow-canvas .react-flow__handle {\n  width: 18px !important;\n  height: 18px !important;\n  min-width: 18px !important;\n  min-height: 18px !important;\n  border-radius: 50%;\n  border: 2px solid ").concat(handleBorder, " !important;\n  background: ").concat(handleBg, " !important;\n  z-index: 10;\n  pointer-events: all !important;\n  cursor: crosshair;\n}\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectable,\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectionindicator,\n.crafterwf-workflow-flow-canvas .react-flow__handle.connectingfrom {\n  pointer-events: all !important;\n  cursor: crosshair;\n}\n.crafterwf-workflow-flow-canvas .react-flow__edge-path {\n  stroke-width: 2.5px;\n}\n");
+}
 function getReactFlowCssPath(siteId) {
     var base = '/studio/static-assets/plugins/org/rd/plugin/crafterwf/apps/crafterwf/react-flow.css';
     if (!siteId) {
@@ -28915,13 +29455,19 @@ function getReactFlowCssPath(siteId) {
     return "".concat(base, "?siteId=").concat(encodeURIComponent(siteId));
 }
 function useReactFlowStyles(siteId) {
+    var theme = useTheme();
     useEffect$2(function () {
-        if (!document.getElementById(REACT_FLOW_CRITICAL_ID)) {
-            var style = document.createElement('style');
+        var canvasBg = theme.palette.background.default;
+        var nodeBg = theme.palette.background.paper;
+        var handleBorder = theme.palette.background.paper;
+        var handleBg = theme.palette.primary.main;
+        var style = document.getElementById(REACT_FLOW_CRITICAL_ID);
+        if (!style) {
+            style = document.createElement('style');
             style.id = REACT_FLOW_CRITICAL_ID;
-            style.textContent = CRITICAL_REACT_FLOW_CSS;
             document.head.appendChild(style);
         }
+        style.textContent = buildCriticalReactFlowCss(canvasBg, nodeBg, handleBorder, handleBg);
         var linkId = REACT_FLOW_STYLES_ID;
         var href = getReactFlowCssPath(siteId);
         var existing = document.getElementById(linkId);
@@ -28936,7 +29482,13 @@ function useReactFlowStyles(siteId) {
         link.rel = 'stylesheet';
         link.href = href;
         document.head.appendChild(link);
-    }, [siteId]);
+    }, [
+        siteId,
+        theme.palette.mode,
+        theme.palette.background.default,
+        theme.palette.background.paper,
+        theme.palette.primary.main
+    ]);
 }
 
 var NODE_TYPES = {
@@ -29024,7 +29576,7 @@ function isBackwardTransition(steps, sourceKey, targetKey) {
     }
     return targetIndex < sourceIndex;
 }
-function buildEdges(steps, transitionColor, actionColor, backwardColor, showBackwardArrows) {
+function buildEdges(steps, transitionColor, actionColor, backwardColor, showBackwardArrows, labelBackground) {
     var edges = [];
     var stepByKey = new Map(steps.map(function (step) { return [step.clientKey, step]; }));
     steps.forEach(function (step) {
@@ -29050,7 +29602,7 @@ function buildEdges(steps, transitionColor, actionColor, backwardColor, showBack
                 deletable: true,
                 label: backward ? 'Move (back)' : 'Move',
                 labelStyle: { fill: strokeColor, fontWeight: 700, fontSize: 13 },
-                labelBgStyle: { fill: '#ffffff', fillOpacity: 0.95 },
+                labelBgStyle: { fill: labelBackground, fillOpacity: 0.95 },
                 labelBgPadding: [8, 4],
                 labelBgBorderRadius: 4,
                 style: {
@@ -29079,7 +29631,7 @@ function buildEdges(steps, transitionColor, actionColor, backwardColor, showBack
             deletable: false,
             label: actionLabel,
             labelStyle: { fill: actionColor, fontWeight: 700, fontSize: 12 },
-            labelBgStyle: { fill: '#ffffff', fillOpacity: 0.92 },
+            labelBgStyle: { fill: labelBackground, fillOpacity: 0.92 },
             labelBgPadding: [6, 4],
             labelBgBorderRadius: 4,
             style: { stroke: actionColor, strokeWidth: 2.5, strokeDasharray: '8 5' },
@@ -29171,6 +29723,8 @@ function FlowCanvas(_a) {
     var transitionColor = theme.palette.text.secondary;
     var actionColor = theme.palette.primary.main;
     var backwardColor = theme.palette.warning.dark;
+    var labelBackground = theme.palette.background.paper;
+    var backgroundDotColor = theme.palette.mode === 'dark' ? theme.palette.grey[700] : theme.palette.grey[300];
     var isDraggingRef = useRef$1(false);
     var _b = React$2.useState(false), showBackwardArrows = _b[0], setShowBackwardArrows = _b[1];
     var stepKeys = useMemo$2(function () { return steps.map(function (step) { return step.clientKey; }).join('|'); }, [steps]);
@@ -29179,7 +29733,9 @@ function FlowCanvas(_a) {
     var _c = React$2.useState(function () {
         return buildNodes(steps, flowLayout, selectedClientKey);
     }), flowNodes = _c[0], setFlowNodes = _c[1];
-    var edges = useMemo$2(function () { return buildEdges(steps, transitionColor, actionColor, backwardColor, showBackwardArrows); }, [steps, transitionColor, actionColor, backwardColor, showBackwardArrows]);
+    var edges = useMemo$2(function () {
+        return buildEdges(steps, transitionColor, actionColor, backwardColor, showBackwardArrows, labelBackground);
+    }, [steps, transitionColor, actionColor, backwardColor, showBackwardArrows, labelBackground]);
     useEffect$2(function () {
         if (isDraggingRef.current) {
             return;
@@ -29262,18 +29818,20 @@ function FlowCanvas(_a) {
             overflow: 'hidden'
         } },
         React$2.createElement(Box, { className: "crafterwf-workflow-flow-canvas", sx: {
-                height: 560,
+                height: { xs: 360, sm: 420 },
+                maxHeight: 'min(50vh, 480px)',
                 width: '100%',
                 position: 'relative',
                 touchAction: 'none',
                 userSelect: 'none',
                 '& .react-flow': {
                     width: '100%',
-                    height: '100%'
+                    height: '100%',
+                    bgcolor: 'background.default'
                 }
             } },
             React$2.createElement(index, { nodes: flowNodes, edges: edges, nodeTypes: NODE_TYPES, onNodesChange: handleNodesChange, onEdgesChange: handleEdgesChange, onNodeClick: function (_, node) { return onSelectStep(node.id); }, onNodeDragStart: handleNodeDragStart, onNodeDragStop: handleNodeDragStop, onConnect: handleConnect, onMoveEnd: handleMoveEnd, nodesConnectable: true, nodesDraggable: true, elementsSelectable: true, selectNodesOnDrag: false, panOnDrag: true, panOnScroll: false, zoomOnScroll: false, zoomOnPinch: true, connectionMode: ConnectionMode.Loose, connectionRadius: 48, deleteKeyCode: ['Backspace', 'Delete'], defaultViewport: initialFlowViewport !== null && initialFlowViewport !== void 0 ? initialFlowViewport : DEFAULT_FLOW_VIEWPORT, minZoom: 0.5, maxZoom: 1.75, proOptions: { hideAttribution: true } },
-                React$2.createElement(Background, { gap: 24, size: 1.5 }),
+                React$2.createElement(Background, { gap: 24, size: 1.5, color: backgroundDotColor, bgColor: theme.palette.background.default }),
                 React$2.createElement(FlowViewportInitializer, { initialFlowViewport: initialFlowViewport }),
                 React$2.createElement(FlowZoomToolbar, { onResetRowLayout: handleResetRowLayout, onFlowViewportChange: onFlowViewportChange }),
                 React$2.createElement(FlowDisplayToolbar, { showBackwardArrows: showBackwardArrows, onShowBackwardArrowsChange: setShowBackwardArrows }))),
@@ -29568,8 +30126,8 @@ var WorkflowEditorDialog = function (_a) {
         });
     };
     var selectedStep = selectedStepIndex >= 0 ? steps[selectedStepIndex] : null;
-    return (React$2.createElement(Dialog, { fullScreen: true, open: open, onClose: onClose, scroll: "paper" },
-        React$2.createElement(AppBar, { sx: { position: 'relative' }, color: "default", elevation: 1 },
+    return (React$2.createElement(Dialog, { fullScreen: true, open: open, onClose: onClose, scroll: "paper", PaperProps: { sx: { display: 'flex', flexDirection: 'column' } } },
+        React$2.createElement(AppBar, { sx: { position: 'sticky', top: 0, zIndex: function (theme) { return theme.zIndex.appBar + 1; } }, color: "default", elevation: 1 },
             React$2.createElement(Toolbar, null,
                 React$2.createElement(IconButton, { edge: "start", "aria-label": "Close workflow editor", onClick: onClose, disabled: saving },
                     React$2.createElement(CloseRoundedIcon, null)),
@@ -29578,9 +30136,8 @@ var WorkflowEditorDialog = function (_a) {
                     name.trim() || 'Untitled'),
                 React$2.createElement(Button, { onClick: onClose, disabled: saving, sx: { mr: 1 } }, "Cancel"),
                 React$2.createElement(Button, { variant: "contained", onClick: handleSave, disabled: saving }, saving ? 'Saving…' : 'Save workflow'))),
-        React$2.createElement(Box, { sx: { display: 'flex', flexDirection: 'column', height: 'calc(100vh - 64px)', overflow: 'hidden' } },
+        React$2.createElement(DialogContent, { sx: { flex: 1, p: 0, overflow: 'auto' } },
             React$2.createElement(Box, { sx: {
-                    flexShrink: 0,
                     px: 3,
                     py: 1.5,
                     borderBottom: 1,
@@ -29592,7 +30149,6 @@ var WorkflowEditorDialog = function (_a) {
                         React$2.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { flexShrink: 0 } }, "Board background"),
                         React$2.createElement(ColorSwatchPicker, { swatches: BOARD_BACKGROUND_SWATCHES, value: boardBackground, onChange: setBoardBackground, resolveColor: resolveBoardBackgroundColor, size: 24 })))),
             React$2.createElement(Box, { sx: {
-                    flexShrink: 0,
                     px: 3,
                     py: 2,
                     borderBottom: 1,
@@ -29602,78 +30158,77 @@ var WorkflowEditorDialog = function (_a) {
                 React$2.createElement(Typography, { variant: "subtitle1", fontWeight: 600, gutterBottom: true }, "Workflow flow"),
                 React$2.createElement(Typography, { variant: "body2", color: "text.secondary", sx: { mb: 1 } }, "Drag steps to move them. Use the toolbar to zoom. Connect steps with the blue dots on each card."),
                 React$2.createElement(WorkflowStepsFlowView, { steps: steps, flowLayout: flowLayout, initialFlowViewport: initialFlowViewport, selectedClientKey: selectedClientKey, onSelectStep: handleSelectStep, onFlowLayoutChange: handleFlowLayoutChange, onFlowViewportChange: handleFlowViewportChange, onTransitionChange: handleTransitionChange, onAddStep: handleAddStep })),
-            React$2.createElement(Box, { sx: { flex: 1, minHeight: 0, overflowY: 'auto' } },
-                React$2.createElement(Box, { sx: { px: 3, py: 2 } },
-                    React$2.createElement(Stack, { spacing: 2 },
-                        validationError && (React$2.createElement(Alert, { severity: "warning", onClose: function () { return setValidationError(null); } }, validationError)),
-                        error && React$2.createElement(ApiResponseErrorState, { error: error }),
-                        React$2.createElement(Accordion, { disableGutters: true, elevation: 0, sx: { border: 1, borderColor: 'divider', borderRadius: 1 } },
-                            React$2.createElement(AccordionSummary, { expandIcon: React$2.createElement(ExpandMoreRoundedIcon, null) },
-                                React$2.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, "Workflow details & guard settings")),
-                            React$2.createElement(AccordionDetails, null,
-                                React$2.createElement(Stack, { spacing: 2 },
-                                    React$2.createElement(TextField, { label: "Description", value: description, onChange: function (e) { return setDescription(e.target.value); }, fullWidth: true, multiline: true, minRows: 2, size: "small" }),
-                                    React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { checked: allowUiBypass, onChange: function (e) { return setAllowUiBypass(e.target.checked); } }), label: "Allow publish/reject bypass with acknowledgement" }),
-                                    React$2.createElement(TextField, { label: "Workflow guard message", value: bypassWarningMessage, onChange: function (e) { return setBypassWarningMessage(e.target.value); }, fullWidth: true, multiline: true, minRows: 2, size: "small", helperText: "Optional message when publish/reject is blocked or bypass acknowledgement is required." })))),
-                        selectedStep && selectedStepIndex >= 0 ? (React$2.createElement(Box, { ref: stepSettingsRef, sx: {
-                                border: 2,
-                                borderColor: 'primary.main',
-                                borderRadius: 1.5,
-                                bgcolor: 'background.paper',
-                                px: 2.5,
-                                py: 2
-                            } },
+            React$2.createElement(Box, { sx: { px: 3, py: 2, pb: 4 } },
+                React$2.createElement(Stack, { spacing: 2 },
+                    validationError && (React$2.createElement(Alert, { severity: "warning", onClose: function () { return setValidationError(null); } }, validationError)),
+                    error && React$2.createElement(ApiResponseErrorState, { error: error }),
+                    React$2.createElement(Accordion, { disableGutters: true, elevation: 0, sx: { border: 1, borderColor: 'divider', borderRadius: 1 } },
+                        React$2.createElement(AccordionSummary, { expandIcon: React$2.createElement(ExpandMoreRoundedIcon, null) },
+                            React$2.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, "Workflow details & guard settings")),
+                        React$2.createElement(AccordionDetails, null,
                             React$2.createElement(Stack, { spacing: 2 },
-                                React$2.createElement(Stack, { direction: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1 },
-                                    React$2.createElement(Typography, { variant: "subtitle1", fontWeight: 600 },
-                                        "Step settings \u2014 ",
-                                        ((_b = selectedStep.name) === null || _b === void 0 ? void 0 : _b.trim()) || 'Untitled step'),
-                                    React$2.createElement(Stack, { direction: "row", spacing: 1 },
-                                        React$2.createElement(Button, { size: "small", variant: "outlined", startIcon: React$2.createElement(RuleRoundedIcon, null), onClick: function () { return setRulesStepIndex(selectedStepIndex); } }, "Rules"),
-                                        React$2.createElement(Button, { size: "small", color: "error", variant: "outlined", startIcon: React$2.createElement(DeleteOutlineRoundedIcon, null), onClick: function () { return handleRemoveStep(selectedStepIndex); } }, "Remove step"))),
-                                React$2.createElement(Stack, { direction: { xs: 'column', sm: 'row' }, spacing: 2, alignItems: { sm: 'flex-start' }, flexWrap: "wrap" },
-                                    React$2.createElement(TextField, { label: "Step name", value: selectedStep.name, onChange: function (e) { return updateStep(selectedStepIndex, { name: e.target.value }); }, size: "small", inputProps: { maxLength: STEP_NAME_MAX_LENGTH }, sx: { width: { xs: '100%', sm: 260 } } }),
-                                    React$2.createElement(ColorSwatchPicker, { label: "Color", swatches: STEP_COLOR_SWATCHES, value: normalizeStepColorId(selectedStep.color), onChange: function (color) { return updateStep(selectedStepIndex, { color: color }); }, size: 22 }),
-                                    React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { size: "small", checked: !!selectedStep.isTerminal, onChange: function (e) { return updateStep(selectedStepIndex, { isTerminal: e.target.checked }); } }), label: "Terminal" }),
-                                    React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { size: "small", checked: !!selectedStep.allowAddPackage, onChange: function (e) { return updateStep(selectedStepIndex, { allowAddPackage: e.target.checked }); } }), label: "Allow add package" })),
-                                React$2.createElement(RadioGroup, { value: selectedStep.actionType || STEP_ACTION_NONE, onChange: function (event) {
-                                        return handleActionTypeChange(selectedStepIndex, event.target.value);
+                                React$2.createElement(TextField, { label: "Description", value: description, onChange: function (e) { return setDescription(e.target.value); }, fullWidth: true, multiline: true, minRows: 2, size: "small" }),
+                                React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { checked: allowUiBypass, onChange: function (e) { return setAllowUiBypass(e.target.checked); } }), label: "Allow publish/reject bypass with acknowledgement" }),
+                                React$2.createElement(TextField, { label: "Workflow guard message", value: bypassWarningMessage, onChange: function (e) { return setBypassWarningMessage(e.target.value); }, fullWidth: true, multiline: true, minRows: 2, size: "small", helperText: "Optional message when publish/reject is blocked or bypass acknowledgement is required." })))),
+                    selectedStep && selectedStepIndex >= 0 ? (React$2.createElement(Box, { ref: stepSettingsRef, sx: {
+                            border: 2,
+                            borderColor: 'primary.main',
+                            borderRadius: 1.5,
+                            bgcolor: 'background.paper',
+                            px: 2.5,
+                            py: 2
+                        } },
+                        React$2.createElement(Stack, { spacing: 2 },
+                            React$2.createElement(Stack, { direction: "row", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 1 },
+                                React$2.createElement(Typography, { variant: "subtitle1", fontWeight: 600 },
+                                    "Step settings \u2014 ",
+                                    ((_b = selectedStep.name) === null || _b === void 0 ? void 0 : _b.trim()) || 'Untitled step'),
+                                React$2.createElement(Stack, { direction: "row", spacing: 1 },
+                                    React$2.createElement(Button, { size: "small", variant: "outlined", startIcon: React$2.createElement(RuleRoundedIcon, null), onClick: function () { return setRulesStepIndex(selectedStepIndex); } }, "Rules"),
+                                    React$2.createElement(Button, { size: "small", color: "error", variant: "outlined", startIcon: React$2.createElement(DeleteOutlineRoundedIcon, null), onClick: function () { return handleRemoveStep(selectedStepIndex); } }, "Remove step"))),
+                            React$2.createElement(Stack, { direction: { xs: 'column', sm: 'row' }, spacing: 2, alignItems: { sm: 'flex-start' }, flexWrap: "wrap" },
+                                React$2.createElement(TextField, { label: "Step name", value: selectedStep.name, onChange: function (e) { return updateStep(selectedStepIndex, { name: e.target.value }); }, size: "small", inputProps: { maxLength: STEP_NAME_MAX_LENGTH }, sx: { width: { xs: '100%', sm: 260 } } }),
+                                React$2.createElement(ColorSwatchPicker, { label: "Color", swatches: STEP_COLOR_SWATCHES, value: normalizeStepColorId(selectedStep.color), onChange: function (color) { return updateStep(selectedStepIndex, { color: color }); }, size: 22 }),
+                                React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { size: "small", checked: !!selectedStep.isTerminal, onChange: function (e) { return updateStep(selectedStepIndex, { isTerminal: e.target.checked }); } }), label: "Terminal" }),
+                                React$2.createElement(FormControlLabel, { control: React$2.createElement(Checkbox, { size: "small", checked: !!selectedStep.allowAddPackage, onChange: function (e) { return updateStep(selectedStepIndex, { allowAddPackage: e.target.checked }); } }), label: "Allow add package" })),
+                            React$2.createElement(RadioGroup, { value: selectedStep.actionType || STEP_ACTION_NONE, onChange: function (event) {
+                                    return handleActionTypeChange(selectedStepIndex, event.target.value);
+                                } },
+                                React$2.createElement(FormControlLabel, { value: STEP_ACTION_NONE, control: React$2.createElement(Radio, { size: "small" }), label: "No publish action" }),
+                                React$2.createElement(FormControl, { component: "fieldset", variant: "standard", sx: { mt: 0.5 } },
+                                    React$2.createElement(FormLabel, { component: "legend", sx: { typography: 'caption', color: 'text.secondary' } }, "Publish action (arrow to next step on success)"),
+                                    React$2.createElement(Box, { sx: { display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 0.5, pt: 0.25 } }, PUBLISH_ACTION_OPTIONS.map(function (option) { return (React$2.createElement(FormControlLabel, { key: option.value, value: option.value, control: React$2.createElement(Radio, { size: "small" }), label: option.label, disabled: option.requiresStaging && !stagingEnabled, sx: { mr: 1.5 } })); })))),
+                            React$2.createElement(FormControl, { size: "small", sx: { maxWidth: 360 }, disabled: !selectedStep.actionType || selectedStep.actionType === STEP_ACTION_NONE },
+                                React$2.createElement(InputLabel, { id: "success-step-label-".concat(selectedStep.clientKey) }, "Step on success"),
+                                React$2.createElement(Select, { labelId: "success-step-label-".concat(selectedStep.clientKey), label: "Step on success", value: selectedStep.actionSuccessStepClientKey ||
+                                        selectedStep.actionSuccessStepId ||
+                                        SUCCESS_STEP_NONE, onChange: function (event) {
+                                        var value = event.target.value;
+                                        if (value === SUCCESS_STEP_NONE) {
+                                            updateStep(selectedStepIndex, {
+                                                actionSuccessStepClientKey: undefined,
+                                                actionSuccessStepId: undefined
+                                            });
+                                        }
+                                        else {
+                                            updateStep(selectedStepIndex, {
+                                                actionSuccessStepClientKey: value,
+                                                actionSuccessStepId: undefined
+                                            });
+                                        }
                                     } },
-                                    React$2.createElement(FormControlLabel, { value: STEP_ACTION_NONE, control: React$2.createElement(Radio, { size: "small" }), label: "No publish action" }),
-                                    React$2.createElement(FormControl, { component: "fieldset", variant: "standard", sx: { mt: 0.5 } },
-                                        React$2.createElement(FormLabel, { component: "legend", sx: { typography: 'caption', color: 'text.secondary' } }, "Publish action (arrow to next step on success)"),
-                                        React$2.createElement(Box, { sx: { display: 'flex', flexWrap: 'wrap', gap: 0.5, pl: 0.5, pt: 0.25 } }, PUBLISH_ACTION_OPTIONS.map(function (option) { return (React$2.createElement(FormControlLabel, { key: option.value, value: option.value, control: React$2.createElement(Radio, { size: "small" }), label: option.label, disabled: option.requiresStaging && !stagingEnabled, sx: { mr: 1.5 } })); })))),
-                                React$2.createElement(FormControl, { size: "small", sx: { maxWidth: 360 }, disabled: !selectedStep.actionType || selectedStep.actionType === STEP_ACTION_NONE },
-                                    React$2.createElement(InputLabel, { id: "success-step-label-".concat(selectedStep.clientKey) }, "Step on success"),
-                                    React$2.createElement(Select, { labelId: "success-step-label-".concat(selectedStep.clientKey), label: "Step on success", value: selectedStep.actionSuccessStepClientKey ||
-                                            selectedStep.actionSuccessStepId ||
-                                            SUCCESS_STEP_NONE, onChange: function (event) {
-                                            var value = event.target.value;
-                                            if (value === SUCCESS_STEP_NONE) {
-                                                updateStep(selectedStepIndex, {
-                                                    actionSuccessStepClientKey: undefined,
-                                                    actionSuccessStepId: undefined
-                                                });
-                                            }
-                                            else {
-                                                updateStep(selectedStepIndex, {
-                                                    actionSuccessStepClientKey: value,
-                                                    actionSuccessStepId: undefined
-                                                });
-                                            }
-                                        } },
-                                        React$2.createElement(MenuItem, { value: SUCCESS_STEP_NONE }, "None \u2014 stay on current step"),
-                                        steps
-                                            .filter(function (candidate) { return candidate.clientKey !== selectedStep.clientKey; })
-                                            .map(function (candidate) {
-                                            var _a;
-                                            return (React$2.createElement(MenuItem, { key: candidate.clientKey, value: candidate.clientKey }, ((_a = candidate.name) === null || _a === void 0 ? void 0 : _a.trim()) || 'Untitled step'));
-                                        })))))) : (React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "Click a step in the flow canvas above to edit its settings.")),
-                        React$2.createElement(Accordion, { disableGutters: true, elevation: 0, sx: { border: 1, borderColor: 'divider', borderRadius: 1 } },
-                            React$2.createElement(AccordionSummary, { expandIcon: React$2.createElement(ExpandMoreRoundedIcon, null) },
-                                React$2.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, "Content event listeners")),
-                            React$2.createElement(AccordionDetails, { sx: { px: 0 } },
-                                React$2.createElement(WorkflowEventListenersSection, { steps: steps, createListeners: createListeners, editListeners: editListeners, onCreateListenersChange: setCreateListeners, onEditListenersChange: setEditListeners }))))))),
+                                    React$2.createElement(MenuItem, { value: SUCCESS_STEP_NONE }, "None \u2014 stay on current step"),
+                                    steps
+                                        .filter(function (candidate) { return candidate.clientKey !== selectedStep.clientKey; })
+                                        .map(function (candidate) {
+                                        var _a;
+                                        return (React$2.createElement(MenuItem, { key: candidate.clientKey, value: candidate.clientKey }, ((_a = candidate.name) === null || _a === void 0 ? void 0 : _a.trim()) || 'Untitled step'));
+                                    })))))) : (React$2.createElement(Typography, { variant: "body2", color: "text.secondary" }, "Click a step in the flow canvas above to edit its settings.")),
+                    React$2.createElement(Accordion, { disableGutters: true, elevation: 0, sx: { border: 1, borderColor: 'divider', borderRadius: 1 } },
+                        React$2.createElement(AccordionSummary, { expandIcon: React$2.createElement(ExpandMoreRoundedIcon, null) },
+                            React$2.createElement(Typography, { variant: "subtitle2", fontWeight: 600 }, "Content event listeners")),
+                        React$2.createElement(AccordionDetails, { sx: { px: 0 } },
+                            React$2.createElement(WorkflowEventListenersSection, { steps: steps, createListeners: createListeners, editListeners: editListeners, onCreateListenersChange: setCreateListeners, onEditListenersChange: setEditListeners })))))),
         rulesStepIndex != null && steps[rulesStepIndex] && (React$2.createElement(WorkflowStepRulesDialog, { open: true, stepName: ((_c = steps[rulesStepIndex].name) === null || _c === void 0 ? void 0 : _c.trim()) || 'Step', roleRule: (_d = steps[rulesStepIndex].roleRule) !== null && _d !== void 0 ? _d : defaultRoleRule(), contentRule: (_e = steps[rulesStepIndex].contentRule) !== null && _e !== void 0 ? _e : defaultContentRule(), onClose: function () { return setRulesStepIndex(null); }, onSave: function (roleRule, contentRule) {
                 updateStep(rulesStepIndex, { roleRule: roleRule, contentRule: contentRule });
                 setRulesStepIndex(null);
@@ -30039,11 +30594,14 @@ var plugin = {
             'org.rd.plugin.crafterwf.calendarDialog': CalendarDialog,
             'org.rd.plugin.crafterwf.activeWorkflowsToolbarButton': ActiveWorkflowsToolbarButton,
             'org.rd.plugin.crafterwf.recycleBinToolbarButton': RecycleBinToolbarButton,
-            'org.rd.plugin.crafterwf.recycleBinPanel': RecycleBinPanel,
+            'org.rd.plugin.crafterwf.recycleBinDialog': RecycleBinDialog,
+            // Legacy site ui.xml widget id (renamed during recycle bin work).
+            'org.rd.plugin.crafterwf.recycleBinPanel': RecycleBinDialog,
             'org.rd.plugin.crafterwf.workflowBypassGuard': WorkflowBypassGuard
         },
         _b[projectToolsConfigurationWidgetId] = ProjectToolsConfiguration,
         _b)
 };
+mountWorkflowStudioHooks(WorkflowBypassGuardHost);
 
-export { ActiveWorkflowsToolbarButton, Board, CalendarDialog, CalendarToolbarButton, ContentCommentsPanel, ContentCommentsToolbarButton, NotificationsPanel, NotificationsToolbarButton, OpenBoardDialogPanelButton, ProjectToolsConfiguration, RecycleBinPanel, RecycleBinToolbarButton, TasksPanel, TasksToolbarButton, WorkflowBypassGuard, plugin as default, projectToolsConfigurationWidgetId };
+export { ActiveWorkflowsToolbarButton, Board, CalendarDialog, CalendarToolbarButton, ContentCommentsPanel, ContentCommentsToolbarButton, NotificationsPanel, NotificationsToolbarButton, OpenBoardDialogPanelButton, ProjectToolsConfiguration, RecycleBinDialog, RecycleBinToolbarButton, TasksPanel, TasksToolbarButton, WorkflowBypassGuard, plugin as default, projectToolsConfigurationWidgetId };
